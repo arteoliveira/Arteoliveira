@@ -89,7 +89,9 @@ export default function App() {
         )}
 
         {activeTab === 'sobre' && (
-          <div className="bg-stone-900 border border-stone-800 rounded-2xl p-8 max-w-3xl mx-auto shadow-xl">
+      <img
+        src="https://.postimg.cc/8PbbnpFF/IMG-4746.jpg"
+        <div className="bg-stone-900 border border-stone-800 rounded-2xl mx-auto shadow-xl flex-col md:flex-row items-center grap-6>
             <h3 className="font-serif text-2xl font-bold mb-4 text-amber-400">Art Oliveira</h3>
             <p className="text-stone-300 leading-relaxed mb-4">
               Artista visual profissional focado em retrato realista de alta precisão com grafite, micro-texturas e experimentação figurativa. Com forte presença internacional e exposições realizadas, o trabalho explora a profundidade emocional humana através da arte manual e digital.
