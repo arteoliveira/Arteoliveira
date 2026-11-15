@@ -36,7 +36,7 @@ export default function App() {
       <main className="max-w-6xl mx-auto px-4 py-8">
         <div className="text-center my-12">
           <h2 className="text-4xl md:text-5xl font-serif font-bold mb-4 text-stone-100">
-            Realismo, Emoção e Expressão Visual
+            Realismo,  e Expressão Visual
           </h2>
           <p className="text-stone-400 max-w-2xl mx-auto text-base">
             Portfólio oficial de Art Oliveira. Especializado em retrato realista a grafite, pintura em tela e experimentação visual contemporânea.
