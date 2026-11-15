@@ -10,7 +10,7 @@ export default function App() {
     { id: 3, title: 'Abstrato em Tela', categoria: 'Pintura', imagem: 'https://images.unsplash.com/photo-1541963463532-d68292c34b19?auto=format&fit=crop&w=800&q=80' }
   ];
 
-  const whatsappNumber = "+2389999999";
+  const whatsappNumber = "+238 5844254";
 
   return (
     <div className="min-h-screen bg-stone-950 text-stone-100 font-sans selection:bg-amber-500 selection:text-stone-950">
