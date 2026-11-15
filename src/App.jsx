@@ -5,9 +5,10 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('galeria');
 
   const obras = [
-    { id: 1, title: 'Retrato Realista a Grafite', categoria: 'Desenho', imagem: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&q=80&w=800' },
-    { id: 2, title: 'Estudo de Expressão e Micro-texturas', categoria: 'Retrato', imagem: 'https://images.unsplash.com/photo-1544256718-3bcf237f3974?auto=format&fit=crop&q=80&w=800' },
-    { id: 3, title: 'Abstrato em Tela', categoria: 'Pintura', imagem: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?auto=format&fit=crop&q=80&w=800' }
+    { id: 1, title: 'Glitter (35,6x27,9 cm - 100h)', categoria: 'Grafite sobre Papel', imagem: 'https://i.postimg.cc/FKwkGjR6/IMG-5824.jpg' },
+    { id: 2, title: 'Retrato Realista a Grafite', categoria: 'Desenho', imagem: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&q=80&w=800' },
+    { id: 3, title: 'Estudo de Expressão e Micro-texturas', categoria: 'Retrato', imagem: 'https://images.unsplash.com/photo-1544256718-3bcf237f3974?auto=format&fit=crop&q=80&w=800' },
+    { id: 4, title: 'Abstrato em Tela', categoria: 'Pintura', imagem: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?auto=format&fit=crop&q=80&w=800' }
   ];
 
   const whatsappNumber = "+2385844254";
