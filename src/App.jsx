@@ -82,26 +82,26 @@ export default function App() {
       : obras.filter((obra) => obra.categoria === selectedCategory);
 
   return (
-    <div className="min-h-screen bg-stone-950 text-stone-100 font-sans selection:bg-amber-500/30">
+    <div className="min-h-screen bg-black text-stone-100 font-sans selection:bg-amber-500/40">
       {/* Navegação Superior */}
-      <header className="border-b border-stone-800/80 bg-stone-950/85 backdrop-blur-md sticky top-0 z-40">
+      <header className="border-b border-amber-500/20 bg-black/90 backdrop-blur-md sticky top-0 z-40 shadow-2xl">
         <div className="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="text-center sm:text-left">
-            <h1 className="text-2xl font-serif font-bold tracking-widest text-amber-400">
+            <h1 className="text-2xl font-serif font-extrabold tracking-widest text-amber-400 drop-shadow-[0_0_15px_rgba(251,191,36,0.3)]">
               ART OLIVEIRA
             </h1>
-            <p className="text-[11px] text-stone-400 tracking-[0.2em] uppercase mt-0.5">
+            <p className="text-[11px] text-amber-500/80 tracking-[0.25em] uppercase mt-0.5 font-medium">
               Arte Realista • Lápis &amp; Pintura a Óleo
             </p>
           </div>
 
-          <nav className="flex gap-2 bg-stone-900/90 p-1.5 rounded-full border border-stone-800">
+          <nav className="flex gap-2 bg-stone-900/90 p-1.5 rounded-full border border-amber-500/30">
             <button
               onClick={() => setActiveTab('galeria')}
               className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${
                 activeTab === 'galeria'
-                  ? 'bg-amber-500 text-stone-950 shadow-lg shadow-amber-500/20 font-semibold'
-                  : 'text-stone-400 hover:text-stone-100'
+                  ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-lg shadow-amber-500/30 font-bold scale-105'
+                  : 'text-stone-300 hover:text-amber-400'
               }`}
             >
               Galeria de Obras
@@ -110,8 +110,8 @@ export default function App() {
               onClick={() => setActiveTab('sobre')}
               className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${
                 activeTab === 'sobre'
-                  ? 'bg-amber-500 text-stone-950 shadow-lg shadow-amber-500/20 font-semibold'
-                  : 'text-stone-400 hover:text-stone-100'
+                  ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-lg shadow-amber-500/30 font-bold scale-105'
+                  : 'text-stone-300 hover:text-amber-400'
               }`}
             >
               Sobre o Artista
@@ -121,22 +121,22 @@ export default function App() {
       </header>
 
       {/* Banner / Hero Section */}
-      <section className="relative overflow-hidden border-b border-stone-900 bg-gradient-to-b from-stone-900/60 via-stone-950 to-stone-950">
-        <div className="max-w-6xl mx-auto px-4 py-12 md:py-16 text-center">
-          <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20 mb-5">
+      <section className="relative overflow-hidden border-b border-amber-500/20 bg-gradient-to-b from-stone-900 via-black to-black">
+        <div className="max-w-6xl mx-auto px-4 py-14 md:py-20 text-center relative z-10">
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/40 mb-6 shadow-inner">
             <Sparkles size={14} /> Portfólio Oficial • Cabo Verde
           </span>
-          <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-stone-100 max-w-3xl mx-auto leading-tight">
+          <h2 className="font-serif text-3xl sm:text-5xl md:text-6xl font-bold text-white max-w-4xl mx-auto leading-tight">
             Onde cada traço a lápis e cada camada a óleo ganham{' '}
-            <span className="text-amber-400 italic">alma e realidade</span>.
+            <span className="text-amber-400 italic drop-shadow-[0_0_20px_rgba(251,191,36,0.4)]">alma e realidade</span>.
           </h2>
-          <p className="text-stone-400 max-w-2xl mx-auto mt-4 text-sm sm:text-base leading-relaxed">
-            Retratos hiper-realistas a grafite, pinturas a óleo sobre tela e obras exclusivas criadas com rigor técnico e sensibilidade humana.
+          <p className="text-stone-300 max-w-2xl mx-auto mt-5 text-sm sm:text-base leading-relaxed">
+            Retratos hiper-realistas a grafite, pinturas a óleo sobre tela e obras exclusivas criadas com rigor técnico absoluto.
           </p>
-          <div className="flex flex-wrap justify-center gap-3 mt-7">
+          <div className="flex flex-wrap justify-center gap-4 mt-8">
             <button
               onClick={() => setActiveTab('galeria')}
-              className="px-6 py-2.5 rounded-full bg-amber-500 hover:bg-amber-400 text-stone-950 font-semibold text-sm transition-all shadow-lg shadow-amber-500/20"
+              className="px-7 py-3 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-bold text-sm transition-all shadow-xl shadow-amber-500/30 hover:scale-105"
             >
               Explorar Obras
             </button>
@@ -144,23 +144,23 @@ export default function App() {
               href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=Olá Art Oliveira! Visitei o teu portfólio e gostaria de falar sobre uma encomenda personalizada.`}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-6 py-2.5 rounded-full bg-stone-900 hover:bg-stone-800 text-stone-200 border border-stone-700 font-medium text-sm transition-all inline-flex items-center gap-2"
+              className="px-7 py-3 rounded-full bg-stone-900 hover:bg-stone-800 text-amber-400 border border-amber-500/40 font-semibold text-sm transition-all inline-flex items-center gap-2 shadow-lg hover:border-amber-400"
             >
-              <MessageCircle size={16} className="text-amber-400" /> Encomendar Obra
+              <MessageCircle size={16} /> Encomendar Obra
             </a>
           </div>
         </div>
       </section>
 
       {/* Conteúdo Principal */}
-      <main className="max-w-6xl mx-auto px-4 py-10">
+      <main className="max-w-6xl mx-auto px-4 py-12">
         {activeTab === 'galeria' && (
           <div>
             {/* Barra de Filtros */}
-            <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-10 border-b border-stone-800 pb-6">
               <div>
-                <h3 className="font-serif text-2xl font-bold text-stone-100">Coleção Selecionada</h3>
-                <p className="text-xs text-stone-400 mt-1">
+                <h3 className="font-serif text-2xl font-bold text-white">Coleção Selecionada</h3>
+                <p className="text-xs text-amber-400/80 mt-1">
                   Clica em qualquer obra para ampliar e ver a ficha técnica completa
                 </p>
               </div>
@@ -169,10 +169,10 @@ export default function App() {
                   <button
                     key={cat}
                     onClick={() => setSelectedCategory(cat)}
-                    className={`px-4 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                    className={`px-4 py-2 rounded-full text-xs font-semibold border transition-all ${
                       selectedCategory === cat
-                        ? 'bg-amber-500/15 border-amber-500 text-amber-400'
-                        : 'bg-stone-900 border-stone-800 text-stone-400 hover:text-stone-200'
+                        ? 'bg-amber-400 border-amber-400 text-black shadow-md shadow-amber-500/20'
+                        : 'bg-stone-900 border-stone-800 text-stone-300 hover:border-amber-500/50 hover:text-amber-400'
                     }`}
                   >
                     {cat}
@@ -182,49 +182,49 @@ export default function App() {
             </div>
 
             {/* Grelha de Obras */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {obrasFiltradas.map((obra) => (
                 <div
                   key={obra.id}
                   onClick={() => setSelectedObra(obra)}
-                  className="bg-stone-900/90 border border-stone-800 rounded-2xl overflow-hidden group hover:border-amber-500/60 transition-all duration-300 cursor-pointer flex flex-col justify-between shadow-lg"
+                  className="bg-stone-900/90 border border-stone-800 rounded-2xl overflow-hidden group hover:border-amber-400 transition-all duration-300 cursor-pointer flex flex-col justify-between shadow-xl hover:shadow-amber-500/10"
                 >
                   <div>
-                    <div className="aspect-[4/5] overflow-hidden bg-stone-800 relative">
+                    <div className="aspect-[4/5] overflow-hidden bg-stone-950 relative">
                       <img
                         src={obra.imagem}
                         alt={obra.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-stone-950/90 via-stone-950/20 to-transparent opacity-70 group-hover:opacity-90 transition-opacity" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
 
-                      <span className="absolute top-3 left-3 bg-stone-950/85 backdrop-blur-md text-amber-400 text-xs font-medium px-3 py-1 rounded-full border border-stone-800">
+                      <span className="absolute top-3 left-3 bg-black/90 backdrop-blur-md text-amber-400 text-xs font-bold px-3 py-1 rounded-full border border-amber-500/30 shadow-lg">
                         {obra.categoria}
                       </span>
 
-                      <span className="absolute top-3 right-3 bg-stone-950/85 backdrop-blur-md text-stone-200 p-2 rounded-full border border-stone-800 opacity-80 group-hover:opacity-100 group-hover:border-amber-400/50 transition-all">
-                        <Maximize2 size={15} className="text-amber-400" />
+                      <span className="absolute top-3 right-3 bg-black/90 backdrop-blur-md text-amber-400 p-2 rounded-full border border-amber-500/30 opacity-90 group-hover:opacity-100 group-hover:border-amber-400 transition-all">
+                        <Maximize2 size={15} />
                       </span>
 
-                      <div className="absolute bottom-3 left-4 right-4">
-                        <p className="text-xs text-amber-400/90 font-medium">{obra.dimensoes}</p>
-                        <h4 className="font-serif text-xl font-bold text-white mt-0.5">{obra.title}</h4>
+                      <div className="absolute bottom-4 left-4 right-4">
+                        <p className="text-xs text-amber-400 font-semibold tracking-wider">{obra.dimensoes}</p>
+                        <h4 className="font-serif text-xl font-bold text-white mt-1 group-hover:text-amber-300 transition-colors">{obra.title}</h4>
                       </div>
                     </div>
 
                     <div className="p-5">
-                      <p className="text-stone-400 text-sm line-clamp-2 leading-relaxed">
+                      <p className="text-stone-300 text-sm line-clamp-2 leading-relaxed">
                         {obra.descricao}
                       </p>
                     </div>
                   </div>
 
-                  <div className="px-5 pb-5 pt-2 flex items-center justify-between border-t border-stone-800/60">
+                  <div className="px-5 pb-5 pt-3 flex items-center justify-between border-t border-stone-800/80">
                     <span className="text-xs text-stone-400 flex items-center gap-1.5">
                       <Clock size={13} className="text-amber-400" /> {obra.tempo}
                     </span>
-                    <span className="text-xs font-semibold text-amber-400 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
-                      Abrir obra <ArrowUpRight size={14} />
+                    <span className="text-xs font-bold text-amber-400 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+                      Ver detalhes <ArrowUpRight size={14} />
                     </span>
                   </div>
                 </div>
@@ -236,32 +236,34 @@ export default function App() {
         {activeTab === 'sobre' && (
           <div className="max-w-4xl mx-auto space-y-8">
             {/* Cartão Principal do Artista */}
-            <div className="bg-stone-900 border border-stone-800 rounded-3xl p-6 sm:p-10 shadow-2xl flex flex-col md:flex-row items-center md:items-start gap-8">
+            <div className="bg-stone-900 border border-amber-500/30 rounded-3xl p-6 sm:p-10 shadow-2xl flex flex-col md:flex-row items-center md:items-start gap-8 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
+
               <div className="relative shrink-0">
                 <img
                   src="https://i.postimg.cc/8PbbnpFF/IMG-4746.jpg"
                   alt="Art Oliveira"
-                  className="w-40 h-40 sm:w-48 sm:h-48 rounded-2xl object-cover border-2 border-amber-400 shadow-xl"
+                  className="w-40 h-40 sm:w-48 sm:h-48 rounded-2xl object-cover border-2 border-amber-400 shadow-2xl"
                 />
-                <span className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-amber-500 text-stone-950 text-[11px] font-bold px-3 py-1 rounded-full whitespace-nowrap shadow-md">
+                <span className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-amber-400 text-black text-[11px] font-extrabold px-3 py-1 rounded-full whitespace-nowrap shadow-md">
                   Artista Visual
                 </span>
               </div>
 
-              <div className="text-center md:text-left">
-                <p className="text-xs uppercase tracking-[0.2em] text-amber-400 font-semibold">
+              <div className="text-center md:text-left relative z-10">
+                <p className="text-xs uppercase tracking-[0.25em] text-amber-400 font-bold">
                   Biografia &amp; Visão Artística
                 </p>
-                <h3 className="font-serif text-3xl font-bold text-stone-100 mt-1">
+                <h3 className="font-serif text-3xl sm:text-4xl font-extrabold text-white mt-1">
                   Art Oliveira
                 </h3>
-                <p className="text-stone-400 text-sm mt-1">
+                <p className="text-amber-500/80 text-sm mt-1 font-medium">
                   Cabo Verde • Especialista em Realismo a Grafite &amp; Pintura a Óleo
                 </p>
 
                 <div className="space-y-4 text-stone-300 leading-relaxed text-sm sm:text-base mt-5">
                   <p>
-                    <strong className="text-stone-100">Art Oliveira</strong> é um artista visual cabo-verdiano dedicado ao <strong className="text-amber-400 font-medium">desenho realista de alta precisão a lápis</strong> e à <strong className="text-amber-400 font-medium">pintura a óleo sobre tela</strong>. O seu trabalho nasce da obsessão pelo detalhe — desde as micro-texturas da pele e o brilho do olhar até à profundidade emocional de cada retrato.
+                    <strong className="text-white">Art Oliveira</strong> é um artista visual cabo-verdiano dedicado ao <strong className="text-amber-400 font-semibold">desenho realista de alta precisão a lápis</strong> e à <strong className="text-amber-400 font-semibold">pintura a óleo sobre tela</strong>. O seu trabalho nasce da obsessão pelo detalhe — desde as micro-texturas da pele e o brilho do olhar até à profundidade emocional de cada retrato.
                   </p>
                   <p>
                     Com dezenas de horas investidas em cada obra, alia o rigor técnico do grafite e do carvão à riqueza cromática da pintura a óleo e de murais de grande escala, transformando memórias, rostos e histórias em peças intemporais.
@@ -273,7 +275,7 @@ export default function App() {
                     href="https://instagram.com/artoliveira_oficial"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-stone-800 hover:bg-stone-700 text-amber-400 border border-stone-700 text-sm font-medium transition-all"
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-stone-950 hover:bg-stone-800 text-amber-400 border border-amber-500/40 text-sm font-bold transition-all shadow-md"
                   >
                     <Instagram size={17} /> @artoliveira_oficial
                   </a>
@@ -281,7 +283,7 @@ export default function App() {
                     href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=Olá Art Oliveira! Vi o teu perfil no site e gostaria de falar contigo.`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-amber-500 hover:bg-amber-400 text-stone-950 text-sm font-semibold transition-all"
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-amber-400 hover:bg-amber-300 text-black text-sm font-bold transition-all shadow-lg shadow-amber-500/20"
                   >
                     <MessageCircle size={17} /> Falar no WhatsApp
                   </a>
@@ -290,27 +292,27 @@ export default function App() {
             </div>
 
             {/* Pilares do Trabalho */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-              <div className="bg-stone-900/70 border border-stone-800 rounded-2xl p-6">
-                <Palette className="text-amber-400 mb-3" size={24} />
-                <h4 className="font-serif text-lg font-bold text-stone-100">Técnicas Dominadas</h4>
-                <p className="text-stone-400 text-sm mt-2 leading-relaxed">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-stone-900 border border-stone-800 hover:border-amber-500/40 transition-all rounded-2xl p-6 shadow-xl">
+                <Palette className="text-amber-400 mb-3" size={26} />
+                <h4 className="font-serif text-lg font-bold text-white">Técnicas Dominadas</h4>
+                <p className="text-stone-300 text-sm mt-2 leading-relaxed">
                   Grafite hiper-realista sobre papel de algodão, pintura a óleo sobre tela, retratos personalizados e arte mural.
                 </p>
               </div>
 
-              <div className="bg-stone-900/70 border border-stone-800 rounded-2xl p-6">
-                <Award className="text-amber-400 mb-3" size={24} />
-                <h4 className="font-serif text-lg font-bold text-stone-100">Exposições &amp; Percurso</h4>
-                <p className="text-stone-400 text-sm mt-2 leading-relaxed">
+              <div className="bg-stone-900 border border-stone-800 hover:border-amber-500/40 transition-all rounded-2xl p-6 shadow-xl">
+                <Award className="text-amber-400 mb-3" size={26} />
+                <h4 className="font-serif text-lg font-bold text-white">Exposições &amp; Percurso</h4>
+                <p className="text-stone-300 text-sm mt-2 leading-relaxed">
                   Presença em exposições em Cabo Verde, Portugal e Luxemburgo, incluindo a Bienal de Jovens Criadores da CPLP.
                 </p>
               </div>
 
-              <div className="bg-stone-900/70 border border-stone-800 rounded-2xl p-6">
-                <Sparkles className="text-amber-400 mb-3" size={24} />
-                <h4 className="font-serif text-lg font-bold text-stone-100">Encomendas Sob Medida</h4>
-                <p className="text-stone-400 text-sm mt-2 leading-relaxed">
+              <div className="bg-stone-900 border border-stone-800 hover:border-amber-500/40 transition-all rounded-2xl p-6 shadow-xl">
+                <Sparkles className="text-amber-400 mb-3" size={26} />
+                <h4 className="font-serif text-lg font-bold text-white">Encomendas Sob Medida</h4>
+                <p className="text-stone-300 text-sm mt-2 leading-relaxed">
                   Criação de retratos exclusivos a partir de fotografias, com acompanhamento detalhado desde o esboço até à entrega.
                 </p>
               </div>
@@ -319,31 +321,31 @@ export default function App() {
         )}
       </main>
 
-      {/* JANELA MODAL DE DETALHES DA OBRA (Ao clicar na foto) */}
+      {/* JANELA MODAL DE DETALHES DA OBRA */}
       {selectedObra && (
         <div
           onClick={() => setSelectedObra(null)}
-          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
+          className="fixed inset-0 z-50 bg-black/9ynth backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="bg-stone-900 border border-stone-700 rounded-3xl max-w-4xl w-full overflow-hidden shadow-2xl grid grid-cols-1 md:grid-cols-2 relative my-8"
+            className="bg-stone-900 border border-amber-500/40 rounded-3xl max-w-4xl w-full overflow-hidden shadow-2xl grid grid-cols-1 md:grid-cols-2 relative my-8"
           >
             {/* Botão Fechar */}
             <button
               onClick={() => setSelectedObra(null)}
-              className="absolute top-4 right-4 z-10 bg-stone-950/80 hover:bg-amber-500 text-stone-200 hover:text-stone-950 p-2 rounded-full border border-stone-700 transition-colors"
+              className="absolute top-4 right-4 z-10 bg-black hover:bg-amber-400 text-amber-400 hover:text-black p-2.5 rounded-full border border-amber-500/40 transition-colors shadow-lg"
               aria-label="Fechar"
             >
               <X size={20} />
             </button>
 
             {/* Imagem Ampliada */}
-            <div className="bg-stone-950 flex items-center justify-center p-4 sm:p-6">
+            <div className="bg-black flex items-center justify-center p-4 sm:p-6 border-b md:border-b-0 md:border-r border-stone-800">
               <img
                 src={selectedObra.imagem}
                 alt={selectedObra.title}
-                className="max-h-[70vh] w-auto object-contain rounded-xl shadow-lg"
+                className="max-h-[70vh] w-auto object-contain rounded-xl shadow-2xl"
               />
             </div>
 
@@ -351,15 +353,15 @@ export default function App() {
             <div className="p-6 sm:p-8 flex flex-col justify-between">
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="bg-amber-500/15 text-amber-400 border border-amber-500/30 text-xs font-semibold px-3 py-1 rounded-full">
+                  <span className="bg-amber-400 text-black text-xs font-bold px-3 py-1 rounded-full shadow-md">
                     {selectedObra.categoria}
                   </span>
-                  <span className="bg-stone-800 text-stone-300 text-xs px-3 py-1 rounded-full">
+                  <span className="bg-stone-950 text-amber-400 border border-amber-500/30 text-xs px-3 py-1 rounded-full font-medium">
                     {selectedObra.status}
                   </span>
                 </div>
 
-                <h3 className="font-serif text-2xl sm:text-3xl font-bold text-stone-100 mt-4">
+                <h3 className="font-serif text-2xl sm:text-3xl font-extrabold text-white mt-4">
                   {selectedObra.title}
                 </h3>
 
@@ -373,21 +375,21 @@ export default function App() {
                     <span className="text-stone-400 flex items-center gap-2">
                       <Palette size={16} className="text-amber-400" /> Técnica
                     </span>
-                    <span className="text-stone-100 font-medium text-right">{selectedObra.tecnica}</span>
+                    <span className="text-white font-medium text-right">{selectedObra.tecnica}</span>
                   </div>
 
                   <div className="flex items-center justify-between">
                     <span className="text-stone-400 flex items-center gap-2">
                       <Ruler size={16} className="text-amber-400" /> Dimensões
                     </span>
-                    <span className="text-stone-100 font-medium">{selectedObra.dimensoes}</span>
+                    <span className="text-white font-medium">{selectedObra.dimensoes}</span>
                   </div>
 
                   <div className="flex items-center justify-between">
                     <span className="text-stone-400 flex items-center gap-2">
                       <Clock size={16} className="text-amber-400" /> Dedicação
                     </span>
-                    <span className="text-stone-100 font-medium">{selectedObra.tempo}</span>
+                    <span className="text-white font-medium">{selectedObra.tempo}</span>
                   </div>
                 </div>
               </div>
@@ -397,7 +399,7 @@ export default function App() {
                   href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=Olá Art Oliveira! Gostaria de saber mais detalhes ou adquirir a obra "${encodeURIComponent(selectedObra.title)}" (${encodeURIComponent(selectedObra.tecnica)}).`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full py-3 px-5 rounded-full bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20"
+                  className="w-full py-3.5 px-5 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-sm transition-all flex items-center justify-center gap-2 shadow-xl shadow-amber-500/20 hover:scale-[1.02]"
                 >
                   <MessageCircle size={18} /> Consultar ou Adquirir Obra
                 </a>
@@ -408,9 +410,9 @@ export default function App() {
       )}
 
       {/* Rodapé */}
-      <footer className="border-t border-stone-900 mt-20 py-10 text-center text-stone-500 text-sm">
-        <p className="font-serif text-stone-300 font-semibold tracking-wider">ART OLIVEIRA</p>
-        <p className="text-xs text-stone-500 mt-1">
+      <footer className="border-t border-amber-500/20 mt-20 py-10 text-center text-stone-500 text-sm bg-black">
+        <p className="font-serif text-amber-400 font-bold tracking-wider text-base">ART OLIVEIRA</p>
+        <p className="text-xs text-stone-400 mt-1">
           Arte Realista a Lápis &amp; Pintura a Óleo • Cabo Verde
         </p>
         <p className="text-xs text-stone-600 mt-4">
