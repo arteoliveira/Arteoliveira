@@ -63,7 +63,7 @@ export default function App() {
             {obras.map((obra) => (
               <div key={obra.id} className="bg-stone-900 border border-stone-800 rounded-xl overflow-hidden group shadow-lg hover:border-amber-500/50 transition">
                 <div className="h-64 overflow-hidden relative">
-                  <img 
+                  <img>
                     src={obra.imagem} 
                     alt={obra.title} 
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-500" 
@@ -88,14 +88,35 @@ export default function App() {
           </div>
         )}
 
+        
         {activeTab === 'sobre' && (
-      <img
-        src="https://.postimg.cc/8PbbnpFF/IMG-4746.jpg"
-        <div className="bg-stone-900 border border-stone-800 rounded-2xl mx-auto shadow-xl flex-col md:flex-row items-center grap-6>
-            <h3 className="font-serif text-2xl font-bold mb-4 text-amber-400">Art Oliveira</h3>
-            <p className="text-stone-300 leading-relaxed mb-4">
-              Artista visual profissional focado em retrato realista de alta precisão com grafite, micro-texturas e experimentação figurativa. Com forte presença internacional e exposições realizadas, o trabalho explora a profundidade emocional humana através da arte manual e digital.
-            </p>
+  <div className="bg-stone-900 border border-stone-800 rounded-2xl p-8 max-w-3xl mx-auto shadow-xl flex flex-col md:flex-row items-center gap-6">
+    <img 
+      src="https://i.postimg.cc/8PbbnpFF/IMG-4746.jpg" 
+      alt="Art Oliveira" 
+      className="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-2 border-amber-400 shadow-md"
+    />
+    <div>
+      <h3 className="font-serif text-2xl font-bold mb-2 text-amber-400 text-center md:text-left">Art Oliveira</h3>
+      <p className="text-stone-300 leading-relaxed text-sm md:text-base text-center md:text-left mb-4">
+        Artista visual profissional focado em retrato realista de alta precisão com grafite, micro-texturas e experimentação figurativa.
+      </p>
+      <div className="flex gap-4 mt-6 justify-center md:justify-start">
+        <a href="https://instagram.com/artoliveira_oficial" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-amber-400 hover:text-amber-300 transition-colors">
+          <Instagram size={18} /> @artoliveira_oficial
+        </a>
+      </div>
+    </div>
+  </div>
+)}
+
+        <a href="https://instagram.com/artoliveira_oficial" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-amber-400 hover:text-amber-300 transition-colors">
+          <Instagram size={18} /> @artoliveira_oficial
+        </a>
+      </div>
+    </div>
+  </div>
+)}
             <div className="flex gap-4 mt-6">
               <a href="https://instagram.com/artoliveira_oficial" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-stone-800 px-4 py-2 rounded-lg text-sm hover:bg-stone-700 transition">
                 <Instagram size={18} /> @artoliveira_oficial
