@@ -9,14 +9,16 @@ import {
   Palette,
   Award,
   Sparkles,
-  ArrowUpRight
+  ArrowUpRight,
+  DollarSign,
+  ShieldCheck
 } from 'lucide-react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('galeria');
-  const [selectedCategory, setSelectedCategory] = useState('Todas');
   const [selectedObra, setSelectedObra] = useState(null);
 
+  // Apenas a tua obra "Glitter" na galeria de arte
   const obras = [
     {
       id: 1,
@@ -30,56 +32,38 @@ export default function App() {
       imagem: 'https://i.postimg.cc/FKwkGjR6/IMG-5824.jpg',
       descricao:
         'Um estudo aprofundado sobre luz, reflexos e micro-texturas na pele. Executado ao longo de 100 horas de trabalho minucioso a grafite, capturando o brilho e a intensidade do olhar com realismo fotográfico.'
+    }
+  ];
+
+  // Tabela de preços e estilos de tatuagem personalizados
+  const precosTatuagem = [
+    {
+      id: 1,
+      estilo: 'Fine Line / Minimalista',
+      tamanho: 'Pequeno (até 5-10 cm)',
+      precoCVE: '3.500$00 - 6.000$00',
+      precoEUR: '30€ - 55€',
+      detalhes: 'Ideal para braços, pulsos ou tornozelos. Traço extremamente limpo e preciso.'
     },
     {
       id: 2,
-      title: 'Retrato Realista a Grafite',
-      categoria: 'Grafite / Lápis',
-      tecnica: 'Lápis de grafite e carvão sobre papel',
-      dimensoes: '42 x 29,7 cm (A3)',
-      tempo: '65 horas de execução',
-      ano: '2026',
-      status: 'Disponível',
-      imagem: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&q=80&w=800',
-      descricao:
-        'Exploração da anatomia facial, contrastes dramáticos de luz e sombra e expressão humana autêntica através do traço realista.'
+      estilo: 'Black and Gray / Sombra',
+      tamanho: 'Médio (10-20 cm)',
+      precoCVE: '8.000$00 - 15.000$00',
+      precoEUR: '70€ - 135€',
+      detalhes: 'Inclui sombreamento suave, rastelado e contraste profundo.'
     },
     {
       id: 3,
-      title: 'Estudo de Expressão e Micro-texturas',
-      categoria: 'Grafite / Lápis',
-      tecnica: 'Grafite sobre papel Fabriano',
-      dimensoes: '30 x 40 cm',
-      tempo: '80 horas de execução',
-      ano: '2026',
-      status: 'Coleção Privada',
-      imagem: 'https://images.unsplash.com/photo-1544256718-3bcf237f3974?auto=format&fit=crop&q=80&w=800',
-      descricao:
-        'Obra centrada na emoção silenciosa e nos detalhes quase impercetíveis da pele e do olhar, elevando o desenho a lápis a uma experiência sensorial.'
-    },
-    {
-      id: 4,
-      title: 'Composição Cromática em Tela',
-      categoria: 'Pintura a Óleo',
-      tecnica: 'Óleo sobre tela esticada',
-      dimensoes: '80 x 60 cm',
-      tempo: 'Pintura em camadas',
-      ano: '2026',
-      status: 'Disponível',
-      imagem: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?auto=format&fit=crop&q=80&w=800',
-      descricao:
-        'Trabalho pictórico a óleo que combina profundidade cromática, pinceladas expressivas e equilíbrio entre o figurativo e o contemporâneo.'
+      estilo: 'Realismo / Peças Grandes',
+      tamanho: 'Grande / Projeto Personalizado',
+      precoCVE: 'Sob Consulta',
+      precoEUR: 'Sob Consulta',
+      detalhes: 'Retratos, braços completos (sleeves) ou costas. Requer avaliação prévia.'
     }
   ];
 
   const whatsappNumber = '+2385844254';
-
-  const categorias = ['Todas', 'Grafite / Lápis', 'Pintura a Óleo'];
-
-  const obrasFiltradas =
-    selectedCategory === 'Todas'
-      ? obras
-      : obras.filter((obra) => obra.categoria === selectedCategory);
 
   return (
     <div className="min-h-screen bg-black text-stone-100 font-sans selection:bg-amber-500/40">
@@ -91,14 +75,14 @@ export default function App() {
               ART OLIVEIRA
             </h1>
             <p className="text-[11px] text-amber-500/80 tracking-[0.25em] uppercase mt-0.5 font-medium">
-              Arte Realista • Lápis &amp; Pintura a Óleo
+              Fine Art • Tattoos &amp; Pintura
             </p>
           </div>
 
-          <nav className="flex gap-2 bg-stone-900/90 p-1.5 rounded-full border border-amber-500/30">
+          <nav className="flex flex-wrap justify-center gap-2 bg-stone-900/90 p-1.5 rounded-full border border-amber-500/30">
             <button
               onClick={() => setActiveTab('galeria')}
-              className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                 activeTab === 'galeria'
                   ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-lg shadow-amber-500/30 font-bold scale-105'
                   : 'text-stone-300 hover:text-amber-400'
@@ -107,8 +91,18 @@ export default function App() {
               Galeria de Obras
             </button>
             <button
+              onClick={() => setActiveTab('tatuagem')}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                activeTab === 'tatuagem'
+                  ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-lg shadow-amber-500/30 font-bold scale-105'
+                  : 'text-stone-300 hover:text-amber-400'
+              }`}
+            >
+              Tatuagens &amp; Preços
+            </button>
+            <button
               onClick={() => setActiveTab('sobre')}
-              className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                 activeTab === 'sobre'
                   ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-lg shadow-amber-500/30 font-bold scale-105'
                   : 'text-stone-300 hover:text-amber-400'
@@ -124,70 +118,53 @@ export default function App() {
       <section className="relative overflow-hidden border-b border-amber-500/20 bg-gradient-to-b from-stone-900 via-black to-black">
         <div className="max-w-6xl mx-auto px-4 py-14 md:py-20 text-center relative z-10">
           <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/40 mb-6 shadow-inner">
-            <Sparkles size={14} /> Portfólio Oficial • Cabo Verde
+            <Sparkles size={14} /> Artista Visual &amp; Tatuador • Cabo Verde
           </span>
           <h2 className="font-serif text-3xl sm:text-5xl md:text-6xl font-bold text-white max-w-4xl mx-auto leading-tight">
-            Onde cada traço a lápis e cada camada a óleo ganham{' '}
-            <span className="text-amber-400 italic drop-shadow-[0_0_20px_rgba(251,191,36,0.4)]">alma e realidade</span>.
+            Onde o realismo e a precisão ganham <span className="text-amber-400 italic drop-shadow-[0_0_20px_rgba(251,191,36,0.4)]">vida na tela e na pele</span>.
           </h2>
           <p className="text-stone-300 max-w-2xl mx-auto mt-5 text-sm sm:text-base leading-relaxed">
-            Retratos hiper-realistas a grafite, pinturas a óleo sobre tela e obras exclusivas criadas com rigor técnico absoluto.
+            Desenhos hiper-realistas a grafite, pinturas a óleo e tatuagens exclusivas com orçamento personalizado.
           </p>
           <div className="flex flex-wrap justify-center gap-4 mt-8">
             <button
               onClick={() => setActiveTab('galeria')}
               className="px-7 py-3 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-bold text-sm transition-all shadow-xl shadow-amber-500/30 hover:scale-105"
             >
-              Explorar Obras
+              Ver Galeria
             </button>
-            <a
-              href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=Olá Art Oliveira! Visitei o teu portfólio e gostaria de falar sobre uma encomenda personalizada.`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-7 py-3 rounded-full bg-stone-900 hover:bg-stone-800 text-amber-400 border border-amber-500/40 font-semibold text-sm transition-all inline-flex items-center gap-2 shadow-lg hover:border-amber-400"
+            <button
+              onClick={() => setActiveTab('tatuagem')}
+              className="px-7 py-3 rounded-full bg-stone-900 hover:bg-stone-800 text-amber-400 border border-amber-500/40 font-semibold text-sm transition-all shadow-lg hover:border-amber-400"
             >
-              <MessageCircle size={16} /> Encomendar Obra
-            </a>
+              Ver Preços &amp; Tattoos
+            </button>
           </div>
         </div>
       </section>
 
       {/* Conteúdo Principal */}
       <main className="max-w-6xl mx-auto px-4 py-12">
+        
+        {/* SECÇÃO: GALERIA DE OBRAS */}
         {activeTab === 'galeria' && (
           <div>
-            {/* Barra de Filtros */}
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-10 border-b border-stone-800 pb-6">
               <div>
-                <h3 className="font-serif text-2xl font-bold text-white">Coleção Selecionada</h3>
+                <h3 className="font-serif text-2xl font-bold text-white">Obras em Destaque</h3>
                 <p className="text-xs text-amber-400/80 mt-1">
-                  Clica em qualquer obra para ampliar e ver a ficha técnica completa
+                  Clica na obra para ver a ficha técnica completa, dimensões e tempo de execução
                 </p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {categorias.map((cat) => (
-                  <button
-                    key={cat}
-                    onClick={() => setSelectedCategory(cat)}
-                    className={`px-4 py-2 rounded-full text-xs font-semibold border transition-all ${
-                      selectedCategory === cat
-                        ? 'bg-amber-400 border-amber-400 text-black shadow-md shadow-amber-500/20'
-                        : 'bg-stone-900 border-stone-800 text-stone-300 hover:border-amber-500/50 hover:text-amber-400'
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                ))}
               </div>
             </div>
 
-            {/* Grelha de Obras */}
+            {/* Grelha de Obras (Apenas a obra Glitter) */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {obrasFiltradas.map((obra) => (
+              {obras.map((obra) => (
                 <div
                   key={obra.id}
                   onClick={() => setSelectedObra(obra)}
-                  className="bg-stone-900/90 border border-stone-800 rounded-2xl overflow-hidden group hover:border-amber-400 transition-all duration-300 cursor-pointer flex flex-col justify-between shadow-xl hover:shadow-amber-500/10"
+                  className="bg-stone-900/90 border border-stone-800 rounded-2xl overflow-hidden group hover:border-amber-400 transition-all duration-300 cursor-pointer flex flex-col justify-between shadow-xl"
                 >
                   <div>
                     <div className="aspect-[4/5] overflow-hidden bg-stone-950 relative">
@@ -202,7 +179,7 @@ export default function App() {
                         {obra.categoria}
                       </span>
 
-                      <span className="absolute top-3 right-3 bg-black/90 backdrop-blur-md text-amber-400 p-2 rounded-full border border-amber-500/30 opacity-90 group-hover:opacity-100 group-hover:border-amber-400 transition-all">
+                      <span className="absolute top-3 right-3 bg-black/90 backdrop-blur-md text-amber-400 p-2 rounded-full border border-amber-500/30 opacity-90 group-hover:opacity-100 transition-all">
                         <Maximize2 size={15} />
                       </span>
 
@@ -233,9 +210,79 @@ export default function App() {
           </div>
         )}
 
+        {/* SECÇÃO: TATUAGENS & PREÇOS */}
+        {activeTab === 'tatuagem' && (
+          <div className="max-w-4xl mx-auto space-y-10">
+            <div className="text-center max-w-2xl mx-auto">
+              <span className="text-xs font-bold uppercase tracking-[0.25em] text-amber-400">Custom Tattoo Studio</span>
+              <h3 className="font-serif text-3xl sm:text-4xl font-extrabold text-white mt-2">
+                Tabela de Preços &amp; Orçamentos
+              </h3>
+              <p className="text-stone-300 text-sm sm:text-base mt-3 leading-relaxed">
+                Consulta os valores base indicativos para os diferentes estilos de tatuagem. Podes enviar a tua ideia diretamente para fechar orçamento.
+              </p>
+            </div>
+
+            {/* Tabela de Preços */}
+            <div className="bg-stone-900 border border-amber-500/30 rounded-3xl overflow-hidden shadow-2xl">
+              <div className="p-6 bg-stone-950 border-b border-stone-800 flex items-center justify-between">
+                <h4 className="font-serif text-lg font-bold text-white flex items-center gap-2">
+                  <DollarSign className="text-amber-400" size={20} /> Estimativa de Valores
+                </h4>
+                <span className="text-xs text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
+                  CVE / EUR
+                </span>
+              </div>
+
+              <div className="divide-y divide-stone-800">
+                {precosTatuagem.map((item) => (
+                  <div key={item.id} className="p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:bg-stone-800/40 transition-colors">
+                    <div>
+                      <h5 className="font-serif text-lg font-bold text-white">{item.estilo}</h5>
+                      <p className="text-xs text-amber-400/90 font-medium mt-0.5">{item.tamanho}</p>
+                      <p className="text-stone-400 text-sm mt-1">{item.detalhes}</p>
+                    </div>
+                    <div className="text-left md:text-right shrink-0">
+                      <div className="text-amber-400 font-bold text-base">{item.precoCVE}</div>
+                      <div className="text-xs text-stone-400">{item.precoEUR}</div>
+                      <a
+                        href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=Olá Art Oliveira! Gostaria de pedir um orçamento para uma tatuagem de estilo: ${encodeURIComponent(item.estilo)} (${encodeURIComponent(item.tamanho)}).`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-3 inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-amber-400 hover:bg-amber-300 text-black text-xs font-bold transition-all shadow-md"
+                      >
+                        <MessageCircle size={13} /> Orçamento via WhatsApp
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Informação adicional de segurança e higiene */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div className="bg-stone-900 border border-stone-800 rounded-2xl p-6">
+                <ShieldCheck className="text-amber-400 mb-3" size={24} />
+                <h4 className="font-serif text-base font-bold text-white">Higiene &amp; Segurança</h4>
+                <p className="text-stone-300 text-xs sm:text-sm mt-2 leading-relaxed">
+                  Material esterilizado, agulhas descartáveis de uso único e ambiente totalmente higienizado para garantir a máxima segurança.
+                </p>
+              </div>
+
+              <div className="bg-stone-900 border border-stone-800 rounded-2xl p-6">
+                <Sparkles className="text-amber-400 mb-3" size={24} />
+                <h4 className="font-serif text-base font-bold text-white">Stencils Exclusivos</h4>
+                <p className="text-stone-300 text-xs sm:text-sm mt-2 leading-relaxed">
+                  Desenho prévio de stencils em linha e ponto (dotwork) adaptados exatamente ao formato do corpo do cliente.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* SECÇÃO: SOBRE O ARTISTA */}
         {activeTab === 'sobre' && (
           <div className="max-w-4xl mx-auto space-y-8">
-            {/* Cartão Principal do Artista */}
             <div className="bg-stone-900 border border-amber-500/30 rounded-3xl p-6 sm:p-10 shadow-2xl flex flex-col md:flex-row items-center md:items-start gap-8 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
 
@@ -246,27 +293,24 @@ export default function App() {
                   className="w-40 h-40 sm:w-48 sm:h-48 rounded-2xl object-cover border-2 border-amber-400 shadow-2xl"
                 />
                 <span className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-amber-400 text-black text-[11px] font-extrabold px-3 py-1 rounded-full whitespace-nowrap shadow-md">
-                  Artista Visual
+                  Artista Visual &amp; Tatuador
                 </span>
               </div>
 
               <div className="text-center md:text-left relative z-10">
                 <p className="text-xs uppercase tracking-[0.25em] text-amber-400 font-bold">
-                  Biografia &amp; Visão Artística
+                  Biografia &amp; Percurso
                 </p>
                 <h3 className="font-serif text-3xl sm:text-4xl font-extrabold text-white mt-1">
                   Art Oliveira
                 </h3>
                 <p className="text-amber-500/80 text-sm mt-1 font-medium">
-                  Cabo Verde • Especialista em Realismo a Grafite &amp; Pintura a Óleo
+                  Cabo Verde • Realismo, Pintura &amp; Custom Tattoos
                 </p>
 
                 <div className="space-y-4 text-stone-300 leading-relaxed text-sm sm:text-base mt-5">
                   <p>
-                    <strong className="text-white">Art Oliveira</strong> é um artista visual cabo-verdiano dedicado ao <strong className="text-amber-400 font-semibold">desenho realista de alta precisão a lápis</strong> e à <strong className="text-amber-400 font-semibold">pintura a óleo sobre tela</strong>. O seu trabalho nasce da obsessão pelo detalhe — desde as micro-texturas da pele e o brilho do olhar até à profundidade emocional de cada retrato.
-                  </p>
-                  <p>
-                    Com dezenas de horas investidas em cada obra, alia o rigor técnico do grafite e do carvão à riqueza cromática da pintura a óleo e de murais de grande escala, transformando memórias, rostos e histórias em peças intemporais.
+                    <strong className="text-white">Art Oliveira</strong> é um artista visual cabo-verdiano especializado em <strong className="text-amber-400 font-semibold">desenho realista a lápis</strong>, <strong className="text-amber-400 font-semibold">pintura a óleo</strong> e <strong className="text-amber-400 font-semibold">tatuagens personalizadas</strong>. Cada trabalho reflete uma busca constante pela perfeição técnica e expressão profunda.
                   </p>
                 </div>
 
@@ -290,33 +334,6 @@ export default function App() {
                 </div>
               </div>
             </div>
-
-            {/* Pilares do Trabalho */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-stone-900 border border-stone-800 hover:border-amber-500/40 transition-all rounded-2xl p-6 shadow-xl">
-                <Palette className="text-amber-400 mb-3" size={26} />
-                <h4 className="font-serif text-lg font-bold text-white">Técnicas Dominadas</h4>
-                <p className="text-stone-300 text-sm mt-2 leading-relaxed">
-                  Grafite hiper-realista sobre papel de algodão, pintura a óleo sobre tela, retratos personalizados e arte mural.
-                </p>
-              </div>
-
-              <div className="bg-stone-900 border border-stone-800 hover:border-amber-500/40 transition-all rounded-2xl p-6 shadow-xl">
-                <Award className="text-amber-400 mb-3" size={26} />
-                <h4 className="font-serif text-lg font-bold text-white">Exposições &amp; Percurso</h4>
-                <p className="text-stone-300 text-sm mt-2 leading-relaxed">
-                  Presença em exposições em Cabo Verde, Portugal e Luxemburgo, incluindo a Bienal de Jovens Criadores da CPLP.
-                </p>
-              </div>
-
-              <div className="bg-stone-900 border border-stone-800 hover:border-amber-500/40 transition-all rounded-2xl p-6 shadow-xl">
-                <Sparkles className="text-amber-400 mb-3" size={26} />
-                <h4 className="font-serif text-lg font-bold text-white">Encomendas Sob Medida</h4>
-                <p className="text-stone-300 text-sm mt-2 leading-relaxed">
-                  Criação de retratos exclusivos a partir de fotografias, com acompanhamento detalhado desde o esboço até à entrega.
-                </p>
-              </div>
-            </div>
           </div>
         )}
       </main>
@@ -325,13 +342,12 @@ export default function App() {
       {selectedObra && (
         <div
           onClick={() => setSelectedObra(null)}
-          className="fixed inset-0 z-50 bg-black/9ynth backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto"
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto"
         >
           <div
             onClick={(e) => e.stopPropagation()}
             className="bg-stone-900 border border-amber-500/40 rounded-3xl max-w-4xl w-full overflow-hidden shadow-2xl grid grid-cols-1 md:grid-cols-2 relative my-8"
           >
-            {/* Botão Fechar */}
             <button
               onClick={() => setSelectedObra(null)}
               className="absolute top-4 right-4 z-10 bg-black hover:bg-amber-400 text-amber-400 hover:text-black p-2.5 rounded-full border border-amber-500/40 transition-colors shadow-lg"
@@ -340,7 +356,6 @@ export default function App() {
               <X size={20} />
             </button>
 
-            {/* Imagem Ampliada */}
             <div className="bg-black flex items-center justify-center p-4 sm:p-6 border-b md:border-b-0 md:border-r border-stone-800">
               <img
                 src={selectedObra.imagem}
@@ -349,7 +364,6 @@ export default function App() {
               />
             </div>
 
-            {/* Ficha Técnica Completa */}
             <div className="p-6 sm:p-8 flex flex-col justify-between">
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
@@ -369,7 +383,6 @@ export default function App() {
                   {selectedObra.descricao}
                 </p>
 
-                {/* Especificações */}
                 <div className="mt-6 space-y-3 border-t border-stone-800 pt-5 text-sm">
                   <div className="flex items-center justify-between">
                     <span className="text-stone-400 flex items-center gap-2">
@@ -413,7 +426,7 @@ export default function App() {
       <footer className="border-t border-amber-500/20 mt-20 py-10 text-center text-stone-500 text-sm bg-black">
         <p className="font-serif text-amber-400 font-bold tracking-wider text-base">ART OLIVEIRA</p>
         <p className="text-xs text-stone-400 mt-1">
-          Arte Realista a Lápis &amp; Pintura a Óleo • Cabo Verde
+          Arte Realista a Lápis, Pintura &amp; Tattoos • Cabo Verde
         </p>
         <p className="text-xs text-stone-600 mt-4">
           &copy; 2026 Art Oliveira. Todos os direitos reservados.
