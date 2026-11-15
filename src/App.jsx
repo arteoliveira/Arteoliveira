@@ -12,7 +12,9 @@ import {
   ShieldCheck,
   PenTool,
   Layers,
-  Send
+  Send,
+  ShoppingBag,
+  CheckCircle
 } from 'lucide-react';
 
 export default function App() {
@@ -28,7 +30,7 @@ export default function App() {
     document.head.appendChild(link);
   }, []);
 
-  // LINK DA ARTE DE FUNDO (Com mais visibilidade e destaque)
+  // LINK DA ARTE DE FUNDO (A tua pintura visível e elegante)
   const imagemFundoSite = 'https://i.postimg.cc/XNKJRMq8/IMG-5861.jpg';
 
   // Galeria de Obras
@@ -45,6 +47,40 @@ export default function App() {
       imagem: 'https://i.postimg.cc/FKwkGjR6/IMG-5824.jpg',
       descricao:
         'Um estudo aprofundado sobre luz, reflexos e micro-texturas na pele. Executado ao longo de 100 horas de trabalho minucioso a grafite, capturando o brilho e a intensidade do olhar com realismo fotográfico.'
+    }
+  ];
+
+  // Opções de Encomendas & Vendas de Arte
+  const opcoesVendas = [
+    {
+      id: 'retratos',
+      titulo: 'Retratos Realistas a Grafite',
+      sub: 'A partir de fotografia',
+      descricao: 'Desenhos hiper-realistas feitos à mão com lápis de grafite e carvão sobre papel de algodão de alta gramagem. Perfeito para imortalizar rostos, expressões e momentos especiais.',
+      formatos: [
+        { nome: 'Formato A4 (21 x 29,7 cm)', ref: 'Ideal para 1 rosto' },
+        { nome: 'Formato A3 (29,7 x 42 cm)', ref: 'Excelente nível de detalhe e destaque' },
+        { nome: 'Formato A2 ou Personalizado', ref: 'Grandes dimensões e múltiplos rostos' }
+      ]
+    },
+    {
+      id: 'pintura',
+      titulo: 'Pintura a Óleo sobre Tela',
+      sub: 'Obras Originais & Encomendas',
+      descricao: 'Trabalhos pictóricos a óleo de alta durabilidade, explorando a profundidade cromática, luz dramática e texturas expressivas em tela esticada.',
+      formatos: [
+        { nome: 'Telas de Médio Formato', ref: 'Composições personalizadas' },
+        { nome: 'Telas de Grande Formato', ref: 'Peças de destaque para interiores e colecionadores' }
+      ]
+    },
+    {
+      id: 'prints',
+      titulo: 'Prints de Alta Qualidade (Fine Art)',
+      sub: 'Edições Limitadas',
+      descricao: 'Cópias fiéis e numeradas das obras originais de Art Oliveira, impressas em papel especial de alta qualidade, assinadas e com certificado.',
+      formatos: [
+        { nome: 'Print A3 Assinado', ref: 'Disponível para envio ou recolha' }
+      ]
     }
   ];
 
@@ -83,14 +119,13 @@ export default function App() {
       style={{ fontFamily: "'Montserrat', sans-serif" }}
       className="min-h-screen bg-black text-stone-100 selection:bg-amber-500/40 relative"
     >
-      {/* IMAGEM DE FUNDO MAIS VISÍVEL E CLARA */}
+      {/* IMAGEM DE FUNDO VISÍVEL E EQUILIBRADA */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <img
           src={imagemFundoSite}
           alt="Arte de Fundo Art Oliveira"
           className="w-full h-full object-cover opacity-50 scale-100"
         />
-        {/* Camada translúcida mais leve apenas para garantir leitura nos cartões */}
         <div className="absolute inset-0 bg-black/55 backdrop-blur-[2px]" />
       </div>
 
@@ -107,40 +142,50 @@ export default function App() {
                 ART OLIVEIRA
               </h1>
               <p className="text-[10px] text-amber-400/90 tracking-[0.3em] uppercase mt-0.5 font-medium">
-                Fine Art • Realismo &amp; Custom Tattoos
+                Fine Art • Realismo, Vendas &amp; Custom Tattoos
               </p>
             </div>
 
             <nav className="flex flex-wrap justify-center gap-2 bg-black/80 p-1.5 rounded-full border border-amber-500/40 shadow-lg">
               <button
                 onClick={() => setActiveTab('galeria')}
-                className={`px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
+                className={`px-3.5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
                   activeTab === 'galeria'
                     ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-lg shadow-amber-500/30 font-bold scale-105'
                     : 'text-stone-200 hover:text-amber-400'
                 }`}
               >
-                Galeria de Obras
+                Galeria
+              </button>
+              <button
+                onClick={() => setActiveTab('vendas')}
+                className={`px-3.5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
+                  activeTab === 'vendas'
+                    ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-lg shadow-amber-500/30 font-bold scale-105'
+                    : 'text-stone-200 hover:text-amber-400'
+                }`}
+              >
+                Encomendas &amp; Vendas
               </button>
               <button
                 onClick={() => setActiveTab('tatuagem')}
-                className={`px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
+                className={`px-3.5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
                   activeTab === 'tatuagem'
                     ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-lg shadow-amber-500/30 font-bold scale-105'
                     : 'text-stone-200 hover:text-amber-400'
                 }`}
               >
-                Tatuagens &amp; Orçamentos
+                Tatuagens
               </button>
               <button
                 onClick={() => setActiveTab('sobre')}
-                className={`px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
+                className={`px-3.5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
                   activeTab === 'sobre'
                     ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-lg shadow-amber-500/30 font-bold scale-105'
                     : 'text-stone-200 hover:text-amber-400'
                 }`}
               >
-                Sobre o Artista
+                Sobre
               </button>
             </nav>
           </div>
@@ -166,16 +211,16 @@ export default function App() {
             </p>
             <div className="flex flex-wrap justify-center gap-4 mt-8">
               <button
-                onClick={() => setActiveTab('galeria')}
+                onClick={() => setActiveTab('vendas')}
                 className="px-7 py-3 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-bold text-sm transition-all shadow-xl shadow-amber-500/30 hover:scale-105"
               >
-                Explorar Galeria
+                Encomendar Obra / Retrato
               </button>
               <button
                 onClick={() => setActiveTab('tatuagem')}
                 className="px-7 py-3 rounded-full bg-black/90 hover:bg-stone-900 text-amber-400 border border-amber-500/50 font-semibold text-sm transition-all shadow-lg hover:border-amber-400 backdrop-blur-md"
               >
-                Como Pedir Orçamento
+                Pedir Orçamento Tatuagem
               </button>
             </div>
           </div>
@@ -183,6 +228,7 @@ export default function App() {
 
         {/* Conteúdo Principal */}
         <main className="max-w-6xl mx-auto px-4 py-12">
+          
           {/* SECÇÃO: GALERIA DE OBRAS */}
           {activeTab === 'galeria' && (
             <div>
@@ -259,6 +305,73 @@ export default function App() {
             </div>
           )}
 
+          {/* SECÇÃO: ENCOMENDAS & VENDAS DE ARTE */}
+          {activeTab === 'vendas' && (
+            <div className="max-w-4xl mx-auto space-y-10">
+              <div className="text-center max-w-2xl mx-auto">
+                <span className="text-xs font-bold uppercase tracking-[0.25em] text-amber-400">
+                  Fine Art &amp; Comissões
+                </span>
+                <h3
+                  style={{ fontFamily: "'Cinzel', serif" }}
+                  className="text-3xl sm:text-4xl font-extrabold text-white mt-2 drop-shadow"
+                >
+                  Encomendas de Retratos &amp; Obras
+                </h3>
+                <p className="text-stone-200 text-sm sm:text-base mt-3 leading-relaxed font-medium">
+                  Queres eternizar um momento inesquecível num retrato realista ou adquirir uma peça de arte exclusiva? Consulta as opções disponíveis e encomenda diretamente via WhatsApp.
+                </p>
+              </div>
+
+              {/* Cartões de Vendas & Encomendas */}
+              <div className="grid grid-cols-1 gap-6">
+                {opcoesVendas.map((opcao) => (
+                  <div
+                    key={opcao.id}
+                    className="bg-black/90 backdrop-blur-md border border-amber-500/40 hover:border-amber-400 transition-all rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden"
+                  >
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                      <div className="space-y-3 flex-1">
+                        <span className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
+                          <ShoppingBag size={13} /> {opcao.sub}
+                        </span>
+                        <h4
+                          style={{ fontFamily: "'Cinzel', serif" }}
+                          className="text-2xl font-bold text-white"
+                        >
+                          {opcao.titulo}
+                        </h4>
+                        <p className="text-stone-300 text-sm leading-relaxed font-light">
+                          {opcao.descricao}
+                        </p>
+
+                        <div className="pt-2 space-y-2">
+                          {opcao.formatos.map((fmt, idx) => (
+                            <div key={idx} className="flex items-center gap-2 text-xs text-stone-200">
+                              <CheckCircle size={14} className="text-amber-400 shrink-0" />
+                              <strong className="text-stone-100">{fmt.nome}:</strong> {fmt.ref}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="shrink-0 w-full md:w-auto text-center">
+                        <a
+                          href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=Olá Art Oliveira! Gostaria de encomendar / saber mais informações sobre: ${encodeURIComponent(opcao.titulo)}.`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full md:w-auto px-7 py-3.5 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-sm transition-all shadow-xl shadow-amber-500/30 inline-flex items-center justify-center gap-2 hover:scale-105"
+                        >
+                          <MessageCircle size={18} /> Encomendar via WhatsApp
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* SECÇÃO: TATUAGENS & COMO FUNCIONA O ORÇAMENTO */}
           {activeTab === 'tatuagem' && (
             <div className="max-w-4xl mx-auto space-y-10">
@@ -270,7 +383,7 @@ export default function App() {
                   style={{ fontFamily: "'Cinzel', serif" }}
                   className="text-3xl sm:text-4xl font-extrabold text-white mt-2 drop-shadow"
                 >
-                  Como é Elaborado o Teu Orçamento
+                  Como é Elaborado o Teu Orçamento de Tatuagem
                 </h3>
                 <p className="text-stone-200 text-sm sm:text-base mt-3 leading-relaxed font-medium">
                   Cada tatuagem é um projeto artístico único. Por isso, não trabalho com tabelas genéricas — cada orçamento é calculado à medida do teu desenho e do teu corpo.
