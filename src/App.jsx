@@ -28,7 +28,7 @@ export default function App() {
     document.head.appendChild(link);
   }, []);
 
-  // LINK DA ARTE DE FUNDO (A tua nova pintura aplicada no fundo do site)
+  // LINK DA ARTE DE FUNDO (Com mais visibilidade e destaque)
   const imagemFundoSite = 'https://i.postimg.cc/XNKJRMq8/IMG-5861.jpg';
 
   // Galeria de Obras
@@ -83,20 +83,21 @@ export default function App() {
       style={{ fontFamily: "'Montserrat', sans-serif" }}
       className="min-h-screen bg-black text-stone-100 selection:bg-amber-500/40 relative"
     >
-      {/* IMAGEM DE FUNDO FIXA COM CAMADA ESCURA DE CONTRASTE */}
+      {/* IMAGEM DE FUNDO MAIS VISÍVEL E CLARA */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <img
           src={imagemFundoSite}
           alt="Arte de Fundo Art Oliveira"
-          className="w-full h-full object-cover opacity-25 scale-105"
+          className="w-full h-full object-cover opacity-50 scale-100"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/85 to-black/95" />
+        {/* Camada translúcida mais leve apenas para garantir leitura nos cartões */}
+        <div className="absolute inset-0 bg-black/55 backdrop-blur-[2px]" />
       </div>
 
       {/* CONTEÚDO PRINCIPAL SOBRE O FUNDO */}
       <div className="relative z-10">
         {/* Navegação Superior */}
-        <header className="border-b border-amber-500/20 bg-black/80 backdrop-blur-md sticky top-0 z-40 shadow-2xl">
+        <header className="border-b border-amber-500/30 bg-black/85 backdrop-blur-md sticky top-0 z-40 shadow-2xl">
           <div className="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
             <div className="text-center sm:text-left">
               <h1
@@ -105,18 +106,18 @@ export default function App() {
               >
                 ART OLIVEIRA
               </h1>
-              <p className="text-[10px] text-amber-500/80 tracking-[0.3em] uppercase mt-0.5 font-medium">
+              <p className="text-[10px] text-amber-400/90 tracking-[0.3em] uppercase mt-0.5 font-medium">
                 Fine Art • Realismo &amp; Custom Tattoos
               </p>
             </div>
 
-            <nav className="flex flex-wrap justify-center gap-2 bg-stone-900/90 p-1.5 rounded-full border border-amber-500/30">
+            <nav className="flex flex-wrap justify-center gap-2 bg-black/80 p-1.5 rounded-full border border-amber-500/40 shadow-lg">
               <button
                 onClick={() => setActiveTab('galeria')}
                 className={`px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
                   activeTab === 'galeria'
                     ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-lg shadow-amber-500/30 font-bold scale-105'
-                    : 'text-stone-300 hover:text-amber-400'
+                    : 'text-stone-200 hover:text-amber-400'
                 }`}
               >
                 Galeria de Obras
@@ -126,7 +127,7 @@ export default function App() {
                 className={`px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
                   activeTab === 'tatuagem'
                     ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-lg shadow-amber-500/30 font-bold scale-105'
-                    : 'text-stone-300 hover:text-amber-400'
+                    : 'text-stone-200 hover:text-amber-400'
                 }`}
               >
                 Tatuagens &amp; Orçamentos
@@ -136,7 +137,7 @@ export default function App() {
                 className={`px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
                   activeTab === 'sobre'
                     ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-lg shadow-amber-500/30 font-bold scale-105'
-                    : 'text-stone-300 hover:text-amber-400'
+                    : 'text-stone-200 hover:text-amber-400'
                 }`}
               >
                 Sobre o Artista
@@ -148,19 +149,19 @@ export default function App() {
         {/* Banner / Hero Section */}
         <section className="relative overflow-hidden border-b border-amber-500/20">
           <div className="max-w-6xl mx-auto px-4 py-14 md:py-20 text-center relative z-10">
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/40 mb-6 backdrop-blur-sm tracking-wider uppercase">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-black/80 text-amber-400 border border-amber-500/50 mb-6 backdrop-blur-md tracking-wider uppercase shadow-md">
               <Sparkles size={14} /> Artista Visual &amp; Tatuador • Cabo Verde
             </span>
             <h2
               style={{ fontFamily: "'Cinzel', serif" }}
-              className="text-3xl sm:text-5xl md:text-6xl font-bold text-white max-w-4xl mx-auto leading-tight drop-shadow-lg"
+              className="text-3xl sm:text-5xl md:text-6xl font-bold text-white max-w-4xl mx-auto leading-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]"
             >
               Onde o realismo e a precisão ganham{' '}
-              <span className="text-amber-400 drop-shadow-[0_0_20px_rgba(251,191,36,0.4)]">
+              <span className="text-amber-400 drop-shadow-[0_0_25px_rgba(251,191,36,0.6)]">
                 vida na tela e na pele
               </span>
             </h2>
-            <p className="text-stone-200 max-w-2xl mx-auto mt-5 text-sm sm:text-base leading-relaxed font-light">
+            <p className="text-stone-100 max-w-2xl mx-auto mt-5 text-sm sm:text-base leading-relaxed font-medium drop-shadow">
               Desenhos hiper-realistas a grafite, pinturas a óleo e tatuagens autorais desenvolvidas sob medida.
             </p>
             <div className="flex flex-wrap justify-center gap-4 mt-8">
@@ -172,7 +173,7 @@ export default function App() {
               </button>
               <button
                 onClick={() => setActiveTab('tatuagem')}
-                className="px-7 py-3 rounded-full bg-stone-900/90 hover:bg-stone-800 text-amber-400 border border-amber-500/40 font-semibold text-sm transition-all shadow-lg hover:border-amber-400 backdrop-blur-sm"
+                className="px-7 py-3 rounded-full bg-black/90 hover:bg-stone-900 text-amber-400 border border-amber-500/50 font-semibold text-sm transition-all shadow-lg hover:border-amber-400 backdrop-blur-md"
               >
                 Como Pedir Orçamento
               </button>
@@ -185,15 +186,15 @@ export default function App() {
           {/* SECÇÃO: GALERIA DE OBRAS */}
           {activeTab === 'galeria' && (
             <div>
-              <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-10 border-b border-stone-800/80 pb-6">
+              <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-10 border-b border-amber-500/20 pb-6">
                 <div>
                   <h3
                     style={{ fontFamily: "'Cinzel', serif" }}
-                    className="text-2xl sm:text-3xl font-bold text-white tracking-wide"
+                    className="text-2xl sm:text-3xl font-bold text-white tracking-wide drop-shadow"
                   >
                     Obras em Destaque
                   </h3>
-                  <p className="text-xs text-amber-400/90 mt-1">
+                  <p className="text-xs text-amber-300 mt-1 font-medium">
                     Clica na obra para ampliar e consultar a ficha técnica completa
                   </p>
                 </div>
@@ -205,7 +206,7 @@ export default function App() {
                   <div
                     key={obra.id}
                     onClick={() => setSelectedObra(obra)}
-                    className="bg-stone-900/85 backdrop-blur-md border border-stone-800 rounded-2xl overflow-hidden group hover:border-amber-400 transition-all duration-300 cursor-pointer flex flex-col justify-between shadow-2xl"
+                    className="bg-black/85 backdrop-blur-md border border-amber-500/30 rounded-2xl overflow-hidden group hover:border-amber-400 transition-all duration-300 cursor-pointer flex flex-col justify-between shadow-2xl"
                   >
                     <div>
                       <div className="aspect-[4/5] overflow-hidden bg-stone-950 relative">
@@ -238,14 +239,14 @@ export default function App() {
                       </div>
 
                       <div className="p-5">
-                        <p className="text-stone-300 text-sm line-clamp-2 leading-relaxed font-light">
+                        <p className="text-stone-200 text-sm line-clamp-2 leading-relaxed font-light">
                           {obra.descricao}
                         </p>
                       </div>
                     </div>
 
-                    <div className="px-5 pb-5 pt-3 flex items-center justify-between border-t border-stone-800/80">
-                      <span className="text-xs text-stone-400 flex items-center gap-1.5">
+                    <div className="px-5 pb-5 pt-3 flex items-center justify-between border-t border-amber-500/20">
+                      <span className="text-xs text-stone-300 flex items-center gap-1.5 font-medium">
                         <Clock size={13} className="text-amber-400" /> {obra.tempo}
                       </span>
                       <span className="text-xs font-bold text-amber-400 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
@@ -267,11 +268,11 @@ export default function App() {
                 </span>
                 <h3
                   style={{ fontFamily: "'Cinzel', serif" }}
-                  className="text-3xl sm:text-4xl font-extrabold text-white mt-2"
+                  className="text-3xl sm:text-4xl font-extrabold text-white mt-2 drop-shadow"
                 >
                   Como é Elaborado o Teu Orçamento
                 </h3>
-                <p className="text-stone-300 text-sm sm:text-base mt-3 leading-relaxed font-light">
+                <p className="text-stone-200 text-sm sm:text-base mt-3 leading-relaxed font-medium">
                   Cada tatuagem é um projeto artístico único. Por isso, não trabalho com tabelas genéricas — cada orçamento é calculado à medida do teu desenho e do teu corpo.
                 </p>
               </div>
@@ -281,15 +282,15 @@ export default function App() {
                 {etapasOrcamento.map((etapa) => (
                   <div
                     key={etapa.passo}
-                    className="bg-stone-900/90 backdrop-blur-md border border-stone-800 hover:border-amber-500/50 transition-all rounded-3xl p-6 sm:p-7 shadow-xl relative overflow-hidden"
+                    className="bg-black/85 backdrop-blur-md border border-amber-500/30 hover:border-amber-400 transition-all rounded-3xl p-6 sm:p-7 shadow-xl relative overflow-hidden"
                   >
                     <span
                       style={{ fontFamily: "'Cinzel', serif" }}
-                      className="text-4xl font-extrabold text-amber-500/20 absolute top-5 right-6 select-none"
+                      className="text-4xl font-extrabold text-amber-500/25 absolute top-5 right-6 select-none"
                     >
                       {etapa.passo}
                     </span>
-                    <div className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-amber-400/15 text-amber-400 border border-amber-500/30 text-xs font-bold mb-4">
+                    <div className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-amber-400/20 text-amber-400 border border-amber-500/40 text-xs font-bold mb-4">
                       {etapa.passo}
                     </div>
                     <h4
@@ -298,7 +299,7 @@ export default function App() {
                     >
                       {etapa.titulo}
                     </h4>
-                    <p className="text-stone-300 text-sm mt-2 leading-relaxed font-light">
+                    <p className="text-stone-200 text-sm mt-2 leading-relaxed font-light">
                       {etapa.descricao}
                     </p>
                   </div>
@@ -306,7 +307,7 @@ export default function App() {
               </div>
 
               {/* Cartão de Chamada para Ação */}
-              <div className="bg-gradient-to-r from-stone-900/95 via-stone-900/95 to-amber-500/15 border border-amber-500/40 rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl backdrop-blur-md">
+              <div className="bg-gradient-to-r from-black/95 via-stone-950/95 to-amber-500/20 border border-amber-500/50 rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl backdrop-blur-md">
                 <div className="text-center md:text-left">
                   <h4
                     style={{ fontFamily: "'Cinzel', serif" }}
@@ -314,7 +315,7 @@ export default function App() {
                   >
                     Pronto para criar a tua tatuagem?
                   </h4>
-                  <p className="text-stone-300 text-sm mt-1.5 font-light max-w-xl">
+                  <p className="text-stone-200 text-sm mt-1.5 font-light max-w-xl">
                     Envia-me a tua ideia, o local do corpo e o tamanho aproximado pelo WhatsApp para receberes uma proposta personalizada sem compromisso.
                   </p>
                 </div>
@@ -322,7 +323,7 @@ export default function App() {
                   href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=Olá Art Oliveira! Gostaria de pedir um orçamento para uma tatuagem. A minha ideia é:`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-7 py-3.5 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-sm transition-all shadow-xl shadow-amber-500/25 whitespace-nowrap flex items-center gap-2 hover:scale-105"
+                  className="px-7 py-3.5 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-sm transition-all shadow-xl shadow-amber-500/30 whitespace-nowrap flex items-center gap-2 hover:scale-105"
                 >
                   <Send size={16} /> Enviar Ideia para Orçamento
                 </a>
@@ -330,7 +331,7 @@ export default function App() {
 
               {/* Garantias do Estúdio */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-                <div className="bg-stone-900/85 backdrop-blur-md border border-stone-800 rounded-2xl p-5">
+                <div className="bg-black/85 backdrop-blur-md border border-amber-500/30 rounded-2xl p-5">
                   <PenTool className="text-amber-400 mb-3" size={22} />
                   <h4
                     style={{ fontFamily: "'Cinzel', serif" }}
@@ -343,7 +344,7 @@ export default function App() {
                   </p>
                 </div>
 
-                <div className="bg-stone-900/85 backdrop-blur-md border border-stone-800 rounded-2xl p-5">
+                <div className="bg-black/85 backdrop-blur-md border border-amber-500/30 rounded-2xl p-5">
                   <Layers className="text-amber-400 mb-3" size={22} />
                   <h4
                     style={{ fontFamily: "'Cinzel', serif" }}
@@ -356,7 +357,7 @@ export default function App() {
                   </p>
                 </div>
 
-                <div className="bg-stone-900/85 backdrop-blur-md border border-stone-800 rounded-2xl p-5">
+                <div className="bg-black/85 backdrop-blur-md border border-amber-500/30 rounded-2xl p-5">
                   <ShieldCheck className="text-amber-400 mb-3" size={22} />
                   <h4
                     style={{ fontFamily: "'Cinzel', serif" }}
@@ -375,8 +376,8 @@ export default function App() {
           {/* SECÇÃO: SOBRE O ARTISTA */}
           {activeTab === 'sobre' && (
             <div className="max-w-4xl mx-auto space-y-8">
-              <div className="bg-stone-900/90 backdrop-blur-md border border-amber-500/30 rounded-3xl p-6 sm:p-10 shadow-2xl flex flex-col md:flex-row items-center md:items-start gap-8 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
+              <div className="bg-black/85 backdrop-blur-md border border-amber-500/40 rounded-3xl p-6 sm:p-10 shadow-2xl flex flex-col md:flex-row items-center md:items-start gap-8 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
                 <div className="relative shrink-0">
                   <img
@@ -395,15 +396,15 @@ export default function App() {
                   </p>
                   <h3
                     style={{ fontFamily: "'Cinzel', serif" }}
-                    className="text-3xl sm:text-4xl font-extrabold text-white mt-1"
+                    className="text-3xl sm:text-4xl font-extrabold text-white mt-1 drop-shadow"
                   >
                     Art Oliveira
                   </h3>
-                  <p className="text-amber-500/80 text-sm mt-1 font-medium">
+                  <p className="text-amber-400 text-sm mt-1 font-medium">
                     Cabo Verde • Realismo a Grafite, Pintura a Óleo &amp; Custom Tattoos
                   </p>
 
-                  <div className="space-y-4 text-stone-300 leading-relaxed text-sm sm:text-base mt-5 font-light">
+                  <div className="space-y-4 text-stone-200 leading-relaxed text-sm sm:text-base mt-5 font-light">
                     <p>
                       <strong className="text-white font-semibold">Art Oliveira</strong> é um artista visual cabo-verdiano dedicado ao{' '}
                       <strong className="text-amber-400 font-medium">desenho realista de alta precisão a lápis</strong>, à{' '}
@@ -420,7 +421,7 @@ export default function App() {
                       href="https://instagram.com/artoliveira_oficial"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-stone-950 hover:bg-stone-800 text-amber-400 border border-amber-500/40 text-sm font-bold transition-all shadow-md"
+                      className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-black hover:bg-stone-900 text-amber-400 border border-amber-500/40 text-sm font-bold transition-all shadow-md"
                     >
                       <Instagram size={17} /> @artoliveira_oficial
                     </a>
@@ -447,7 +448,7 @@ export default function App() {
           >
             <div
               onClick={(e) => e.stopPropagation()}
-              className="bg-stone-900 border border-amber-500/40 rounded-3xl max-w-4xl w-full overflow-hidden shadow-2xl grid grid-cols-1 md:grid-cols-2 relative my-8"
+              className="bg-stone-900 border border-amber-500/50 rounded-3xl max-w-4xl w-full overflow-hidden shadow-2xl grid grid-cols-1 md:grid-cols-2 relative my-8"
             >
               <button
                 onClick={() => setSelectedObra(null)}
@@ -471,7 +472,7 @@ export default function App() {
                     <span className="bg-amber-400 text-black text-xs font-bold px-3 py-1 rounded-full shadow-md">
                       {selectedObra.categoria}
                     </span>
-                    <span className="bg-stone-950 text-amber-400 border border-amber-500/30 text-xs px-3 py-1 rounded-full font-medium">
+                    <span className="bg-black text-amber-400 border border-amber-500/40 text-xs px-3 py-1 rounded-full font-medium">
                       {selectedObra.status}
                     </span>
                   </div>
@@ -527,17 +528,17 @@ export default function App() {
         )}
 
         {/* Rodapé */}
-        <footer className="border-t border-amber-500/20 mt-20 py-10 text-center text-stone-500 text-sm bg-black/90 backdrop-blur-md">
+        <footer className="border-t border-amber-500/30 mt-20 py-10 text-center text-stone-400 text-sm bg-black/90 backdrop-blur-md">
           <p
             style={{ fontFamily: "'Cinzel', serif" }}
-            className="text-amber-400 font-bold tracking-[0.2em] text-base"
+            className="text-amber-400 font-bold tracking-[0.2em] text-base drop-shadow"
           >
             ART OLIVEIRA
           </p>
-          <p className="text-xs text-stone-400 mt-1">
+          <p className="text-xs text-stone-300 mt-1">
             Arte Realista a Lápis, Pintura &amp; Custom Tattoos • Cabo Verde
           </p>
-          <p className="text-xs text-stone-600 mt-4">
+          <p className="text-xs text-stone-500 mt-4">
             &copy; 2026 Art Oliveira. Todos os direitos reservados.
           </p>
         </footer>
