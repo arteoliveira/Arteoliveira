@@ -39,7 +39,7 @@ export default function App() {
       id: 1,
       title: 'Glitter',
       categoria: 'Grafite / Lápis',
-      tecnica: 'Grafite sobre papel ',
+      tecnica: 'Grafite sobre papel de alta gramagem',
       dimensoes: '35,6 x 27,9 cm',
       tempo: '100 horas de execução',
       ano: '2026',
@@ -58,8 +58,9 @@ export default function App() {
       sub: 'A partir de fotografia',
       descricao: 'Desenhos hiper-realistas feitos à mão com lápis de grafite e carvão sobre papel de algodão de alta gramagem. Perfeito para imortalizar rostos, expressões e momentos especiais.',
       formatos: [
-        { nome: 'Formato A4 (35,6x279cm)', ref: 'Ideal para 2 rostos' },
-       
+        { nome: 'Formato A4 (21 x 29,7 cm)', ref: 'Ideal para 1 rosto' },
+        { nome: 'Formato A3 (29,7 x 42 cm)', ref: 'Excelente nível de detalhe e destaque' },
+        { nome: 'Formato A2 ou Personalizado', ref: 'Grandes dimensões e múltiplos rostos' }
       ]
     },
     {
@@ -73,7 +74,12 @@ export default function App() {
       ]
     },
     {
-      
+      id: 'prints',
+      titulo: 'Prints de Alta Qualidade (Fine Art)',
+      sub: 'Edições Limitadas',
+      descricao: 'Cópias fiéis e numeradas das obras originais de Art Oliveira, impressas em papel especial de alta qualidade, assinadas e com certificado.',
+      formatos: [
+        { nome: 'Print A3 Assinado', ref: 'Disponível para envio ou recolha' }
       ]
     }
   ];
