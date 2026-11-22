@@ -15,12 +15,17 @@ import {
   Send,
   ShoppingBag,
   CheckCircle,
-  Tag
+  Tag,
+  ZoomIn,
+  ZoomOut,
+  RotateCcw
 } from 'lucide-react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('galeria');
   const [selectedObra, setSelectedObra] = useState(null);
+  const [selectedTattoo, setSelectedTattoo] = useState(null);
+  const [tattooZoom, setTattooZoom] = useState(1);
 
   // Carrega automaticamente as fontes artísticas sofisticadas (Cinzel + Montserrat)
   useEffect(() => {
@@ -34,7 +39,7 @@ export default function App() {
   // LINK DA ARTE DE FUNDO
   const imagemFundoSite = 'https://i.postimg.cc/XNKJRMq8/IMG-5861.jpg';
 
-  // Galeria de Obras
+  // Galeria de Obras (Desenhos & Pinturas)
   const obras = [
     {
       id: 1,
@@ -48,6 +53,18 @@ export default function App() {
       imagem: 'https://i.postimg.cc/FKwkGjR6/IMG-5824.jpg',
       descricao:
         'Um estudo aprofundado sobre luz, reflexos e micro-texturas na pele. Executado ao longo de 100 horas de trabalho minucioso a grafite, capturando o brilho e a intensidade do olhar com realismo.'
+    }
+  ];
+
+  // PORTFÓLIO DE TATUAGENS REALIZADAS
+  const tatuagensRealizadas = [
+    {
+      id: 1,
+      titulo: 'Realismo Blackwork • Projeto 01',
+      estilo: 'Realismo Blackwork',
+      local: 'Projeto Realizado',
+      imagem: 'https://i.postimg.cc/FHhQk55d/IMG-5299.jpg',
+      descricao: 'Trabalho focado em contraste, transições de sombra e definição de detalhes na pele.'
     }
   ];
 
@@ -89,8 +106,8 @@ export default function App() {
       descricao:
         'Trabalhos realistas e em diferentes estilos para explorar a arte, desenvolvidos à mão com foco na expressão, luz e sombra.',
       formatos: [
-        { nome: 'Formatos Variados', ref: 'Do estudo íntimo a peças de maior dimensão' },
-        { nome: 'Sob Encomenda', ref: 'Orçamento ajustado ao tamanho e detalhe' }
+        { nome: 'Formato 35,6 x 27,9 cm', ref: 'Formato oficial dos desenhos realistas a grafite sobre papel de alta gramagem' },
+        { nome: 'Sob Encomenda', ref: 'Retratos personalizados a partir de fotografia em alta definição' }
       ]
     }
   ];
@@ -124,6 +141,11 @@ export default function App() {
   ];
 
   const whatsappNumber = '+2385844254';
+
+  const abrirModalTatuagem = (tattoo) => {
+    setSelectedTattoo(tattoo);
+    setTattooZoom(1);
+  };
 
   return (
     <div
@@ -437,115 +459,182 @@ export default function App() {
             </div>
           )}
 
-          {/* SECÇÃO: TATUAGENS REALISTAS BLACKWORK */}
+          {/* SECÇÃO: TATUAGENS REALISTAS BLACKWORK + GALERIA COM ZOOM */}
           {activeTab === 'tatuagem' && (
-            <div className="max-w-4xl mx-auto space-y-10">
-              <div className="text-center max-w-2xl mx-auto">
-                <span className="text-xs font-bold uppercase tracking-[0.25em] text-amber-400">
-                  Tatuagens Realistas Blackwork
-                </span>
-                <h3
-                  style={{ fontFamily: "'Cinzel', serif" }}
-                  className="text-3xl sm:text-4xl font-extrabold text-white mt-2 drop-shadow"
-                >
-                  Como é Elaborado o Teu Orçamento
-                </h3>
-                <p className="text-stone-200 text-sm sm:text-base mt-3 leading-relaxed font-medium">
-                  Trabalho com tatuagens realistas blackwork e diferentes estilos para explorar a arte. Cada orçamento é feito de acordo com a tua ideia, tamanho e zona do corpo.
-                </p>
+            <div className="max-w-5xl mx-auto space-y-14">
+              {/* GALERIA DE TATUAGENS REALIZADAS */}
+              <div>
+                <div className="text-center max-w-2xl mx-auto mb-10">
+                  <span className="text-xs font-bold uppercase tracking-[0.25em] text-amber-400">
+                    Portfólio na Pele
+                  </span>
+                  <h3
+                    style={{ fontFamily: "'Cinzel', serif" }}
+                    className="text-3xl sm:text-4xl font-extrabold text-white mt-2 drop-shadow"
+                  >
+                    Tatuagens Realistas Blackwork
+                  </h3>
+                  <p className="text-stone-200 text-sm sm:text-base mt-3 leading-relaxed font-medium">
+                    Explora alguns dos trabalhos realizados. Clica em qualquer tatuagem para abrir em alta definição e fazer zoom nos detalhes.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+                  {tatuagensRealizadas.map((tattoo) => (
+                    <div
+                      key={tattoo.id}
+                      onClick={() => abrirModalTatuagem(tattoo)}
+                      className="bg-black/85 backdrop-blur-md border border-amber-500/30 rounded-2xl overflow-hidden group hover:border-amber-400 transition-all duration-300 cursor-pointer shadow-2xl flex flex-col justify-between"
+                    >
+                      <div className="aspect-[4/5] overflow-hidden bg-stone-950 relative">
+                        <img
+                          src={tattoo.imagem}
+                          alt={tattoo.titulo}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/15 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
+
+                        <span className="absolute top-3 left-3 bg-black/90 backdrop-blur-md text-amber-400 text-xs font-bold px-3 py-1 rounded-full border border-amber-500/30">
+                          {tattoo.estilo}
+                        </span>
+
+                        <span className="absolute top-3 right-3 bg-black/90 backdrop-blur-md text-amber-400 p-2 rounded-full border border-amber-500/30 flex items-center gap-1 text-xs font-bold">
+                          <ZoomIn size={15} />
+                        </span>
+
+                        <div className="absolute bottom-4 left-4 right-4">
+                          <p className="text-xs text-amber-400 font-semibold">{tattoo.local}</p>
+                          <h4
+                            style={{ fontFamily: "'Cinzel', serif" }}
+                            className="text-lg font-bold text-white mt-0.5 group-hover:text-amber-300 transition-colors"
+                          >
+                            {tattoo.titulo}
+                          </h4>
+                        </div>
+                      </div>
+
+                      <div className="p-4 flex items-center justify-between border-t border-amber-500/20">
+                        <span className="text-xs text-stone-300 font-light line-clamp-1">
+                          {tattoo.descricao}
+                        </span>
+                        <span className="text-xs font-bold text-amber-400 shrink-0 ml-2 inline-flex items-center gap-1">
+                          Ampliar <ZoomIn size={13} />
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              {/* 4 Passos */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {etapasOrcamento.map((etapa) => (
-                  <div
-                    key={etapa.passo}
-                    className="bg-black/85 backdrop-blur-md border border-amber-500/30 hover:border-amber-400 transition-all rounded-3xl p-6 sm:p-7 shadow-xl relative overflow-hidden"
+              {/* COMO É ELABORADO O ORÇAMENTO */}
+              <div className="space-y-8 pt-6 border-t border-amber-500/20">
+                <div className="text-center max-w-2xl mx-auto">
+                  <span className="text-xs font-bold uppercase tracking-[0.25em] text-amber-400">
+                    Orçamentos Personalizados
+                  </span>
+                  <h3
+                    style={{ fontFamily: "'Cinzel', serif" }}
+                    className="text-2xl sm:text-3xl font-extrabold text-white mt-2 drop-shadow"
                   >
-                    <span
-                      style={{ fontFamily: "'Cinzel', serif" }}
-                      className="text-4xl font-extrabold text-amber-500/25 absolute top-5 right-6 select-none"
+                    Como é Elaborado o Teu Orçamento
+                  </h3>
+                  <p className="text-stone-200 text-sm mt-2 leading-relaxed font-light">
+                    Cada orçamento é calculado de acordo com a tua ideia, tamanho e zona do corpo.
+                  </p>
+                </div>
+
+                {/* 4 Passos */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {etapasOrcamento.map((etapa) => (
+                    <div
+                      key={etapa.passo}
+                      className="bg-black/85 backdrop-blur-md border border-amber-500/30 hover:border-amber-400 transition-all rounded-3xl p-6 sm:p-7 shadow-xl relative overflow-hidden"
                     >
-                      {etapa.passo}
-                    </span>
-                    <div className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-amber-400/20 text-amber-400 border border-amber-500/40 text-xs font-bold mb-4">
-                      {etapa.passo}
+                      <span
+                        style={{ fontFamily: "'Cinzel', serif" }}
+                        className="text-4xl font-extrabold text-amber-500/25 absolute top-5 right-6 select-none"
+                      >
+                        {etapa.passo}
+                      </span>
+                      <div className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-amber-400/20 text-amber-400 border border-amber-500/40 text-xs font-bold mb-4">
+                        {etapa.passo}
+                      </div>
+                      <h4
+                        style={{ fontFamily: "'Cinzel', serif" }}
+                        className="text-lg font-bold text-white"
+                      >
+                        {etapa.titulo}
+                      </h4>
+                      <p className="text-stone-200 text-sm mt-2 leading-relaxed font-light">
+                        {etapa.descricao}
+                      </p>
                     </div>
+                  ))}
+                </div>
+
+                {/* Cartão WhatsApp */}
+                <div className="bg-gradient-to-r from-black/95 via-stone-950/95 to-amber-500/20 border border-amber-500/50 rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl backdrop-blur-md">
+                  <div className="text-center md:text-left">
                     <h4
                       style={{ fontFamily: "'Cinzel', serif" }}
-                      className="text-lg font-bold text-white"
+                      className="text-xl font-bold text-white"
                     >
-                      {etapa.titulo}
+                      Pedir orçamento para tatuagem realista blackwork
                     </h4>
-                    <p className="text-stone-200 text-sm mt-2 leading-relaxed font-light">
-                      {etapa.descricao}
+                    <p className="text-stone-200 text-sm mt-1.5 font-light max-w-xl">
+                      Envia a tua ideia, o local do corpo e o tamanho aproximado pelo WhatsApp para analisarmos o projeto.
                     </p>
                   </div>
-                ))}
-              </div>
-
-              {/* Cartão WhatsApp */}
-              <div className="bg-gradient-to-r from-black/95 via-stone-950/95 to-amber-500/20 border border-amber-500/50 rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl backdrop-blur-md">
-                <div className="text-center md:text-left">
-                  <h4
-                    style={{ fontFamily: "'Cinzel', serif" }}
-                    className="text-xl font-bold text-white"
+                  <a
+                    href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=Olá Art Oliveira! Gostaria de pedir um orçamento para uma tatuagem realista blackwork.`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-7 py-3.5 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-sm transition-all shadow-xl shadow-amber-500/30 whitespace-nowrap flex items-center gap-2 hover:scale-105"
                   >
-                    Pedir orçamento para tatuagem realista blackwork
-                  </h4>
-                  <p className="text-stone-200 text-sm mt-1.5 font-light max-w-xl">
-                    Envia a tua ideia, o local do corpo e o tamanho aproximado pelo WhatsApp para analisarmos o projeto.
-                  </p>
-                </div>
-                <a
-                  href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=Olá Art Oliveira! Gostaria de pedir um orçamento para uma tatuagem realista blackwork.`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-7 py-3.5 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-sm transition-all shadow-xl shadow-amber-500/30 whitespace-nowrap flex items-center gap-2 hover:scale-105"
-                >
-                  <Send size={16} /> Pedir Orçamento
-                </a>
-              </div>
-
-              {/* Garantias */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-                <div className="bg-black/85 backdrop-blur-md border border-amber-500/30 rounded-2xl p-5">
-                  <PenTool className="text-amber-400 mb-3" size={22} />
-                  <h4
-                    style={{ fontFamily: "'Cinzel', serif" }}
-                    className="text-sm font-bold text-white"
-                  >
-                    Realismo Blackwork
-                  </h4>
-                  <p className="text-stone-300 text-xs mt-2 leading-relaxed font-light">
-                    Construção de imagem em preto e contraste adaptada a cada cliente.
-                  </p>
+                    <Send size={16} /> Pedir Orçamento
+                  </a>
                 </div>
 
-                <div className="bg-black/85 backdrop-blur-md border border-amber-500/30 rounded-2xl p-5">
-                  <Layers className="text-amber-400 mb-3" size={22} />
-                  <h4
-                    style={{ fontFamily: "'Cinzel', serif" }}
-                    className="text-sm font-bold text-white"
-                  >
-                    Diferentes Estilos
-                  </h4>
-                  <p className="text-stone-300 text-xs mt-2 leading-relaxed font-light">
-                    Trabalhos realistas e em diferentes estilos para explorar a arte na pele.
-                  </p>
-                </div>
+                {/* Garantias */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                  <div className="bg-black/85 backdrop-blur-md border border-amber-500/30 rounded-2xl p-5">
+                    <PenTool className="text-amber-400 mb-3" size={22} />
+                    <h4
+                      style={{ fontFamily: "'Cinzel', serif" }}
+                      className="text-sm font-bold text-white"
+                    >
+                      Realismo Blackwork
+                    </h4>
+                    <p className="text-stone-300 text-xs mt-2 leading-relaxed font-light">
+                      Construção de imagem em preto e contraste adaptada a cada cliente.
+                    </p>
+                  </div>
 
-                <div className="bg-black/85 backdrop-blur-md border border-amber-500/30 rounded-2xl p-5">
-                  <ShieldCheck className="text-amber-400 mb-3" size={22} />
-                  <h4
-                    style={{ fontFamily: "'Cinzel', serif" }}
-                    className="text-sm font-bold text-white"
-                  >
-                    Higiene &amp; Cuidados
-                  </h4>
-                  <p className="text-stone-300 text-xs mt-2 leading-relaxed font-light">
-                    Material descartável e orientação completa durante a cicatrização.
-                  </p>
+                  <div className="bg-black/85 backdrop-blur-md border border-amber-500/30 rounded-2xl p-5">
+                    <Layers className="text-amber-400 mb-3" size={22} />
+                    <h4
+                      style={{ fontFamily: "'Cinzel', serif" }}
+                      className="text-sm font-bold text-white"
+                    >
+                      Diferentes Estilos
+                    </h4>
+                    <p className="text-stone-300 text-xs mt-2 leading-relaxed font-light">
+                      Trabalhos realistas e em diferentes estilos para explorar a arte na pele.
+                    </p>
+                  </div>
+
+                  <div className="bg-black/85 backdrop-blur-md border border-amber-500/30 rounded-2xl p-5">
+                    <ShieldCheck className="text-amber-400 mb-3" size={22} />
+                    <h4
+                      style={{ fontFamily: "'Cinzel', serif" }}
+                      className="text-sm font-bold text-white"
+                    >
+                      Higiene &amp; Cuidados
+                    </h4>
+                    <p className="text-stone-300 text-xs mt-2 leading-relaxed font-light">
+                      Material descartável e orientação completa durante a cicatrização.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -617,6 +706,101 @@ export default function App() {
             </div>
           )}
         </main>
+
+        {/* MODAL DE ZOOM ALTA DEFINIÇÃO PARA TATUAGENS */}
+        {selectedTattoo && (
+          <div
+            onClick={() => setSelectedTattoo(null)}
+            className="fixed inset-0 z-50 bg-black/95 backdrop-blur-lg flex items-center justify-center p-3 sm:p-6 overflow-y-auto"
+          >
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="bg-stone-950 border border-amber-500/50 rounded-3xl max-w-5xl w-full overflow-hidden shadow-2xl flex flex-col relative my-4"
+            >
+              {/* Barra Superior de Controlo de Zoom */}
+              <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 bg-black border-b border-stone-800">
+                <div>
+                  <span className="text-[11px] uppercase tracking-wider text-amber-400 font-bold">
+                    {selectedTattoo.estilo} • {selectedTattoo.local}
+                  </span>
+                  <h3
+                    style={{ fontFamily: "'Cinzel', serif" }}
+                    className="text-lg sm:text-xl font-bold text-white"
+                  >
+                    {selectedTattoo.titulo}
+                  </h3>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setTattooZoom((z) => Math.max(1, Number((z - 0.5).toFixed(1))))}
+                    disabled={tattooZoom <= 1}
+                    className="p-2 rounded-full bg-stone-900 hover:bg-stone-800 disabled:opacity-40 text-amber-400 border border-amber-500/30 transition-colors"
+                    title="Reduzir Zoom"
+                  >
+                    <ZoomOut size={18} />
+                  </button>
+                  <span className="text-xs font-bold text-amber-400 min-w-[46px] text-center">
+                    {Math.round(tattooZoom * 100)}%
+                  </span>
+                  <button
+                    onClick={() => setTattooZoom((z) => Math.min(3, Number((z + 0.5).toFixed(1))))}
+                    disabled={tattooZoom >= 3}
+                    className="p-2 rounded-full bg-stone-900 hover:bg-stone-800 disabled:opacity-40 text-amber-400 border border-amber-500/30 transition-colors"
+                    title="Aumentar Zoom"
+                  >
+                    <ZoomIn size={18} />
+                  </button>
+                  {tattooZoom > 1 && (
+                    <button
+                      onClick={() => setTattooZoom(1)}
+                      className="p-2 rounded-full bg-stone-900 hover:bg-stone-800 text-stone-300 border border-stone-700 transition-colors"
+                      title="Repor Tamanho Original"
+                    >
+                      <RotateCcw size={16} />
+                    </button>
+                  )}
+                  <button
+                    onClick={() => setSelectedTattoo(null)}
+                    className="ml-2 p-2 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-bold transition-colors"
+                    aria-label="Fechar"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Área da Imagem com Scroll e Zoom */}
+              <div className="bg-black overflow-auto max-h-[72vh] flex items-center justify-center p-4">
+                <img
+                  src={selectedTattoo.imagem}
+                  alt={selectedTattoo.titulo}
+                  style={{
+                    transform: `scale(${tattooZoom})`,
+                    transformOrigin: 'center center'
+                  }}
+                  onClick={() => setTattooZoom((z) => (z === 1 ? 2 : 1))}
+                  className="max-h-[68vh] w-auto object-contain rounded-lg transition-transform duration-200 cursor-zoom-in select-none"
+                />
+              </div>
+
+              {/* Rodapé do Modal da Tatuagem */}
+              <div className="p-4 sm:px-6 bg-black border-t border-stone-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p className="text-stone-300 text-xs sm:text-sm font-light text-center sm:text-left">
+                  {selectedTattoo.descricao} <span className="text-amber-400/80">(Clica na foto ou nos botões + / - para fazer zoom)</span>
+                </p>
+                <a
+                  href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=Olá Art Oliveira! Vi a tatuagem "${encodeURIComponent(selectedTattoo.titulo)}" no teu site e gostaria de pedir um orçamento semelhante.`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-6 py-2.5 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-xs sm:text-sm transition-all flex items-center gap-2 whitespace-nowrap"
+                >
+                  <MessageCircle size={16} /> Pedir Orçamento Semelhante
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* JANELA MODAL DE DETALHES DA OBRA */}
         {selectedObra && (
