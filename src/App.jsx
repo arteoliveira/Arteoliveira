@@ -14,7 +14,8 @@ import {
   Layers,
   Send,
   ShoppingBag,
-  CheckCircle
+  CheckCircle,
+  Tag
 } from 'lucide-react';
 
 export default function App() {
@@ -30,7 +31,7 @@ export default function App() {
     document.head.appendChild(link);
   }, []);
 
-  // LINK DA ARTE DE FUNDO (A tua pintura visível e elegante)
+  // LINK DA ARTE DE FUNDO
   const imagemFundoSite = 'https://i.postimg.cc/XNKJRMq8/IMG-5861.jpg';
 
   // Galeria de Obras
@@ -46,40 +47,50 @@ export default function App() {
       status: 'Disponível',
       imagem: 'https://i.postimg.cc/FKwkGjR6/IMG-5824.jpg',
       descricao:
-        'Um estudo aprofundado sobre luz, reflexos e micro-texturas na pele. Executado ao longo de 100 horas de trabalho minucioso a grafite, capturando o brilho e a intensidade do olhar com realismo fotográfico.'
+        'Um estudo aprofundado sobre luz, reflexos e micro-texturas na pele. Executado ao longo de 100 horas de trabalho minucioso a grafite, capturando o brilho e a intensidade do olhar com realismo.'
     }
   ];
+
+  // Tabela oficial de preços para telas (Price List)
+  const priceListTela = {
+    ate90cm: [
+      { qtd: '1 PESSOA NA TELA', valor: '20.000$' },
+      { qtd: '2 PESSOAS', valor: '30.000$' },
+      { qtd: '3 PESSOAS', valor: '40.000$' },
+      { qtd: '4 PESSOAS', valor: '60.000$' },
+      { qtd: '5 PESSOAS', valor: '75.000$' }
+    ],
+    acima90cm: [
+      { qtd: '1 PESSOA NA TELA', valor: '35.000$' },
+      { qtd: '2 PESSOAS', valor: '45.000$' },
+      { qtd: '3 PESSOAS', valor: '55.000$' },
+      { qtd: '4 PESSOAS', valor: '75.000$' },
+      { qtd: '5 PESSOAS', valor: '90.000$' }
+    ]
+  };
 
   // Opções de Encomendas & Vendas de Arte
   const opcoesVendas = [
     {
-      id: 'retratos',
-      titulo: 'Retratos Realistas a Grafite',
-      sub: 'A partir de fotografia',
-      descricao: 'Desenhos hiper-realistas feitos à mão com lápis de grafite e carvão sobre papel de algodão de alta gramagem. Perfeito para imortalizar rostos, expressões e momentos especiais.',
+      id: 'acrilico-superficies',
+      titulo: 'Pintura Acrílica sobre Diferentes Superfícies',
+      sub: 'Telas & Suportes Diversos',
+      descricao:
+        'Trabalhos realistas e em diferentes estilos para explorar a arte, feitos com pintura acrílica sobre diferentes superfícies de acordo com a ideia ou espaço pretendido.',
       formatos: [
-        { nome: 'Formato A4 (21 x 29,7 cm)', ref: 'Ideal para 1 rosto' },
-        { nome: 'Formato A3 (29,7 x 42 cm)', ref: 'Excelente nível de detalhe e destaque' },
-        { nome: 'Formato A2 ou Personalizado', ref: 'Grandes dimensões e múltiplos rostos' }
+        { nome: 'Telas e Suportes Variados', ref: 'Adaptação ao formato e estética do projeto' },
+        { nome: 'Encomendas Personalizadas', ref: 'Avaliação conforme altura da obra e número de pessoas' }
       ]
     },
     {
-      id: 'pintura',
-      titulo: 'Pintura a Óleo sobre Tela',
-      sub: 'Obras Originais & Encomendas',
-      descricao: 'Trabalhos pictóricos a óleo de alta durabilidade, explorando a profundidade cromática, luz dramática e texturas expressivas em tela esticada.',
+      id: 'retratos-grafite',
+      titulo: 'Desenhos Realistas a Grafite',
+      sub: 'Retratos & Estudos',
+      descricao:
+        'Trabalhos realistas e em diferentes estilos para explorar a arte, desenvolvidos à mão com foco na expressão, luz e sombra.',
       formatos: [
-        { nome: 'Telas de Médio Formato', ref: 'Composições personalizadas' },
-        { nome: 'Telas de Grande Formato', ref: 'Peças de destaque para interiores e colecionadores' }
-      ]
-    },
-    {
-      id: 'prints',
-      titulo: 'Prints de Alta Qualidade (Fine Art)',
-      sub: 'Edições Limitadas',
-      descricao: 'Cópias fiéis e numeradas das obras originais de Art Oliveira, impressas em papel especial de alta qualidade, assinadas e com certificado.',
-      formatos: [
-        { nome: 'Print A3 Assinado', ref: 'Disponível para envio ou recolha' }
+        { nome: 'Formatos Variados', ref: 'Do estudo íntimo a peças de maior dimensão' },
+        { nome: 'Sob Encomenda', ref: 'Orçamento ajustado ao tamanho e detalhe' }
       ]
     }
   ];
@@ -90,25 +101,25 @@ export default function App() {
       passo: '01',
       titulo: 'A Tua Ideia & Referências',
       descricao:
-        'Envia imagens de referência ou descreve o conceito que tens em mente. Cada projeto começa por compreender a história ou estética que queres eternizar na pele.'
+        'Envia referências ou conta a tua ideia de tatuagem realista blackwork. Partimos do conceito que queres ver na pele.'
     },
     {
       passo: '02',
       titulo: 'Tamanho & Zona do Corpo',
       descricao:
-        'O orçamento varia consoante as dimensões aproximadas (em centímetros) e a anatomia do local escolhido (braço, antebraço, costas, peito, perna, etc.).'
+        'O orçamento considera o tamanho aproximado e a zona do corpo onde a tatuagem realista blackwork vai ser aplicada.'
     },
     {
       passo: '03',
-      titulo: 'Estilo & Nível de Detalhe',
+      titulo: 'Composição & Detalhe Blackwork',
       descricao:
-        'Avaliamos a complexidade técnica — seja Fine Line minimalista, Black and Gray com sombreado suave, Dotwork (pontilhismo) ou Realismo de alta precisão.'
+        'Definimos o nível de contraste, sombra, textura e composição para o resultado encaixar de forma natural e equilibrada.'
     },
     {
       passo: '04',
-      titulo: 'Desenho Exclusivo & Agendamento',
+      titulo: 'Proposta & Agendamento',
       descricao:
-        'Com todos os detalhes definidos, apresento o valor final fechado, preparo o stencil exclusivo adaptado ao teu corpo e agendamos a tua sessão.'
+        'Com os detalhes alinhados, apresento o orçamento e combinamos o desenho preparatório e a marcação da sessão.'
     }
   ];
 
@@ -142,7 +153,7 @@ export default function App() {
                 ART OLIVEIRA
               </h1>
               <p className="text-[10px] text-amber-400/90 tracking-[0.3em] uppercase mt-0.5 font-medium">
-                Fine Art • Realismo, Vendas &amp; Custom Tattoos
+                Uma visão artística entre o papel e a pele
               </p>
             </div>
 
@@ -201,26 +212,26 @@ export default function App() {
               style={{ fontFamily: "'Cinzel', serif" }}
               className="text-3xl sm:text-5xl md:text-6xl font-bold text-white max-w-4xl mx-auto leading-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]"
             >
-              Onde o realismo e a precisão ganham{' '}
+              Uma visão artística entre{' '}
               <span className="text-amber-400 drop-shadow-[0_0_25px_rgba(251,191,36,0.6)]">
-                vida na tela e na pele
+                o papel e a pele
               </span>
             </h2>
             <p className="text-stone-100 max-w-2xl mx-auto mt-5 text-sm sm:text-base leading-relaxed font-medium drop-shadow">
-              Desenhos hiper-realistas a grafite, pinturas a óleo e tatuagens autorais desenvolvidas sob medida.
+              Desenhos realistas, pintura acrílica sobre diferentes superfícies e tatuagens realistas blackwork.
             </p>
             <div className="flex flex-wrap justify-center gap-4 mt-8">
               <button
                 onClick={() => setActiveTab('vendas')}
                 className="px-7 py-3 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-bold text-sm transition-all shadow-xl shadow-amber-500/30 hover:scale-105"
               >
-                Encomendar Obra / Retrato
+                Encomendas &amp; Preçário
               </button>
               <button
                 onClick={() => setActiveTab('tatuagem')}
                 className="px-7 py-3 rounded-full bg-black/90 hover:bg-stone-900 text-amber-400 border border-amber-500/50 font-semibold text-sm transition-all shadow-lg hover:border-amber-400 backdrop-blur-md"
               >
-                Pedir Orçamento Tatuagem
+                Tatuagens Blackwork
               </button>
             </div>
           </div>
@@ -228,7 +239,6 @@ export default function App() {
 
         {/* Conteúdo Principal */}
         <main className="max-w-6xl mx-auto px-4 py-12">
-          
           {/* SECÇÃO: GALERIA DE OBRAS */}
           {activeTab === 'galeria' && (
             <div>
@@ -246,7 +256,6 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Grelha de Obras */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 {obras.map((obra) => (
                   <div
@@ -310,20 +319,20 @@ export default function App() {
             <div className="max-w-4xl mx-auto space-y-10">
               <div className="text-center max-w-2xl mx-auto">
                 <span className="text-xs font-bold uppercase tracking-[0.25em] text-amber-400">
-                  Fine Art &amp; Comissões
+                  Encomendas &amp; Vendas
                 </span>
                 <h3
                   style={{ fontFamily: "'Cinzel', serif" }}
                   className="text-3xl sm:text-4xl font-extrabold text-white mt-2 drop-shadow"
                 >
-                  Encomendas de Retratos &amp; Obras
+                  Trabalhos Realistas &amp; Diferentes Estilos
                 </h3>
                 <p className="text-stone-200 text-sm sm:text-base mt-3 leading-relaxed font-medium">
-                  Queres eternizar um momento inesquecível num retrato realista ou adquirir uma peça de arte exclusiva? Consulta as opções disponíveis e encomenda diretamente via WhatsApp.
+                  Trabalhos realistas e em diferentes estilos para explorar a arte, incluindo pintura acrílica sobre diferentes superfícies e encomendas personalizadas.
                 </p>
               </div>
 
-              {/* Cartões de Vendas & Encomendas */}
+              {/* Cartões de Encomendas */}
               <div className="grid grid-cols-1 gap-6">
                 {opcoesVendas.map((opcao) => (
                   <div
@@ -357,40 +366,96 @@ export default function App() {
 
                       <div className="shrink-0 w-full md:w-auto text-center">
                         <a
-                          href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=Olá Art Oliveira! Gostaria de encomendar / saber mais informações sobre: ${encodeURIComponent(opcao.titulo)}.`}
+                          href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=Olá Art Oliveira! Gostaria de falar sobre: ${encodeURIComponent(opcao.titulo)}.`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="w-full md:w-auto px-7 py-3.5 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-sm transition-all shadow-xl shadow-amber-500/30 inline-flex items-center justify-center gap-2 hover:scale-105"
                         >
-                          <MessageCircle size={18} /> Encomendar via WhatsApp
+                          <MessageCircle size={18} /> Falar no WhatsApp
                         </a>
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
+
+              {/* PREÇÁRIO DE REFERÊNCIA PARA QUADROS (PRICE LIST) */}
+              <div className="bg-black/90 backdrop-blur-md border border-amber-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
+                <div className="border-b border-amber-500/20 pb-4">
+                  <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.2em] text-amber-400">
+                    <Tag size={14} /> Price List • Avaliação de Quadros
+                  </span>
+                  <h4
+                    style={{ fontFamily: "'Cinzel', serif" }}
+                    className="text-2xl font-bold text-white mt-1"
+                  >
+                    Tabela de Referência em Tela
+                  </h4>
+                  <p className="text-stone-300 text-xs sm:text-sm mt-1 font-light">
+                    Referência de valores para quadros na tela conforme a altura e o número de pessoas retratadas.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Até 90cm */}
+                  <div className="bg-stone-950/80 border border-amber-500/25 rounded-2xl p-5 space-y-3">
+                    <h5
+                      style={{ fontFamily: "'Cinzel', serif" }}
+                      className="text-base font-bold text-amber-400 tracking-wide border-b border-stone-800 pb-2"
+                    >
+                      ATÉ 90CM DE ALTURA
+                    </h5>
+                    <ul className="space-y-2.5 text-xs sm:text-sm">
+                      {priceListTela.ate90cm.map((item, i) => (
+                        <li key={i} className="flex items-center justify-between text-stone-200">
+                          <span>{item.qtd}</span>
+                          <span className="font-bold text-amber-400">{item.valor}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Acima de 90cm */}
+                  <div className="bg-stone-950/80 border border-amber-500/25 rounded-2xl p-5 space-y-3">
+                    <h5
+                      style={{ fontFamily: "'Cinzel', serif" }}
+                      className="text-base font-bold text-amber-400 tracking-wide border-b border-stone-800 pb-2"
+                    >
+                      ACIMA DE 90 CM DE ALTURA
+                    </h5>
+                    <ul className="space-y-2.5 text-xs sm:text-sm">
+                      {priceListTela.acima90cm.map((item, i) => (
+                        <li key={i} className="flex items-center justify-between text-stone-200">
+                          <span>{item.qtd}</span>
+                          <span className="font-bold text-amber-400">{item.valor}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 
-          {/* SECÇÃO: TATUAGENS & COMO FUNCIONA O ORÇAMENTO */}
+          {/* SECÇÃO: TATUAGENS REALISTAS BLACKWORK */}
           {activeTab === 'tatuagem' && (
             <div className="max-w-4xl mx-auto space-y-10">
               <div className="text-center max-w-2xl mx-auto">
                 <span className="text-xs font-bold uppercase tracking-[0.25em] text-amber-400">
-                  Custom Tattoo Studio
+                  Tatuagens Realistas Blackwork
                 </span>
                 <h3
                   style={{ fontFamily: "'Cinzel', serif" }}
                   className="text-3xl sm:text-4xl font-extrabold text-white mt-2 drop-shadow"
                 >
-                  Como é Elaborado o Teu Orçamento de Tatuagem
+                  Como é Elaborado o Teu Orçamento
                 </h3>
                 <p className="text-stone-200 text-sm sm:text-base mt-3 leading-relaxed font-medium">
-                  Cada tatuagem é um projeto artístico único. Por isso, não trabalho com tabelas genéricas — cada orçamento é calculado à medida do teu desenho e do teu corpo.
+                  Trabalho com tatuagens realistas blackwork e diferentes estilos para explorar a arte. Cada orçamento é feito de acordo com a tua ideia, tamanho e zona do corpo.
                 </p>
               </div>
 
-              {/* 4 Passos de Elaboração do Orçamento */}
+              {/* 4 Passos */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {etapasOrcamento.map((etapa) => (
                   <div
@@ -419,30 +484,30 @@ export default function App() {
                 ))}
               </div>
 
-              {/* Cartão de Chamada para Ação */}
+              {/* Cartão WhatsApp */}
               <div className="bg-gradient-to-r from-black/95 via-stone-950/95 to-amber-500/20 border border-amber-500/50 rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl backdrop-blur-md">
                 <div className="text-center md:text-left">
                   <h4
                     style={{ fontFamily: "'Cinzel', serif" }}
                     className="text-xl font-bold text-white"
                   >
-                    Pronto para criar a tua tatuagem?
+                    Pedir orçamento para tatuagem realista blackwork
                   </h4>
                   <p className="text-stone-200 text-sm mt-1.5 font-light max-w-xl">
-                    Envia-me a tua ideia, o local do corpo e o tamanho aproximado pelo WhatsApp para receberes uma proposta personalizada sem compromisso.
+                    Envia a tua ideia, o local do corpo e o tamanho aproximado pelo WhatsApp para analisarmos o projeto.
                   </p>
                 </div>
                 <a
-                  href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=Olá Art Oliveira! Gostaria de pedir um orçamento para uma tatuagem. A minha ideia é:`}
+                  href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=Olá Art Oliveira! Gostaria de pedir um orçamento para uma tatuagem realista blackwork.`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-7 py-3.5 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-sm transition-all shadow-xl shadow-amber-500/30 whitespace-nowrap flex items-center gap-2 hover:scale-105"
                 >
-                  <Send size={16} /> Enviar Ideia para Orçamento
+                  <Send size={16} /> Pedir Orçamento
                 </a>
               </div>
 
-              {/* Garantias do Estúdio */}
+              {/* Garantias */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
                 <div className="bg-black/85 backdrop-blur-md border border-amber-500/30 rounded-2xl p-5">
                   <PenTool className="text-amber-400 mb-3" size={22} />
@@ -450,10 +515,10 @@ export default function App() {
                     style={{ fontFamily: "'Cinzel', serif" }}
                     className="text-sm font-bold text-white"
                   >
-                    Arte Exclusiva
+                    Realismo Blackwork
                   </h4>
                   <p className="text-stone-300 text-xs mt-2 leading-relaxed font-light">
-                    Criação de stencils autorais em linha e pontilhismo (dotwork) desenhados especificamente para ti.
+                    Construção de imagem em preto e contraste adaptada a cada cliente.
                   </p>
                 </div>
 
@@ -463,10 +528,10 @@ export default function App() {
                     style={{ fontFamily: "'Cinzel', serif" }}
                     className="text-sm font-bold text-white"
                   >
-                    Técnicas &amp; Estilos
+                    Diferentes Estilos
                   </h4>
                   <p className="text-stone-300 text-xs mt-2 leading-relaxed font-light">
-                    Black and Gray, Fine Line, Whip Shading (rastelado), Dotwork e projetos de cobertura (cover-up).
+                    Trabalhos realistas e em diferentes estilos para explorar a arte na pele.
                   </p>
                 </div>
 
@@ -476,10 +541,10 @@ export default function App() {
                     style={{ fontFamily: "'Cinzel', serif" }}
                     className="text-sm font-bold text-white"
                   >
-                    Higiene Rigorosa
+                    Higiene &amp; Cuidados
                   </h4>
                   <p className="text-stone-300 text-xs mt-2 leading-relaxed font-light">
-                    Material 100% descartável, esterilizado e acompanhamento completo nos cuidados pós-tatuagem.
+                    Material descartável e orientação completa durante a cicatrização.
                   </p>
                 </div>
               </div>
@@ -514,18 +579,18 @@ export default function App() {
                     Art Oliveira
                   </h3>
                   <p className="text-amber-400 text-sm mt-1 font-medium">
-                    Cabo Verde • Realismo a Grafite, Pintura a Óleo &amp; Custom Tattoos
+                    Uma visão artística entre o papel e a pele • Cabo Verde
                   </p>
 
                   <div className="space-y-4 text-stone-200 leading-relaxed text-sm sm:text-base mt-5 font-light">
                     <p>
-                      <strong className="text-white font-semibold">Art Oliveira</strong> é um artista visual cabo-verdiano dedicado ao{' '}
-                      <strong className="text-amber-400 font-medium">desenho realista de alta precisão a lápis</strong>, à{' '}
-                      <strong className="text-amber-400 font-medium">pintura a óleo sobre tela</strong> e à{' '}
-                      <strong className="text-amber-400 font-medium">tatuagem artística personalizada</strong>.
+                      <strong className="text-white font-semibold">Art Oliveira</strong> trabalha com{' '}
+                      <strong className="text-amber-400 font-medium">desenhos realistas</strong>,{' '}
+                      <strong className="text-amber-400 font-medium">pintura acrílica sobre diferentes superfícies</strong> e{' '}
+                      <strong className="text-amber-400 font-medium">tatuagens realistas blackwork</strong>.
                     </p>
                     <p>
-                      Com dezenas de horas investidas em cada obra, o seu trabalho foca-se nas micro-texturas, no contraste dramático entre luz e sombra e na expressão humana autêntica — seja no papel, na tela, em murais de grande escala ou na pele.
+                      A proposta é explorar trabalhos realistas e diferentes estilos para expressar a arte tanto no papel e nas superfícies físicas como na pele.
                     </p>
                   </div>
 
@@ -649,7 +714,7 @@ export default function App() {
             ART OLIVEIRA
           </p>
           <p className="text-xs text-stone-300 mt-1">
-            Arte Realista a Lápis, Pintura &amp; Custom Tattoos • Cabo Verde
+            Uma visão artística entre o papel e a pele • Cabo Verde
           </p>
           <p className="text-xs text-stone-500 mt-4">
             &copy; 2026 Art Oliveira. Todos os direitos reservados.
