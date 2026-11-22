@@ -73,12 +73,7 @@ export default function App() {
       ]
     },
     {
-      id: 'prints',
-      titulo: 'Prints de Alta Qualidade (Fine Art)',
-      sub: 'Edições Limitadas',
-      descricao: 'Cópias fiéis e numeradas das obras originais de Art Oliveira, impressas em papel especial de alta qualidade, assinadas e com certificado.',
-      formatos: [
-        { nome: 'Print A3 Assinado', ref: 'Disponível para envio ou recolha' }
+      
       ]
     }
   ];
