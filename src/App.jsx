@@ -50,8 +50,10 @@ export default function App() {
     document.head.appendChild(link);
   }, []);
 
-  // LINKS DE IMAGENS PRINCIPAIS
-  const imagemFundoSite = 'https://i.postimg.cc/XNKJRMq8/IMG-5861.jpg';
+  // LINKS DE IMAGENS DE FUNDO POR SECÇÃO
+  const imagemFundoGaleria = 'https://i.postimg.cc/SKW9M778/IMG-5989.jpg';
+  const imagemFundoTatuagens = 'https://i.postimg.cc/1Vmy611v/8B366592-4B4D-4F55-8F5C-919944812B78.jpg';
+  const imagemFundoPintura = ''; // Podes colocar aqui o link da foto de pintura quando quiseres
   const imagemSobreArtista = 'https://i.postimg.cc/8PbbnpFF/IMG-4746.jpg';
 
   // REDES SOCIAIS E CONTACTOS
@@ -73,6 +75,18 @@ export default function App() {
       imagem: 'https://i.postimg.cc/FKwkGjR6/IMG-5824.jpg',
       descricao:
         'Um estudo aprofundado sobre luz, reflexos e micro-texturas na pele. Executado ao longo de 100 horas de trabalho minucioso a grafite, capturando o brilho e a intensidade do olhar com realismo.'
+    },
+    {
+      id: 2,
+      title: '',
+      categoria: 'Grafite / Lápis',
+      tecnica: 'Grafite sobre papel de alta gramagem',
+      dimensoes: '35,6 x 27,9 cm',
+      tempo: '',
+      ano: '2026',
+      status: 'Disponível',
+      imagem: 'https://i.postimg.cc/ZBFTCK2j/B4534360-E917-4DF1-BC16-E8D2501334FF.png',
+      descricao: ''
     }
   ];
 
@@ -220,6 +234,16 @@ export default function App() {
 
   const faqAtiva = respostasRapidas.find((item) => item.id === selectedFaqId) || respostasRapidas[0];
 
+  // Define qual imagem de fundo aparece em cada secção
+  const fundoAtual =
+    activeTab === 'sobre'
+      ? imagemSobreArtista
+      : activeTab === 'tatuagem'
+      ? imagemFundoTatuagens
+      : activeTab === 'vendas'
+      ? imagemFundoPintura || imagemFundoGaleria
+      : imagemFundoGaleria;
+
   return (
     <div
       style={{ fontFamily: "'Montserrat', sans-serif" }}
@@ -347,7 +371,7 @@ export default function App() {
         }
       `}</style>
 
-      {/* IMAGEM DE FUNDO (Rosto completo visível, com topo mais transparente) */}
+      {/* IMAGEM DE FUNDO DINÂMICA POR SECÇÃO */}
       {activeTab === 'sobre' ? (
         <div key="bg-sobre" className="fixed inset-0 z-0 pointer-events-none">
           <img
@@ -359,24 +383,24 @@ export default function App() {
           <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-black/90" />
         </div>
       ) : (
-        <div className="fixed inset-0 z-0 pointer-events-none">
+        <div key={`bg-${activeTab}`} className="fixed inset-0 z-0 pointer-events-none">
           <img
-            src={imagemFundoSite}
-            alt="Arte de Fundo Art Oliveira"
-            className="w-full h-full object-cover opacity-50 scale-100"
+            src={fundoAtual}
+            alt={`Fundo ${activeTab} Art Oliveira`}
+            className="animate-portrait-bg w-full h-full object-cover opacity-55 scale-100"
           />
-          <div className="absolute inset-0 bg-black/55 backdrop-blur-[2px]" />
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-[1.5px]" />
         </div>
       )}
 
       {/* CONTEÚDO PRINCIPAL SOBRE O FUNDO */}
       <div className="relative z-10 flex flex-col min-h-screen">
-        {/* Navegação Superior (Mais transparente na aba Sobre para não esconder o rosto) */}
+        {/* Navegação Superior */}
         <header
           className={`border-b transition-colors duration-300 sticky top-0 z-40 shadow-xl ${
             activeTab === 'sobre'
               ? 'border-amber-500/20 bg-black/30 backdrop-blur-[3px]'
-              : 'border-amber-500/30 bg-black/85 backdrop-blur-md shadow-2xl'
+              : 'border-amber-500/30 bg-black/80 backdrop-blur-md shadow-2xl'
           }`}
         >
           <div className="max-w-6xl mx-auto px-4 py-3 sm:py-4 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4">
@@ -446,7 +470,10 @@ export default function App() {
 
         {/* Banner / Hero Section */}
         {activeTab !== 'tatuagem' && activeTab !== 'sobre' && (
-          <section key={`hero-${activeTab}`} className="animate-page-stage relative overflow-hidden border-b border-amber-500/20">
+          <section
+            key={`hero-${activeTab}`}
+            className="animate-page-stage relative overflow-hidden border-b border-amber-500/20"
+          >
             <div className="max-w-6xl mx-auto px-4 py-14 md:py-20 text-center relative z-10">
               <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-black/80 text-amber-400 border border-amber-500/50 mb-6 backdrop-blur-md tracking-wider uppercase shadow-md">
                 <Sparkles size={14} /> Artista Visual &amp; Tatuador • Cabo Verde
@@ -516,7 +543,7 @@ export default function App() {
                       <div className="aspect-[4/5] overflow-hidden bg-stone-950 relative">
                         <img
                           src={obra.imagem}
-                          alt={obra.title}
+                          alt={obra.title || 'Desenho Realista'}
                           className="animate-art-image w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                         />
                         <div className="animate-gold-sweep pointer-events-none absolute inset-y-0 w-1/2 bg-gradient-to-r from-transparent via-amber-300/30 to-transparent" />
@@ -535,25 +562,37 @@ export default function App() {
                           <p className="text-xs text-amber-400 font-semibold tracking-wider">
                             {obra.dimensoes}
                           </p>
-                          <h4
-                            style={{ fontFamily: "'Cinzel', serif" }}
-                            className="text-2xl font-bold text-white mt-1 group-hover:text-amber-300 transition-colors"
-                          >
-                            {obra.title}
-                          </h4>
+                          {obra.title && (
+                            <h4
+                              style={{ fontFamily: "'Cinzel', serif" }}
+                              className="text-2xl font-bold text-white mt-1 group-hover:text-amber-300 transition-colors"
+                            >
+                              {obra.title}
+                            </h4>
+                          )}
                         </div>
                       </div>
 
-                      <div className="p-5">
-                        <p className="text-stone-200 text-sm line-clamp-2 leading-relaxed font-light">
-                          {obra.descricao}
-                        </p>
-                      </div>
+                      {obra.descricao && (
+                        <div className="p-5">
+                          <p className="text-stone-200 text-sm line-clamp-2 leading-relaxed font-light">
+                            {obra.descricao}
+                          </p>
+                        </div>
+                      )}
                     </div>
 
                     <div className="px-5 pb-5 pt-3 flex items-center justify-between border-t border-amber-500/20">
                       <span className="text-xs text-stone-300 flex items-center gap-1.5 font-medium">
-                        <Clock size={13} className="text-amber-400" /> {obra.tempo}
+                        {obra.tempo ? (
+                          <>
+                            <Clock size={13} className="text-amber-400" /> {obra.tempo}
+                          </>
+                        ) : (
+                          <>
+                            <Ruler size={13} className="text-amber-400" /> {obra.dimensoes}
+                          </>
+                        )}
                       </span>
                       <span className="text-xs font-bold text-amber-400 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
                         Ver detalhes <ArrowUpRight size={14} />
@@ -999,7 +1038,10 @@ export default function App() {
 
           {/* SECÇÃO: SOBRE O ARTISTA COM ROSTO LIVRE NO CENTRO/TOPO */}
           {activeTab === 'sobre' && (
-            <div key="sec-sobre" className="animate-page-stage flex-1 flex flex-col justify-end max-w-3xl w-full mx-auto pt-20 sm:pt-36 pb-2">
+            <div
+              key="sec-sobre"
+              className="animate-page-stage flex-1 flex flex-col justify-end max-w-3xl w-full mx-auto pt-20 sm:pt-36 pb-2"
+            >
               <div className="animate-stagger-2 bg-black/55 backdrop-blur-[4px] border border-amber-500/35 rounded-3xl p-4 sm:p-6 shadow-2xl space-y-3 relative overflow-hidden">
                 <div className="animate-gold-sweep pointer-events-none absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-amber-400/20 to-transparent" />
 
@@ -1185,7 +1227,7 @@ export default function App() {
               <div className="bg-black flex items-center justify-center p-4 sm:p-6 border-b md:border-b-0 md:border-r border-stone-800">
                 <img
                   src={selectedObra.imagem}
-                  alt={selectedObra.title}
+                  alt={selectedObra.title || 'Desenho Realista'}
                   className="max-h-[70vh] w-auto object-contain rounded-xl shadow-2xl"
                 />
               </div>
@@ -1201,16 +1243,20 @@ export default function App() {
                     </span>
                   </div>
 
-                  <h3
-                    style={{ fontFamily: "'Cinzel', serif" }}
-                    className="text-2xl sm:text-3xl font-extrabold text-white mt-4"
-                  >
-                    {selectedObra.title}
-                  </h3>
+                  {selectedObra.title && (
+                    <h3
+                      style={{ fontFamily: "'Cinzel', serif" }}
+                      className="text-2xl sm:text-3xl font-extrabold text-white mt-4"
+                    >
+                      {selectedObra.title}
+                    </h3>
+                  )}
 
-                  <p className="text-stone-300 text-sm leading-relaxed mt-4 font-light">
-                    {selectedObra.descricao}
-                  </p>
+                  {selectedObra.descricao && (
+                    <p className="text-stone-300 text-sm leading-relaxed mt-4 font-light">
+                      {selectedObra.descricao}
+                    </p>
+                  )}
 
                   <div className="mt-6 space-y-3 border-t border-stone-800 pt-5 text-sm">
                     <div className="flex items-center justify-between">
@@ -1227,18 +1273,24 @@ export default function App() {
                       <span className="text-white font-medium">{selectedObra.dimensoes}</span>
                     </div>
 
-                    <div className="flex items-center justify-between">
-                      <span className="text-stone-400 flex items-center gap-2">
-                        <Clock size={16} className="text-amber-400" /> Dedicação
-                      </span>
-                      <span className="text-white font-medium">{selectedObra.tempo}</span>
-                    </div>
+                    {selectedObra.tempo && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-stone-400 flex items-center gap-2">
+                          <Clock size={16} className="text-amber-400" /> Dedicação
+                        </span>
+                        <span className="text-white font-medium">{selectedObra.tempo}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
                 <div className="mt-8 pt-4 border-t border-stone-800">
                   <a
-                    href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=Olá Art Oliveira! Gostaria de saber mais detalhes ou adquirir a obra "${encodeURIComponent(selectedObra.title)}" (${encodeURIComponent(selectedObra.tecnica)}).`}
+                    href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=Olá Art Oliveira! Gostaria de saber mais detalhes ou adquirir ${
+                      selectedObra.title
+                        ? `a obra "${encodeURIComponent(selectedObra.title)}"`
+                        : 'este desenho realista'
+                    } (${encodeURIComponent(selectedObra.tecnica)}).`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full py-3.5 px-5 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-sm transition-all flex items-center justify-center gap-2 shadow-xl shadow-amber-500/20 hover:scale-[1.02]"
