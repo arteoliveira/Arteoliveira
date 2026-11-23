@@ -18,7 +18,9 @@ import {
   Tag,
   ZoomIn,
   ZoomOut,
-  RotateCcw
+  RotateCcw,
+  Calendar,
+  HelpCircle
 } from 'lucide-react';
 
 export default function App() {
@@ -26,6 +28,18 @@ export default function App() {
   const [selectedObra, setSelectedObra] = useState(null);
   const [selectedTattoo, setSelectedTattoo] = useState(null);
   const [tattooZoom, setTattooZoom] = useState(1);
+
+  // Assistente de respostas rápidas (FAQ interativo)
+  const [selectedFaqId, setSelectedFaqId] = useState('blackwork');
+
+  // Formulário de agendamento de tattoo
+  const [bookingForm, setBookingForm] = useState({
+    nome: '',
+    ideia: '',
+    tamanho: '',
+    zona: '',
+    dataPreferida: ''
+  });
 
   // Carrega automaticamente as fontes artísticas sofisticadas (Cinzel + Montserrat)
   useEffect(() => {
@@ -65,6 +79,34 @@ export default function App() {
       local: 'Projeto Realizado',
       imagem: 'https://i.postimg.cc/FHhQk55d/IMG-5299.jpg',
       descricao: 'Trabalho focado em contraste, transições de sombra e definição de detalhes na pele.'
+    }
+  ];
+
+  // Respostas automáticas rápidas
+  const respostasRapidas = [
+    {
+      id: 'blackwork',
+      pergunta: 'Como funciona o orçamento de tatuagem realista blackwork?',
+      resposta:
+        'Cada orçamento é avaliado de acordo com a tua ideia, o tamanho aproximado, a zona do corpo e o nível de detalhe. Podes usar o formulário abaixo para enviar tudo organizado para o WhatsApp.'
+    },
+    {
+      id: 'telas',
+      pergunta: 'Como são avaliados os quadros em tela?',
+      resposta:
+        'Na aba Encomendas & Vendas tens a tabela de referência em tela: até 90 cm de altura (20.000$ a 75.000$) e acima de 90 cm de altura (35.000$ a 90.000$), variando conforme o número de pessoas.'
+    },
+    {
+      id: 'grafite',
+      pergunta: 'Qual é o formato dos desenhos realistas a grafite?',
+      resposta:
+        'O formato padrão dos desenhos realistas a grafite sobre papel de alta gramagem é 35,6 x 27,9 cm, podendo também ser conversadas encomendas e diferentes estilos para explorar a arte.'
+    },
+    {
+      id: 'acrilico',
+      pergunta: 'Trabalhas com pintura acrílica?',
+      resposta:
+        'Sim! Faço pintura acrílica sobre diferentes superfícies, adaptando os trabalhos realistas e diferentes estilos ao suporte e à ideia pretendida.'
     }
   ];
 
@@ -146,6 +188,28 @@ export default function App() {
     setSelectedTattoo(tattoo);
     setTattooZoom(1);
   };
+
+  const handleBookingChange = (e) => {
+    const { name, value } = e.target;
+    setBookingForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleBookingSubmit = (e) => {
+    e.preventDefault();
+    const mensagem = [
+      'Olá Art Oliveira! Novo pedido de agendamento de tatuagem pelo site:',
+      `• Nome: ${bookingForm.nome || 'Não informado'}`,
+      `• Ideia / Estilo: ${bookingForm.ideia || 'Tatuagem realista blackwork'}`,
+      `• Tamanho aproximado: ${bookingForm.tamanho || 'A definir'}`,
+      `• Zona do corpo: ${bookingForm.zona || 'A definir'}`,
+      `• Data / Dia preferido: ${bookingForm.dataPreferida || 'A combinar'}`
+    ].join('\n');
+
+    const url = `https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(mensagem)}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+  const faqAtiva = respostasRapidas.find((item) => item.id === selectedFaqId) || respostasRapidas[0];
 
   return (
     <div
@@ -253,7 +317,7 @@ export default function App() {
                 onClick={() => setActiveTab('tatuagem')}
                 className="px-7 py-3 rounded-full bg-black/90 hover:bg-stone-900 text-amber-400 border border-amber-500/50 font-semibold text-sm transition-all shadow-lg hover:border-amber-400 backdrop-blur-md"
               >
-                Tatuagens Blackwork
+                Tatuagens &amp; Agendamento
               </button>
             </div>
           </div>
@@ -459,7 +523,7 @@ export default function App() {
             </div>
           )}
 
-          {/* SECÇÃO: TATUAGENS REALISTAS BLACKWORK + GALERIA COM ZOOM */}
+          {/* SECÇÃO: TATUAGENS REALISTAS BLACKWORK + GALERIA COM ZOOM + AGENDAMENTO */}
           {activeTab === 'tatuagem' && (
             <div className="max-w-5xl mx-auto space-y-14">
               {/* GALERIA DE TATUAGENS REALIZADAS */}
@@ -526,6 +590,139 @@ export default function App() {
                 </div>
               </div>
 
+              {/* RESPOSTAS RÁPIDAS (INFORMAÇÕES AUTOMÁTICAS) */}
+              <div className="bg-black/90 backdrop-blur-md border border-amber-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-5">
+                <div className="flex items-center gap-2 text-amber-400">
+                  <HelpCircle size={20} />
+                  <h4
+                    style={{ fontFamily: "'Cinzel', serif" }}
+                    className="text-xl font-bold text-white"
+                  >
+                    Informações Rápidas
+                  </h4>
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  {respostasRapidas.map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => setSelectedFaqId(item.id)}
+                      className={`px-3.5 py-2 rounded-full text-xs font-semibold transition-all border ${
+                        selectedFaqId === item.id
+                          ? 'bg-amber-400 text-black border-amber-400'
+                          : 'bg-stone-950 text-stone-200 border-amber-500/30 hover:border-amber-400'
+                      }`}
+                    >
+                      {item.pergunta}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="bg-stone-950/90 border border-amber-500/25 rounded-2xl p-4 sm:p-5 text-sm text-stone-200 leading-relaxed">
+                  <p className="font-semibold text-amber-400 mb-1">{faqAtiva.pergunta}</p>
+                  <p className="font-light">{faqAtiva.resposta}</p>
+                </div>
+              </div>
+
+              {/* FORMULÁRIO DE AGENDAMENTO DE TATTOO */}
+              <div className="bg-black/90 backdrop-blur-md border border-amber-500/50 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
+                <div>
+                  <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.2em] text-amber-400">
+                    <Calendar size={14} /> Agendamento de Sessão
+                  </span>
+                  <h4
+                    style={{ fontFamily: "'Cinzel', serif" }}
+                    className="text-2xl sm:text-3xl font-bold text-white mt-1"
+                  >
+                    Agendar Tatuagem Realista Blackwork
+                  </h4>
+                  <p className="text-stone-300 text-xs sm:text-sm mt-1 font-light">
+                    Preenche os detalhes abaixo e envia direto para o teu WhatsApp para teres todas as informações e dias organizados no telemóvel.
+                  </p>
+                </div>
+
+                <form onSubmit={handleBookingSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-amber-300 mb-1.5">
+                      Teu Nome
+                    </label>
+                    <input
+                      type="text"
+                      name="nome"
+                      value={bookingForm.nome}
+                      onChange={handleBookingChange}
+                      placeholder="Ex: João Silva"
+                      className="w-full rounded-xl bg-stone-950 border border-amber-500/30 px-4 py-3 text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-amber-400"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-amber-300 mb-1.5">
+                      Dia / Data Preferida
+                    </label>
+                    <input
+                      type="text"
+                      name="dataPreferida"
+                      value={bookingForm.dataPreferida}
+                      onChange={handleBookingChange}
+                      placeholder="Ex: Próxima sexta ou 15/12"
+                      className="w-full rounded-xl bg-stone-950 border border-amber-500/30 px-4 py-3 text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-amber-400"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-amber-300 mb-1.5">
+                      Tamanho Aproximado
+                    </label>
+                    <input
+                      type="text"
+                      name="tamanho"
+                      value={bookingForm.tamanho}
+                      onChange={handleBookingChange}
+                      placeholder="Ex: 15 cm"
+                      className="w-full rounded-xl bg-stone-950 border border-amber-500/30 px-4 py-3 text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-amber-400"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-amber-300 mb-1.5">
+                      Zona do Corpo
+                    </label>
+                    <input
+                      type="text"
+                      name="zona"
+                      value={bookingForm.zona}
+                      onChange={handleBookingChange}
+                      placeholder="Ex: Antebraço, peito, costas"
+                      className="w-full rounded-xl bg-stone-950 border border-amber-500/30 px-4 py-3 text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-amber-400"
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <label className="block text-xs font-semibold text-amber-300 mb-1.5">
+                      Ideia / Estilo da Tatuagem
+                    </label>
+                    <textarea
+                      name="ideia"
+                      rows={3}
+                      value={bookingForm.ideia}
+                      onChange={handleBookingChange}
+                      placeholder="Descreve a tua ideia de tatuagem realista blackwork..."
+                      className="w-full rounded-xl bg-stone-950 border border-amber-500/30 px-4 py-3 text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-amber-400"
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2 pt-2">
+                    <button
+                      type="submit"
+                      className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-sm transition-all shadow-xl shadow-amber-500/30 inline-flex items-center justify-center gap-2 hover:scale-[1.02]"
+                    >
+                      <Send size={17} /> Enviar Agendamento para o WhatsApp
+                    </button>
+                  </div>
+                </form>
+              </div>
+
               {/* COMO É ELABORADO O ORÇAMENTO */}
               <div className="space-y-8 pt-6 border-t border-amber-500/20">
                 <div className="text-center max-w-2xl mx-auto">
@@ -570,29 +767,6 @@ export default function App() {
                       </p>
                     </div>
                   ))}
-                </div>
-
-                {/* Cartão WhatsApp */}
-                <div className="bg-gradient-to-r from-black/95 via-stone-950/95 to-amber-500/20 border border-amber-500/50 rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl backdrop-blur-md">
-                  <div className="text-center md:text-left">
-                    <h4
-                      style={{ fontFamily: "'Cinzel', serif" }}
-                      className="text-xl font-bold text-white"
-                    >
-                      Pedir orçamento para tatuagem realista blackwork
-                    </h4>
-                    <p className="text-stone-200 text-sm mt-1.5 font-light max-w-xl">
-                      Envia a tua ideia, o local do corpo e o tamanho aproximado pelo WhatsApp para analisarmos o projeto.
-                    </p>
-                  </div>
-                  <a
-                    href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=Olá Art Oliveira! Gostaria de pedir um orçamento para uma tatuagem realista blackwork.`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-7 py-3.5 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-sm transition-all shadow-xl shadow-amber-500/30 whitespace-nowrap flex items-center gap-2 hover:scale-105"
-                  >
-                    <Send size={16} /> Pedir Orçamento
-                  </a>
                 </div>
 
                 {/* Garantias */}
@@ -787,7 +961,8 @@ export default function App() {
               {/* Rodapé do Modal da Tatuagem */}
               <div className="p-4 sm:px-6 bg-black border-t border-stone-800 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <p className="text-stone-300 text-xs sm:text-sm font-light text-center sm:text-left">
-                  {selectedTattoo.descricao} <span className="text-amber-400/80">(Clica na foto ou nos botões + / - para fazer zoom)</span>
+                  {selectedTattoo.descricao}{' '}
+                  <span className="text-amber-400/80">(Clica na foto ou nos botões + / - para fazer zoom)</span>
                 </p>
                 <a
                   href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=Olá Art Oliveira! Vi a tatuagem "${encodeURIComponent(selectedTattoo.titulo)}" no teu site e gostaria de pedir um orçamento semelhante.`}
