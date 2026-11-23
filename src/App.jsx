@@ -213,6 +213,11 @@ export default function App() {
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const faqAtiva = respostasRapidas.find((item) => item.id === selectedFaqId) || respostasRapidas[0];
 
   return (
@@ -220,12 +225,25 @@ export default function App() {
       style={{ fontFamily: "'Montserrat', sans-serif" }}
       className="min-h-screen bg-black text-stone-100 selection:bg-amber-500/40 relative"
     >
-      {/* ESTILOS DE ANIMAÇÃO PARA APRESENTAÇÃO DAS OBRAS E TATUAGENS */}
+      {/* ESTILOS DE ANIMAÇÃO SOFISTICADA PARA TODAS AS SECÇÕES E ELEMENTOS */}
       <style>{`
+        @keyframes pagePresentation {
+          0% {
+            opacity: 0;
+            transform: translateY(28px) scale(0.97);
+            filter: blur(8px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0);
+          }
+        }
+
         @keyframes artCardReveal {
           0% {
             opacity: 0;
-            transform: translateY(36px) scale(0.94);
+            transform: translateY(40px) scale(0.93);
             filter: blur(6px);
           }
           100% {
@@ -238,11 +256,22 @@ export default function App() {
         @keyframes artImageEntrance {
           0% {
             transform: scale(1.18);
-            filter: brightness(0.65) contrast(1.15);
+            filter: brightness(0.6) contrast(1.15);
           }
           100% {
             transform: scale(1);
             filter: brightness(1) contrast(1);
+          }
+        }
+
+        @keyframes portraitBackdropEntrance {
+          0% {
+            opacity: 0;
+            transform: scale(1.08);
+          }
+          100% {
+            opacity: 0.95;
+            transform: scale(1);
           }
         }
 
@@ -260,6 +289,41 @@ export default function App() {
           }
         }
 
+        @keyframes goldLineExpand {
+          0% {
+            transform: scaleX(0);
+            opacity: 0;
+          }
+          100% {
+            transform: scaleX(1);
+            opacity: 1;
+          }
+        }
+
+        .animate-page-stage {
+          animation: pagePresentation 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .animate-stagger-1 {
+          opacity: 0;
+          animation: pagePresentation 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.08s forwards;
+        }
+
+        .animate-stagger-2 {
+          opacity: 0;
+          animation: pagePresentation 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.18s forwards;
+        }
+
+        .animate-stagger-3 {
+          opacity: 0;
+          animation: pagePresentation 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.28s forwards;
+        }
+
+        .animate-stagger-4 {
+          opacity: 0;
+          animation: pagePresentation 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.38s forwards;
+        }
+
         .animate-art-card {
           opacity: 0;
           animation: artCardReveal 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
@@ -269,20 +333,30 @@ export default function App() {
           animation: artImageEntrance 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
 
+        .animate-portrait-bg {
+          animation: portraitBackdropEntrance 1.1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
         .animate-gold-sweep {
           animation: goldSweep 1.3s ease-out 0.25s forwards;
         }
+
+        .animate-gold-line {
+          transform-origin: left center;
+          animation: goldLineExpand 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.15s forwards;
+        }
       `}</style>
 
-      {/* IMAGEM DE FUNDO (Muda para a foto em tela inteira do artista quando abre a aba "Sobre") */}
+      {/* IMAGEM DE FUNDO (Rosto completo bem enquadrado na aba "Sobre") */}
       {activeTab === 'sobre' ? (
-        <div className="fixed inset-0 z-0 pointer-events-none">
+        <div key="bg-sobre" className="fixed inset-0 z-0 pointer-events-none">
           <img
             src={imagemSobreArtista}
             alt="Art Oliveira"
-            className="w-full h-full object-cover object-top opacity-95 transition-all duration-700"
+            style={{ objectPosition: '50% 22%' }}
+            className="animate-portrait-bg w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/55 to-black/25" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-black/35" />
         </div>
       ) : (
         <div className="fixed inset-0 z-0 pointer-events-none">
@@ -300,10 +374,13 @@ export default function App() {
         {/* Navegação Superior */}
         <header className="border-b border-amber-500/30 bg-black/85 backdrop-blur-md sticky top-0 z-40 shadow-2xl">
           <div className="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div className="text-center sm:text-left">
+            <div
+              onClick={() => handleTabChange('galeria')}
+              className="text-center sm:text-left cursor-pointer group"
+            >
               <h1
                 style={{ fontFamily: "'Cinzel', serif" }}
-                className="text-2xl sm:text-3xl font-extrabold tracking-[0.2em] text-amber-400 drop-shadow-[0_0_15px_rgba(251,191,36,0.35)]"
+                className="text-2xl sm:text-3xl font-extrabold tracking-[0.2em] text-amber-400 drop-shadow-[0_0_15px_rgba(251,191,36,0.35)] group-hover:text-amber-300 transition-colors"
               >
                 ART OLIVEIRA
               </h1>
@@ -314,41 +391,41 @@ export default function App() {
 
             <nav className="flex flex-wrap justify-center gap-2 bg-black/80 p-1.5 rounded-full border border-amber-500/40 shadow-lg">
               <button
-                onClick={() => setActiveTab('galeria')}
-                className={`px-3.5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
+                onClick={() => handleTabChange('galeria')}
+                className={`px-3.5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 ${
                   activeTab === 'galeria'
                     ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-lg shadow-amber-500/30 font-bold scale-105'
-                    : 'text-stone-200 hover:text-amber-400'
+                    : 'text-stone-200 hover:text-amber-400 hover:bg-white/5'
                 }`}
               >
                 Galeria
               </button>
               <button
-                onClick={() => setActiveTab('vendas')}
-                className={`px-3.5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
+                onClick={() => handleTabChange('vendas')}
+                className={`px-3.5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 ${
                   activeTab === 'vendas'
                     ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-lg shadow-amber-500/30 font-bold scale-105'
-                    : 'text-stone-200 hover:text-amber-400'
+                    : 'text-stone-200 hover:text-amber-400 hover:bg-white/5'
                 }`}
               >
                 Encomendas &amp; Vendas
               </button>
               <button
-                onClick={() => setActiveTab('tatuagem')}
-                className={`px-3.5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
+                onClick={() => handleTabChange('tatuagem')}
+                className={`px-3.5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 ${
                   activeTab === 'tatuagem'
                     ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-lg shadow-amber-500/30 font-bold scale-105'
-                    : 'text-stone-200 hover:text-amber-400'
+                    : 'text-stone-200 hover:text-amber-400 hover:bg-white/5'
                 }`}
               >
                 Tatuagens
               </button>
               <button
-                onClick={() => setActiveTab('sobre')}
-                className={`px-3.5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
+                onClick={() => handleTabChange('sobre')}
+                className={`px-3.5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 ${
                   activeTab === 'sobre'
                     ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-lg shadow-amber-500/30 font-bold scale-105'
-                    : 'text-stone-200 hover:text-amber-400'
+                    : 'text-stone-200 hover:text-amber-400 hover:bg-white/5'
                 }`}
               >
                 Sobre
@@ -359,7 +436,7 @@ export default function App() {
 
         {/* Banner / Hero Section */}
         {activeTab !== 'tatuagem' && activeTab !== 'sobre' && (
-          <section className="relative overflow-hidden border-b border-amber-500/20">
+          <section key={`hero-${activeTab}`} className="animate-page-stage relative overflow-hidden border-b border-amber-500/20">
             <div className="max-w-6xl mx-auto px-4 py-14 md:py-20 text-center relative z-10">
               <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-black/80 text-amber-400 border border-amber-500/50 mb-6 backdrop-blur-md tracking-wider uppercase shadow-md">
                 <Sparkles size={14} /> Artista Visual &amp; Tatuador • Cabo Verde
@@ -378,13 +455,13 @@ export default function App() {
               </p>
               <div className="flex flex-wrap justify-center gap-4 mt-8">
                 <button
-                  onClick={() => setActiveTab('vendas')}
+                  onClick={() => handleTabChange('vendas')}
                   className="px-7 py-3 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-bold text-sm transition-all shadow-xl shadow-amber-500/30 hover:scale-105"
                 >
                   Encomendas &amp; Preçário
                 </button>
                 <button
-                  onClick={() => setActiveTab('tatuagem')}
+                  onClick={() => handleTabChange('tatuagem')}
                   className="px-7 py-3 rounded-full bg-black/90 hover:bg-stone-900 text-amber-400 border border-amber-500/50 font-semibold text-sm transition-all shadow-lg hover:border-amber-400 backdrop-blur-md"
                 >
                   Tatuagens &amp; Agendamento
@@ -395,15 +472,18 @@ export default function App() {
         )}
 
         {/* Conteúdo Principal */}
-        <main className="max-w-6xl w-full mx-auto px-4 py-10 flex-1">
-          {/* SECÇÃO: GALERIA DE OBRAS COM ANIMAÇÃO DE ENTRADA */}
+        <main className="max-w-6xl w-full mx-auto px-4 py-10 flex-1 flex flex-col">
+          {/* SECÇÃO: GALERIA DE OBRAS COM APRESENTAÇÃO */}
           {activeTab === 'galeria' && (
-            <div key="galeria-animada">
-              <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-10 border-b border-amber-500/20 pb-6">
+            <div key="sec-galeria" className="animate-page-stage">
+              <div className="animate-stagger-1 flex flex-col sm:flex-row justify-between items-center gap-4 mb-10 pb-6 relative">
                 <div>
+                  <span className="text-[11px] font-bold uppercase tracking-[0.25em] text-amber-400">
+                    Exposição Digital
+                  </span>
                   <h3
                     style={{ fontFamily: "'Cinzel', serif" }}
-                    className="text-2xl sm:text-3xl font-bold text-white tracking-wide drop-shadow"
+                    className="text-2xl sm:text-3xl font-bold text-white tracking-wide drop-shadow mt-1"
                   >
                     Obras em Destaque
                   </h3>
@@ -411,6 +491,7 @@ export default function App() {
                     Clica na obra para ampliar e consultar a ficha técnica completa
                   </p>
                 </div>
+                <div className="animate-gold-line absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-amber-400/70 via-amber-500/20 to-transparent" />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -418,7 +499,7 @@ export default function App() {
                   <div
                     key={obra.id}
                     onClick={() => setSelectedObra(obra)}
-                    style={{ animationDelay: `${index * 150}ms` }}
+                    style={{ animationDelay: `${index * 160 + 120}ms` }}
                     className="animate-art-card bg-black/85 backdrop-blur-md border border-amber-500/30 rounded-2xl overflow-hidden group hover:border-amber-400 transition-all duration-300 cursor-pointer flex flex-col justify-between shadow-2xl"
                   >
                     <div>
@@ -474,10 +555,10 @@ export default function App() {
             </div>
           )}
 
-          {/* SECÇÃO: ENCOMENDAS & VENDAS DE ARTE */}
+          {/* SECÇÃO: ENCOMENDAS & VENDAS DE ARTE COM APRESENTAÇÃO */}
           {activeTab === 'vendas' && (
-            <div className="max-w-4xl mx-auto space-y-10">
-              <div className="text-center max-w-2xl mx-auto">
+            <div key="sec-vendas" className="animate-page-stage max-w-4xl mx-auto space-y-10">
+              <div className="animate-stagger-1 text-center max-w-2xl mx-auto">
                 <span className="text-xs font-bold uppercase tracking-[0.25em] text-amber-400">
                   Encomendas &amp; Vendas
                 </span>
@@ -492,14 +573,16 @@ export default function App() {
                 </p>
               </div>
 
-              {/* Cartões de Encomendas */}
+              {/* Cartões de Encomendas com entrada em cascata */}
               <div className="grid grid-cols-1 gap-6">
-                {opcoesVendas.map((opcao) => (
+                {opcoesVendas.map((opcao, idx) => (
                   <div
                     key={opcao.id}
-                    className="bg-black/90 backdrop-blur-md border border-amber-500/40 hover:border-amber-400 transition-all rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden"
+                    style={{ animationDelay: `${idx * 150 + 140}ms` }}
+                    className="animate-art-card bg-black/90 backdrop-blur-md border border-amber-500/40 hover:border-amber-400 transition-all rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden"
                   >
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    <div className="animate-gold-sweep pointer-events-none absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-amber-400/15 to-transparent" />
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative z-10">
                       <div className="space-y-3 flex-1">
                         <span className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
                           <ShoppingBag size={13} /> {opcao.sub}
@@ -515,8 +598,8 @@ export default function App() {
                         </p>
 
                         <div className="pt-2 space-y-2">
-                          {opcao.formatos.map((fmt, idx) => (
-                            <div key={idx} className="flex items-center gap-2 text-xs text-stone-200">
+                          {opcao.formatos.map((fmt, i) => (
+                            <div key={i} className="flex items-center gap-2 text-xs text-stone-200">
                               <CheckCircle size={14} className="text-amber-400 shrink-0" />
                               <strong className="text-stone-100">{fmt.nome}:</strong> {fmt.ref}
                             </div>
@@ -540,7 +623,7 @@ export default function App() {
               </div>
 
               {/* PREÇÁRIO DE REFERÊNCIA PARA QUADROS (PRICE LIST) */}
-              <div className="bg-black/90 backdrop-blur-md border border-amber-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
+              <div className="animate-stagger-3 bg-black/90 backdrop-blur-md border border-amber-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
                 <div className="border-b border-amber-500/20 pb-4">
                   <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.2em] text-amber-400">
                     <Tag size={14} /> Price List • Avaliação de Quadros
@@ -597,12 +680,12 @@ export default function App() {
             </div>
           )}
 
-          {/* SECÇÃO: TATUAGENS REALISTAS BLACKWORK (LOGO NO TOPO AO ENTRAR!) */}
+          {/* SECÇÃO: TATUAGENS REALISTAS BLACKWORK COM APRESENTAÇÃO */}
           {activeTab === 'tatuagem' && (
-            <div key="tatuagens-animada" className="max-w-5xl mx-auto space-y-14">
+            <div key="sec-tatuagens" className="animate-page-stage max-w-5xl mx-auto space-y-14">
               {/* GALERIA DE TATUAGENS REALIZADAS LOGO NA ENTRADA */}
               <div>
-                <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8 border-b border-amber-500/20 pb-5">
+                <div className="animate-stagger-1 flex flex-col sm:flex-row justify-between items-center gap-4 mb-8 pb-5 relative">
                   <div className="text-center sm:text-left">
                     <span className="text-xs font-bold uppercase tracking-[0.25em] text-amber-400">
                       Portfólio na Pele
@@ -626,6 +709,8 @@ export default function App() {
                   >
                     <Instagram size={16} /> @{instagramTattooHandle}
                   </a>
+
+                  <div className="animate-gold-line absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-amber-400/70 via-amber-500/20 to-transparent" />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
@@ -633,7 +718,7 @@ export default function App() {
                     <div
                       key={tattoo.id}
                       onClick={() => abrirModalTatuagem(tattoo)}
-                      style={{ animationDelay: `${index * 150}ms` }}
+                      style={{ animationDelay: `${index * 160 + 120}ms` }}
                       className="animate-art-card bg-black/85 backdrop-blur-md border border-amber-500/30 rounded-2xl overflow-hidden group hover:border-amber-400 transition-all duration-300 cursor-pointer shadow-2xl flex flex-col justify-between"
                     >
                       <div className="aspect-[4/5] overflow-hidden bg-stone-950 relative">
@@ -679,7 +764,7 @@ export default function App() {
               </div>
 
               {/* RESPOSTAS RÁPIDAS (INFORMAÇÕES AUTOMÁTICAS) */}
-              <div className="bg-black/90 backdrop-blur-md border border-amber-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-5">
+              <div className="animate-stagger-2 bg-black/90 backdrop-blur-md border border-amber-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-5">
                 <div className="flex items-center gap-2 text-amber-400">
                   <HelpCircle size={20} />
                   <h4
@@ -713,7 +798,7 @@ export default function App() {
               </div>
 
               {/* FORMULÁRIO DE AGENDAMENTO DE TATTOO */}
-              <div className="bg-black/90 backdrop-blur-md border border-amber-500/50 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
+              <div className="animate-stagger-3 bg-black/90 backdrop-blur-md border border-amber-500/50 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
                 <div>
                   <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.2em] text-amber-400">
                     <Calendar size={14} /> Agendamento de Sessão
@@ -812,7 +897,7 @@ export default function App() {
               </div>
 
               {/* COMO É ELABORADO O ORÇAMENTO */}
-              <div className="space-y-8 pt-6 border-t border-amber-500/20">
+              <div className="animate-stagger-4 space-y-8 pt-6 border-t border-amber-500/20">
                 <div className="text-center max-w-2xl mx-auto">
                   <span className="text-xs font-bold uppercase tracking-[0.25em] text-amber-400">
                     Orçamentos Personalizados
@@ -902,30 +987,34 @@ export default function App() {
             </div>
           )}
 
-          {/* SECÇÃO: SOBRE O ARTISTA (IMAGEM EM TELA INTEIRA NO FUNDO + INFORMAÇÕES APARENTES) */}
+          {/* SECÇÃO: SOBRE O ARTISTA COM APRESENTAÇÃO CINEMATOGRÁFICA */}
           {activeTab === 'sobre' && (
-            <div className="min-h-[75vh] flex flex-col justify-end max-w-4xl mx-auto pt-32 sm:pt-48 pb-6">
-              <div className="bg-black/70 backdrop-blur-md border border-amber-500/40 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-5">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <span className="text-xs uppercase tracking-[0.25em] text-amber-400 font-bold">
+            <div key="sec-sobre" className="animate-page-stage flex-1 flex flex-col justify-end max-w-3xl w-full mx-auto pt-56 sm:pt-72 pb-4">
+              <div className="animate-stagger-2 bg-black/75 backdrop-blur-md border border-amber-500/40 rounded-3xl p-5 sm:p-7 shadow-2xl space-y-4 relative overflow-hidden">
+                <div className="animate-gold-sweep pointer-events-none absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-amber-400/20 to-transparent" />
+
+                <div className="flex flex-wrap items-center justify-between gap-2 relative z-10">
+                  <span className="text-[11px] uppercase tracking-[0.25em] text-amber-400 font-bold">
                     Biografia &amp; Percurso
                   </span>
-                  <span className="bg-amber-400 text-black text-[11px] font-extrabold px-3.5 py-1 rounded-full shadow-md">
+                  <span className="bg-amber-400 text-black text-[11px] font-extrabold px-3 py-0.5 rounded-full shadow-md">
                     Artista Visual &amp; Tatuador • Cabo Verde
                   </span>
                 </div>
 
-                <h3
-                  style={{ fontFamily: "'Cinzel', serif" }}
-                  className="text-3xl sm:text-5xl font-extrabold text-white drop-shadow"
-                >
-                  Art Oliveira
-                </h3>
-                <p className="text-amber-400 text-sm sm:text-base font-medium">
-                  Uma visão artística entre o papel e a pele
-                </p>
+                <div className="relative z-10">
+                  <h3
+                    style={{ fontFamily: "'Cinzel', serif" }}
+                    className="text-2xl sm:text-4xl font-extrabold text-white drop-shadow"
+                  >
+                    Art Oliveira
+                  </h3>
+                  <p className="text-amber-400 text-xs sm:text-sm font-medium mt-0.5">
+                    Uma visão artística entre o papel e a pele
+                  </p>
+                </div>
 
-                <div className="space-y-3 text-stone-100 leading-relaxed text-sm sm:text-base font-light">
+                <div className="space-y-2 text-stone-100 leading-relaxed text-xs sm:text-sm font-light relative z-10">
                   <p>
                     <strong className="text-white font-semibold">Art Oliveira</strong> trabalha com{' '}
                     <strong className="text-amber-400 font-medium">desenhos realistas</strong>,{' '}
@@ -933,35 +1022,35 @@ export default function App() {
                     <strong className="text-amber-400 font-medium">tatuagens realistas blackwork</strong>.
                   </p>
                   <p>
-                    A proposta é explorar trabalhos realistas e diferentes estilos para expressar a arte tanto no papel e nas superfícies físicas como na pele.
+                    Trabalhos realistas e em diferentes estilos para explorar a arte tanto no papel e nas superfícies físicas como na pele.
                   </p>
                 </div>
 
                 {/* BOTÕES DOS DOIS INSTAGRAMS + WHATSAPP */}
-                <div className="flex flex-wrap gap-3 pt-3">
+                <div className="flex flex-wrap gap-2.5 pt-2 relative z-10">
                   <a
                     href={`https://instagram.com/${instagramArteHandle}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-black/90 hover:bg-stone-900 text-amber-400 border border-amber-500/40 text-xs sm:text-sm font-bold transition-all shadow-md"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-black/90 hover:bg-stone-900 text-amber-400 border border-amber-500/40 text-xs font-bold transition-all shadow-md"
                   >
-                    <Instagram size={17} /> Arte: @{instagramArteHandle}
+                    <Instagram size={15} /> Arte: @{instagramArteHandle}
                   </a>
                   <a
                     href={`https://instagram.com/${instagramTattooHandle}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-black/90 hover:bg-stone-900 text-amber-400 border border-amber-500/40 text-xs sm:text-sm font-bold transition-all shadow-md"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-black/90 hover:bg-stone-900 text-amber-400 border border-amber-500/40 text-xs font-bold transition-all shadow-md"
                   >
-                    <Instagram size={17} /> Tatuagens: @{instagramTattooHandle}
+                    <Instagram size={15} /> Tatuagens: @{instagramTattooHandle}
                   </a>
                   <a
                     href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=Olá Art Oliveira! Visitei o teu portfólio e gostaria de falar contigo.`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-amber-400 hover:bg-amber-300 text-black text-xs sm:text-sm font-bold transition-all shadow-lg shadow-amber-500/20"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-amber-400 hover:bg-amber-300 text-black text-xs font-bold transition-all shadow-lg shadow-amber-500/20"
                   >
-                    <MessageCircle size={17} /> Falar no WhatsApp
+                    <MessageCircle size={15} /> Falar no WhatsApp
                   </a>
                 </div>
               </div>
@@ -977,7 +1066,7 @@ export default function App() {
           >
             <div
               onClick={(e) => e.stopPropagation()}
-              className="bg-stone-950 border border-amber-500/50 rounded-3xl max-w-5xl w-full overflow-hidden shadow-2xl flex flex-col relative my-4"
+              className="animate-page-stage bg-stone-950 border border-amber-500/50 rounded-3xl max-w-5xl w-full overflow-hidden shadow-2xl flex flex-col relative my-4"
             >
               {/* Barra Superior de Controlo de Zoom */}
               <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 bg-black border-b border-stone-800">
@@ -1073,7 +1162,7 @@ export default function App() {
           >
             <div
               onClick={(e) => e.stopPropagation()}
-              className="bg-stone-900 border border-amber-500/50 rounded-3xl max-w-4xl w-full overflow-hidden shadow-2xl grid grid-cols-1 md:grid-cols-2 relative my-8"
+              className="animate-page-stage bg-stone-900 border border-amber-500/50 rounded-3xl max-w-4xl w-full overflow-hidden shadow-2xl grid grid-cols-1 md:grid-cols-2 relative my-8"
             >
               <button
                 onClick={() => setSelectedObra(null)}
