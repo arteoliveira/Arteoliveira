@@ -216,6 +216,60 @@ export default function App() {
       style={{ fontFamily: "'Montserrat', sans-serif" }}
       className="min-h-screen bg-black text-stone-100 selection:bg-amber-500/40 relative"
     >
+      {/* ESTILOS DE ANIMAÇÃO PARA APRESENTAÇÃO DAS OBRAS E TATUAGENS */}
+      <style>{`
+        @keyframes artCardReveal {
+          0% {
+            opacity: 0;
+            transform: translateY(36px) scale(0.94);
+            filter: blur(6px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0);
+          }
+        }
+
+        @keyframes artImageEntrance {
+          0% {
+            transform: scale(1.18);
+            filter: brightness(0.65) contrast(1.15);
+          }
+          100% {
+            transform: scale(1);
+            filter: brightness(1) contrast(1);
+          }
+        }
+
+        @keyframes goldSweep {
+          0% {
+            transform: translateX(-120%) skewX(-20deg);
+            opacity: 0;
+          }
+          40% {
+            opacity: 0.55;
+          }
+          100% {
+            transform: translateX(220%) skewX(-20deg);
+            opacity: 0;
+          }
+        }
+
+        .animate-art-card {
+          opacity: 0;
+          animation: artCardReveal 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .animate-art-image {
+          animation: artImageEntrance 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .animate-gold-sweep {
+          animation: goldSweep 1.3s ease-out 0.25s forwards;
+        }
+      `}</style>
+
       {/* IMAGEM DE FUNDO VISÍVEL E EQUILIBRADA */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <img
@@ -325,9 +379,9 @@ export default function App() {
 
         {/* Conteúdo Principal */}
         <main className="max-w-6xl mx-auto px-4 py-12">
-          {/* SECÇÃO: GALERIA DE OBRAS */}
+          {/* SECÇÃO: GALERIA DE OBRAS COM ANIMAÇÃO DE ENTRADA */}
           {activeTab === 'galeria' && (
-            <div>
+            <div key="galeria-animada">
               <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-10 border-b border-amber-500/20 pb-6">
                 <div>
                   <h3
@@ -343,19 +397,23 @@ export default function App() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                {obras.map((obra) => (
+                {obras.map((obra, index) => (
                   <div
                     key={obra.id}
                     onClick={() => setSelectedObra(obra)}
-                    className="bg-black/85 backdrop-blur-md border border-amber-500/30 rounded-2xl overflow-hidden group hover:border-amber-400 transition-all duration-300 cursor-pointer flex flex-col justify-between shadow-2xl"
+                    style={{ animationDelay: `${index * 150}ms` }}
+                    className="animate-art-card bg-black/85 backdrop-blur-md border border-amber-500/30 rounded-2xl overflow-hidden group hover:border-amber-400 transition-all duration-300 cursor-pointer flex flex-col justify-between shadow-2xl"
                   >
                     <div>
                       <div className="aspect-[4/5] overflow-hidden bg-stone-950 relative">
                         <img
                           src={obra.imagem}
                           alt={obra.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                          className="animate-art-image w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                         />
+                        {/* Reflexo dourado animado na revelação */}
+                        <div className="animate-gold-sweep pointer-events-none absolute inset-y-0 w-1/2 bg-gradient-to-r from-transparent via-amber-300/30 to-transparent" />
+
                         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
 
                         <span className="absolute top-3 left-3 bg-black/90 backdrop-blur-md text-amber-400 text-xs font-bold px-3 py-1 rounded-full border border-amber-500/30 shadow-lg">
@@ -523,9 +581,9 @@ export default function App() {
             </div>
           )}
 
-          {/* SECÇÃO: TATUAGENS REALISTAS BLACKWORK + GALERIA COM ZOOM + AGENDAMENTO */}
+          {/* SECÇÃO: TATUAGENS REALISTAS BLACKWORK + ANIMAÇÃO + ZOOM + AGENDAMENTO */}
           {activeTab === 'tatuagem' && (
-            <div className="max-w-5xl mx-auto space-y-14">
+            <div key="tatuagens-animada" className="max-w-5xl mx-auto space-y-14">
               {/* GALERIA DE TATUAGENS REALIZADAS */}
               <div>
                 <div className="text-center max-w-2xl mx-auto mb-10">
@@ -544,18 +602,22 @@ export default function App() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
-                  {tatuagensRealizadas.map((tattoo) => (
+                  {tatuagensRealizadas.map((tattoo, index) => (
                     <div
                       key={tattoo.id}
                       onClick={() => abrirModalTatuagem(tattoo)}
-                      className="bg-black/85 backdrop-blur-md border border-amber-500/30 rounded-2xl overflow-hidden group hover:border-amber-400 transition-all duration-300 cursor-pointer shadow-2xl flex flex-col justify-between"
+                      style={{ animationDelay: `${index * 150}ms` }}
+                      className="animate-art-card bg-black/85 backdrop-blur-md border border-amber-500/30 rounded-2xl overflow-hidden group hover:border-amber-400 transition-all duration-300 cursor-pointer shadow-2xl flex flex-col justify-between"
                     >
                       <div className="aspect-[4/5] overflow-hidden bg-stone-950 relative">
                         <img
                           src={tattoo.imagem}
                           alt={tattoo.titulo}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                          className="animate-art-image w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                         />
+                        {/* Reflexo dourado animado na revelação */}
+                        <div className="animate-gold-sweep pointer-events-none absolute inset-y-0 w-1/2 bg-gradient-to-r from-transparent via-amber-300/30 to-transparent" />
+
                         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/15 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
 
                         <span className="absolute top-3 left-3 bg-black/90 backdrop-blur-md text-amber-400 text-xs font-bold px-3 py-1 rounded-full border border-amber-500/30">
