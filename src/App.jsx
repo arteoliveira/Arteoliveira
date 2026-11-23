@@ -20,7 +20,9 @@ import {
   ZoomOut,
   RotateCcw,
   Calendar,
-  HelpCircle
+  HelpCircle,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 
 export default function App() {
@@ -42,6 +44,10 @@ export default function App() {
     isPanning: false,
     lastTap: 0
   });
+
+  // Referência do carrossel horizontal das obras
+  const obrasCarouselRef = useRef(null);
+  const [activeObraIndex, setActiveObraIndex] = useState(0);
 
   // Assistente de respostas rápidas (FAQ interativo)
   const [selectedFaqId, setSelectedFaqId] = useState('blackwork');
@@ -76,9 +82,9 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // LINKS DE IMAGENS DE FUNDO POR SECÇÃO
+  // LINKS DE IMAGENS DE FUNDO POR SECÇÃO (Resolução máxima para manter nitidez)
   const imagemFundoGaleria = 'https://i.postimg.cc/SKW9M778/IMG-5989.jpg';
-  const imagemFundoTatuagens = 'https://i.postimg.cc/1Vmy611v/8B366592-4B4D-4F55-8F5C-919944812B78.jpg';
+  const imagemFundoTatuagens = 'https://i.postimg.cc/6WbZG3Cq/8B366592-4B4D-4F55-8F5C-919944812B78.jpg';
   const imagemFundoPintura = ''; // Podes colocar aqui o link da foto de pintura quando quiseres
   const imagemSobreArtista = 'https://i.postimg.cc/8PbbnpFF/IMG-4746.jpg';
 
@@ -228,6 +234,38 @@ export default function App() {
     }
   ];
 
+  // Navegar no carrossel horizontal das obras
+  const scrollToObra = (index) => {
+    const clamped = Math.max(0, Math.min(obras.length - 1, index));
+    setActiveObraIndex(clamped);
+    const el = obrasCarouselRef.current;
+    if (!el) return;
+    const child = el.children[clamped];
+    if (child) {
+      el.scrollTo({
+        left: child.offsetLeft - el.offsetLeft,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  const handleObrasScroll = () => {
+    const el = obrasCarouselRef.current;
+    if (!el || el.children.length === 0) return;
+    const scrollCenter = el.scrollLeft + el.clientWidth / 2;
+    let closestIdx = 0;
+    let closestDist = Infinity;
+    Array.from(el.children).forEach((child, idx) => {
+      const childCenter = child.offsetLeft - el.offsetLeft + child.clientWidth / 2;
+      const dist = Math.abs(scrollCenter - childCenter);
+      if (dist < closestDist) {
+        closestDist = dist;
+        closestIdx = idx;
+      }
+    });
+    setActiveObraIndex(closestIdx);
+  };
+
   // Funções auxiliares de toque (pinça com dois dedos + arrastar + duplo toque)
   const getTouchDistance = (touches) => {
     const dx = touches[0].clientX - touches[1].clientX;
@@ -373,12 +411,10 @@ export default function App() {
 
         @keyframes bgCrispEntrance {
           0% {
-            opacity: 0.35;
-            transform: scale(1.04);
+            opacity: 0.45;
           }
           100% {
             opacity: 1;
-            transform: scale(1);
           }
         }
 
@@ -405,6 +441,14 @@ export default function App() {
             transform: scaleX(1);
             opacity: 1;
           }
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .no-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
         }
 
         .animate-section-stage {
@@ -437,7 +481,7 @@ export default function App() {
         }
 
         .animate-bg-crisp {
-          animation: bgCrispEntrance 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+          animation: bgCrispEntrance 0.6s ease-out forwards;
         }
 
         .animate-gold-sweep {
@@ -450,9 +494,9 @@ export default function App() {
         }
       `}</style>
 
-      {/* IMAGEM DE FUNDO TOTALMENTE VISÍVEL E NÍTIDA EM TODAS AS SECÇÕES */}
+      {/* IMAGEM DE FUNDO NÍTIDA E SEM ESTICAMENTO ARTIFICIAL */}
       {activeTab === 'sobre' ? (
-        <div key="bg-sobre" className="fixed inset-0 z-0 pointer-events-none">
+        <div key="bg-sobre" className="fixed inset-0 z-0 pointer-events-none bg-black">
           <img
             src={imagemSobreArtista}
             alt="Art Oliveira"
@@ -461,8 +505,17 @@ export default function App() {
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/85" />
         </div>
+      ) : activeTab === 'tatuagem' ? (
+        <div key="bg-tatuagem" className="fixed inset-0 z-0 pointer-events-none bg-black flex items-center justify-center">
+          <img
+            src={imagemFundoTatuagens}
+            alt="Fundo Tatuagens Art Oliveira"
+            className="animate-bg-crisp w-full h-full object-contain opacity-95"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-black/80" />
+        </div>
       ) : (
-        <div key={`bg-${activeTab}`} className="fixed inset-0 z-0 pointer-events-none">
+        <div key={`bg-${activeTab}`} className="fixed inset-0 z-0 pointer-events-none bg-black">
           <img
             src={fundoAtual}
             alt={`Fundo ${activeTab} Art Oliveira`}
@@ -474,7 +527,7 @@ export default function App() {
 
       {/* CONTEÚDO PRINCIPAL SOBRE O FUNDO */}
       <div className="relative z-10 flex flex-col min-h-screen">
-        {/* Navegação Superior (Transparente em cima para deixar o fundo aparecer) */}
+        {/* Navegação Superior */}
         <header className="border-b border-amber-500/20 bg-black/30 backdrop-blur-[2px] sticky top-0 z-40">
           <div className="max-w-6xl mx-auto px-4 py-3 sm:py-4 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4">
             <div
@@ -543,8 +596,8 @@ export default function App() {
             key={`hero-${activeTab}`}
             className="animate-section-stage relative overflow-hidden border-b border-amber-500/20"
           >
-            <div className="max-w-6xl mx-auto px-4 py-12 md:py-16 text-center relative z-10">
-              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-black/65 text-amber-400 border border-amber-500/50 mb-5 tracking-wider uppercase shadow-md">
+            <div className="max-w-6xl mx-auto px-4 py-10 md:py-14 text-center relative z-10">
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-black/65 text-amber-400 border border-amber-500/50 mb-4 tracking-wider uppercase shadow-md">
                 <Sparkles size={14} /> Artista Visual &amp; Tatuador • Cabo Verde
               </span>
               <h2
@@ -556,10 +609,10 @@ export default function App() {
                   o papel e a pele
                 </span>
               </h2>
-              <p className="text-stone-100 max-w-2xl mx-auto mt-4 text-sm sm:text-base leading-relaxed font-medium drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
+              <p className="text-stone-100 max-w-2xl mx-auto mt-3 text-sm sm:text-base leading-relaxed font-medium drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
                 Desenhos realistas, pintura acrílica sobre diferentes superfícies e tatuagens realistas blackwork.
               </p>
-              <div className="flex flex-wrap justify-center gap-4 mt-7">
+              <div className="flex flex-wrap justify-center gap-4 mt-6">
                 <button
                   onClick={() => handleTabChange('vendas')}
                   className="px-7 py-3 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-bold text-sm transition-all shadow-xl shadow-amber-500/30 hover:scale-105"
@@ -579,10 +632,10 @@ export default function App() {
 
         {/* Conteúdo Principal */}
         <main className="max-w-6xl w-full mx-auto px-4 py-8 sm:py-10 flex-1 flex flex-col">
-          {/* SECÇÃO: GALERIA DE OBRAS */}
+          {/* SECÇÃO: GALERIA DE OBRAS (ARRASTAR PARA O LADO) */}
           {activeTab === 'galeria' && (
             <div key="sec-galeria" className="animate-section-stage">
-              <div className="animate-stagger-1 flex flex-col sm:flex-row justify-between items-center gap-4 mb-10 pb-6 relative">
+              <div className="animate-stagger-1 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-6 pb-5 relative">
                 <div>
                   <span className="text-[11px] font-bold uppercase tracking-[0.25em] text-amber-400 drop-shadow">
                     Exposição Digital
@@ -594,19 +647,50 @@ export default function App() {
                     Obras em Destaque
                   </h3>
                   <p className="text-xs text-amber-200 mt-1 font-medium drop-shadow">
-                    Clica num desenho para abrir, fazer zoom com os dedos e sair facilmente
+                    Arrasta para o lado para ver as obras • Clica para ampliar e sair facilmente
                   </p>
                 </div>
+
+                {/* Botões de navegação lateral */}
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => scrollToObra(activeObraIndex - 1)}
+                    disabled={activeObraIndex === 0}
+                    className="p-2.5 rounded-full bg-black/80 hover:bg-stone-900 disabled:opacity-35 text-amber-400 border border-amber-500/40 transition-colors"
+                    aria-label="Obra anterior"
+                  >
+                    <ChevronLeft size={18} />
+                  </button>
+                  <span className="text-xs font-bold text-amber-300 px-2">
+                    {activeObraIndex + 1} / {obras.length}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => scrollToObra(activeObraIndex + 1)}
+                    disabled={activeObraIndex >= obras.length - 1}
+                    className="p-2.5 rounded-full bg-black/80 hover:bg-stone-900 disabled:opacity-35 text-amber-400 border border-amber-500/40 transition-colors"
+                    aria-label="Próxima obra"
+                  >
+                    <ChevronRight size={18} />
+                  </button>
+                </div>
+
                 <div className="animate-gold-line absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-amber-400/70 via-amber-500/20 to-transparent" />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {/* Faixa horizontal deslizável (ocupa menos espaço vertical) */}
+              <div
+                ref={obrasCarouselRef}
+                onScroll={handleObrasScroll}
+                className="flex gap-5 overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar pb-3"
+              >
                 {obras.map((obra, index) => (
                   <div
                     key={obra.id}
                     onClick={() => abrirModalObra(obra)}
-                    style={{ animationDelay: `${index * 150 + 120}ms` }}
-                    className="animate-art-card bg-black/75 border border-amber-500/35 rounded-2xl overflow-hidden group hover:border-amber-400 transition-all duration-300 cursor-pointer flex flex-col justify-between shadow-2xl"
+                    style={{ animationDelay: `${index * 120 + 100}ms` }}
+                    className="animate-art-card snap-center shrink-0 w-[82vw] sm:w-[360px] md:w-[380px] bg-black/75 border border-amber-500/35 rounded-2xl overflow-hidden group hover:border-amber-400 transition-all duration-300 cursor-pointer flex flex-col justify-between shadow-2xl"
                   >
                     <div>
                       <div className="aspect-[4/5] overflow-hidden bg-stone-950 relative">
@@ -643,15 +727,15 @@ export default function App() {
                       </div>
 
                       {obra.descricao && (
-                        <div className="p-5">
-                          <p className="text-stone-200 text-sm line-clamp-2 leading-relaxed font-light">
+                        <div className="p-4">
+                          <p className="text-stone-200 text-xs sm:text-sm line-clamp-2 leading-relaxed font-light">
                             {obra.descricao}
                           </p>
                         </div>
                       )}
                     </div>
 
-                    <div className="px-5 pb-5 pt-3 flex items-center justify-between border-t border-amber-500/20">
+                    <div className="px-4 pb-4 pt-3 flex items-center justify-between border-t border-amber-500/20">
                       <span className="text-xs text-stone-300 flex items-center gap-1.5 font-medium">
                         {obra.tempo ? (
                           <>
@@ -668,6 +752,21 @@ export default function App() {
                       </span>
                     </div>
                   </div>
+                ))}
+              </div>
+
+              {/* Indicadores de pontos abaixo do carrossel */}
+              <div className="flex justify-center items-center gap-2 mt-4">
+                {obras.map((obra, idx) => (
+                  <button
+                    key={obra.id}
+                    type="button"
+                    onClick={() => scrollToObra(idx)}
+                    aria-label={`Ir para obra ${idx + 1}`}
+                    className={`h-2 rounded-full transition-all ${
+                      activeObraIndex === idx ? 'w-7 bg-amber-400' : 'w-2 bg-stone-600 hover:bg-stone-400'
+                    }`}
+                  />
                 ))}
               </div>
             </div>
@@ -1182,7 +1281,6 @@ export default function App() {
               onClick={(e) => e.stopPropagation()}
               className="animate-section-stage bg-stone-950 border border-amber-500/50 rounded-3xl max-w-5xl w-full overflow-hidden shadow-2xl flex flex-col relative my-4"
             >
-              {/* Barra Superior com Botão Sair sempre acessível */}
               <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 bg-black border-b border-stone-800 relative z-30">
                 <div>
                   <span className="text-[11px] uppercase tracking-wider text-amber-400 font-bold">
@@ -1248,7 +1346,6 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Área com Zoom por Pinça (2 dedos) / Duplo Toque */}
               <div
                 {...tattooTouchHandlers}
                 style={{ touchAction: 'none' }}
@@ -1265,7 +1362,6 @@ export default function App() {
                 />
               </div>
 
-              {/* Rodapé do Modal da Tatuagem com botão Fechar */}
               <div className="p-4 sm:px-6 bg-black border-t border-stone-800 flex flex-col sm:flex-row items-center justify-between gap-3 relative z-30">
                 <p className="text-stone-300 text-xs sm:text-sm font-light text-center sm:text-left">
                   {selectedTattoo.descricao}{' '}
@@ -1305,7 +1401,6 @@ export default function App() {
               onClick={(e) => e.stopPropagation()}
               className="animate-section-stage bg-stone-950 border border-amber-500/50 rounded-3xl max-w-5xl w-full overflow-hidden shadow-2xl grid grid-cols-1 md:grid-cols-2 relative my-4"
             >
-              {/* Botão de saída fácil no canto superior direito */}
               <button
                 type="button"
                 onClick={() => setSelectedObra(null)}
@@ -1315,7 +1410,6 @@ export default function App() {
                 <X size={16} /> Sair
               </button>
 
-              {/* Área da Imagem com Pinça (2 dedos) / Duplo Toque / Controlos */}
               <div className="bg-black flex flex-col justify-between p-4 sm:p-5 border-b md:border-b-0 md:border-r border-stone-800">
                 <div className="flex items-center gap-2 mb-2 pr-20">
                   <button
