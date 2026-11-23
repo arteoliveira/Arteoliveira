@@ -111,7 +111,7 @@ export default function App() {
       tempo: '',
       ano: '2026',
       status: 'Disponível',
-      imagem: 'https://i.postimg.cc/ZBFTCK2j/B4534360-E917-4DF1-BC16-E8D2501334FF.png',
+      imagem: 'https://i.postimg.cc/qRFQmxYb/IMG-3380.jpg',
       descricao: ''
     }
   ];
@@ -333,7 +333,6 @@ export default function App() {
 
   const faqAtiva = respostasRapidas.find((item) => item.id === selectedFaqId) || respostasRapidas[0];
 
-  // Define qual imagem de fundo aparece em cada secção
   const fundoAtual =
     activeTab === 'sobre'
       ? imagemSobreArtista
@@ -365,17 +364,6 @@ export default function App() {
           0% {
             opacity: 0;
             transform: translateY(32px) scale(0.96);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-          }
-        }
-
-        @keyframes featureBannerPop {
-          0% {
-            opacity: 0;
-            transform: translateY(18px) scale(0.97);
           }
           100% {
             opacity: 1;
@@ -421,11 +409,6 @@ export default function App() {
 
         .animate-section-stage {
           animation: sectionSpotlight 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-        }
-
-        .animate-feature-banner {
-          opacity: 0;
-          animation: featureBannerPop 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.06s forwards;
         }
 
         .animate-stagger-1 {
@@ -596,40 +579,10 @@ export default function App() {
 
         {/* Conteúdo Principal */}
         <main className="max-w-6xl w-full mx-auto px-4 py-8 sm:py-10 flex-1 flex flex-col">
-          {/* SECÇÃO: GALERIA DE OBRAS COM APRESENTAÇÃO DE OBRA */}
+          {/* SECÇÃO: GALERIA DE OBRAS */}
           {activeTab === 'galeria' && (
-            <div key="sec-galeria" className="animate-section-stage space-y-8">
-              {/* Apresentação em destaque ao entrar na Galeria */}
-              <div
-                onClick={() => abrirModalObra(obras[0])}
-                className="animate-feature-banner bg-black/65 hover:bg-black/75 border border-amber-500/40 hover:border-amber-400 rounded-3xl p-4 sm:p-5 flex flex-col sm:flex-row items-center gap-4 sm:gap-6 cursor-pointer transition-all shadow-2xl relative overflow-hidden"
-              >
-                <div className="animate-gold-sweep pointer-events-none absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-amber-300/25 to-transparent" />
-                <img
-                  src={obras[0].imagem}
-                  alt={obras[0].title}
-                  className="w-24 h-28 sm:w-28 sm:h-32 object-cover rounded-2xl border border-amber-400/50 shrink-0 shadow-lg"
-                />
-                <div className="flex-1 text-center sm:text-left space-y-1">
-                  <span className="text-[11px] font-bold uppercase tracking-[0.22em] text-amber-400">
-                    Apresentação • Desenhos Realistas
-                  </span>
-                  <h3
-                    style={{ fontFamily: "'Cinzel', serif" }}
-                    className="text-xl sm:text-2xl font-bold text-white"
-                  >
-                    {obras[0].title} — {obras[0].dimensoes}
-                  </h3>
-                  <p className="text-xs sm:text-sm text-stone-200 font-light line-clamp-2">
-                    {obras[0].descricao}
-                  </p>
-                </div>
-                <span className="text-xs font-bold text-amber-400 inline-flex items-center gap-1 shrink-0">
-                  Abrir &amp; Zoom <ArrowUpRight size={15} />
-                </span>
-              </div>
-
-              <div className="animate-stagger-1 flex flex-col sm:flex-row justify-between items-center gap-4 pb-5 relative">
+            <div key="sec-galeria" className="animate-section-stage">
+              <div className="animate-stagger-1 flex flex-col sm:flex-row justify-between items-center gap-4 mb-10 pb-6 relative">
                 <div>
                   <span className="text-[11px] font-bold uppercase tracking-[0.25em] text-amber-400 drop-shadow">
                     Exposição Digital
@@ -720,39 +673,9 @@ export default function App() {
             </div>
           )}
 
-          {/* SECÇÃO: ENCOMENDAS & VENDAS DE ARTE COM APRESENTAÇÃO */}
+          {/* SECÇÃO: ENCOMENDAS & VENDAS DE ARTE */}
           {activeTab === 'vendas' && (
             <div key="sec-vendas" className="animate-section-stage max-w-4xl mx-auto space-y-10">
-              {/* Apresentação em destaque ao entrar em Encomendas & Vendas */}
-              <div
-                onClick={() => abrirModalObra(obras[0])}
-                className="animate-feature-banner bg-black/70 hover:bg-black/80 border border-amber-500/45 hover:border-amber-400 rounded-3xl p-4 sm:p-5 flex flex-col sm:flex-row items-center gap-4 sm:gap-6 cursor-pointer transition-all shadow-2xl relative overflow-hidden"
-              >
-                <div className="animate-gold-sweep pointer-events-none absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-amber-300/25 to-transparent" />
-                <img
-                  src={obras[0].imagem}
-                  alt="Apresentação Encomendas"
-                  className="w-24 h-28 sm:w-28 sm:h-32 object-cover rounded-2xl border border-amber-400/50 shrink-0 shadow-lg"
-                />
-                <div className="flex-1 text-center sm:text-left space-y-1">
-                  <span className="text-[11px] font-bold uppercase tracking-[0.22em] text-amber-400">
-                    Apresentação • Pintura &amp; Encomendas
-                  </span>
-                  <h4
-                    style={{ fontFamily: "'Cinzel', serif" }}
-                    className="text-xl sm:text-2xl font-bold text-white"
-                  >
-                    Pintura Acrílica &amp; Desenhos Realistas
-                  </h4>
-                  <p className="text-xs sm:text-sm text-stone-200 font-light">
-                    Quadros em tela (até 90 cm e acima de 90 cm) e desenhos realistas feitos sob encomenda.
-                  </p>
-                </div>
-                <span className="text-xs font-bold text-amber-400 inline-flex items-center gap-1 shrink-0">
-                  Ver obra <ArrowUpRight size={15} />
-                </span>
-              </div>
-
               <div className="animate-stagger-1 text-center max-w-2xl mx-auto">
                 <span className="text-xs font-bold uppercase tracking-[0.25em] text-amber-400 drop-shadow">
                   Encomendas &amp; Vendas
@@ -768,7 +691,6 @@ export default function App() {
                 </p>
               </div>
 
-              {/* Cartões de Encomendas com entrada em cascata */}
               <div className="grid grid-cols-1 gap-6">
                 {opcoesVendas.map((opcao, idx) => (
                   <div
@@ -835,7 +757,6 @@ export default function App() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Até 90cm */}
                   <div className="bg-black/75 border border-amber-500/25 rounded-2xl p-5 space-y-3">
                     <h5
                       style={{ fontFamily: "'Cinzel', serif" }}
@@ -853,7 +774,6 @@ export default function App() {
                     </ul>
                   </div>
 
-                  {/* Acima de 90cm */}
                   <div className="bg-black/75 border border-amber-500/25 rounded-2xl p-5 space-y-3">
                     <h5
                       style={{ fontFamily: "'Cinzel', serif" }}
@@ -875,40 +795,9 @@ export default function App() {
             </div>
           )}
 
-          {/* SECÇÃO: TATUAGENS REALISTAS BLACKWORK COM APRESENTAÇÃO */}
+          {/* SECÇÃO: TATUAGENS REALISTAS BLACKWORK */}
           {activeTab === 'tatuagem' && (
-            <div key="sec-tatuagens" className="animate-section-stage max-w-5xl mx-auto space-y-12">
-              {/* Apresentação em destaque ao entrar em Tatuagens */}
-              <div
-                onClick={() => abrirModalTatuagem(tatuagensRealizadas[0])}
-                className="animate-feature-banner bg-black/70 hover:bg-black/80 border border-amber-500/45 hover:border-amber-400 rounded-3xl p-4 sm:p-5 flex flex-col sm:flex-row items-center gap-4 sm:gap-6 cursor-pointer transition-all shadow-2xl relative overflow-hidden"
-              >
-                <div className="animate-gold-sweep pointer-events-none absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-amber-300/25 to-transparent" />
-                <img
-                  src={tatuagensRealizadas[0].imagem}
-                  alt={tatuagensRealizadas[0].titulo}
-                  className="w-24 h-28 sm:w-28 sm:h-32 object-cover rounded-2xl border border-amber-400/50 shrink-0 shadow-lg"
-                />
-                <div className="flex-1 text-center sm:text-left space-y-1">
-                  <span className="text-[11px] font-bold uppercase tracking-[0.22em] text-amber-400">
-                    Apresentação • Realismo Blackwork
-                  </span>
-                  <h4
-                    style={{ fontFamily: "'Cinzel', serif" }}
-                    className="text-xl sm:text-2xl font-bold text-white"
-                  >
-                    {tatuagensRealizadas[0].titulo}
-                  </h4>
-                  <p className="text-xs sm:text-sm text-stone-200 font-light">
-                    {tatuagensRealizadas[0].descricao}
-                  </p>
-                </div>
-                <span className="text-xs font-bold text-amber-400 inline-flex items-center gap-1 shrink-0">
-                  Abrir &amp; Zoom <ArrowUpRight size={15} />
-                </span>
-              </div>
-
-              {/* GALERIA DE TATUAGENS REALIZADAS */}
+            <div key="sec-tatuagens" className="animate-section-stage max-w-5xl mx-auto space-y-14">
               <div>
                 <div className="animate-stagger-1 flex flex-col sm:flex-row justify-between items-center gap-4 mb-8 pb-5 relative">
                   <div className="text-center sm:text-left">
@@ -988,7 +877,7 @@ export default function App() {
                 </div>
               </div>
 
-              {/* RESPOSTAS RÁPIDAS (INFORMAÇÕES AUTOMÁTICAS) */}
+              {/* RESPOSTAS RÁPIDAS */}
               <div className="animate-stagger-2 bg-black/80 border border-amber-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-5">
                 <div className="flex items-center gap-2 text-amber-400">
                   <HelpCircle size={20} />
@@ -1138,7 +1027,6 @@ export default function App() {
                   </p>
                 </div>
 
-                {/* 4 Passos */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {etapasOrcamento.map((etapa) => (
                     <div
@@ -1167,7 +1055,6 @@ export default function App() {
                   ))}
                 </div>
 
-                {/* Garantias */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
                   <div className="bg-black/80 border border-amber-500/30 rounded-2xl p-5">
                     <PenTool className="text-amber-400 mb-3" size={22} />
@@ -1212,7 +1099,7 @@ export default function App() {
             </div>
           )}
 
-          {/* SECÇÃO: SOBRE O ARTISTA COM ROSTO LIVRE NO CENTRO/TOPO */}
+          {/* SECÇÃO: SOBRE O ARTISTA */}
           {activeTab === 'sobre' && (
             <div
               key="sec-sobre"
@@ -1254,7 +1141,6 @@ export default function App() {
                   </p>
                 </div>
 
-                {/* BOTÕES DOS DOIS INSTAGRAMS + WHATSAPP */}
                 <div className="flex flex-wrap gap-2 pt-1.5 relative z-10">
                   <a
                     href={`https://instagram.com/${instagramArteHandle}`}
@@ -1286,7 +1172,7 @@ export default function App() {
           )}
         </main>
 
-        {/* MODAL DE ZOOM COM OS DEDOS PARA TATUAGENS */}
+        {/* MODAL DE ZOOM COM OS DEDOS PARA TATUAGENS (SAÍDA FÁCIL) */}
         {selectedTattoo && (
           <div
             onClick={() => setSelectedTattoo(null)}
@@ -1296,8 +1182,8 @@ export default function App() {
               onClick={(e) => e.stopPropagation()}
               className="animate-section-stage bg-stone-950 border border-amber-500/50 rounded-3xl max-w-5xl w-full overflow-hidden shadow-2xl flex flex-col relative my-4"
             >
-              {/* Barra Superior */}
-              <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 bg-black border-b border-stone-800">
+              {/* Barra Superior com Botão Sair sempre acessível */}
+              <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 bg-black border-b border-stone-800 relative z-30">
                 <div>
                   <span className="text-[11px] uppercase tracking-wider text-amber-400 font-bold">
                     {selectedTattoo.estilo} • {selectedTattoo.local}
@@ -1312,6 +1198,7 @@ export default function App() {
 
                 <div className="flex items-center gap-2">
                   <button
+                    type="button"
                     onClick={() => {
                       setTattooZoom((z) => {
                         const next = Math.max(1, Number((z - 0.5).toFixed(1)));
@@ -1329,6 +1216,7 @@ export default function App() {
                     {Math.round(tattooZoom * 100)}%
                   </span>
                   <button
+                    type="button"
                     onClick={() => setTattooZoom((z) => Math.min(4, Number((z + 0.5).toFixed(1))))}
                     disabled={tattooZoom >= 4}
                     className="p-2 rounded-full bg-stone-900 hover:bg-stone-800 disabled:opacity-40 text-amber-400 border border-amber-500/30 transition-colors"
@@ -1338,6 +1226,7 @@ export default function App() {
                   </button>
                   {tattooZoom > 1 && (
                     <button
+                      type="button"
                       onClick={() => {
                         setTattooZoom(1);
                         setTattooPan({ x: 0, y: 0 });
@@ -1349,8 +1238,9 @@ export default function App() {
                     </button>
                   )}
                   <button
+                    type="button"
                     onClick={() => setSelectedTattoo(null)}
-                    className="ml-2 px-3.5 py-2 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-bold text-xs inline-flex items-center gap-1 transition-colors"
+                    className="ml-2 px-4 py-2 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-xs inline-flex items-center gap-1.5 transition-colors shadow-lg"
                     aria-label="Sair"
                   >
                     <X size={16} /> Sair
@@ -1362,7 +1252,7 @@ export default function App() {
               <div
                 {...tattooTouchHandlers}
                 style={{ touchAction: 'none' }}
-                className="bg-black overflow-hidden h-[66vh] flex items-center justify-center p-4 select-none"
+                className="bg-black overflow-hidden h-[62vh] flex items-center justify-center p-4 select-none"
               >
                 <img
                   src={selectedTattoo.imagem}
@@ -1371,32 +1261,41 @@ export default function App() {
                     transform: `translate3d(${tattooPan.x}px, ${tattooPan.y}px, 0) scale(${tattooZoom})`,
                     transformOrigin: 'center center'
                   }}
-                  className="max-h-[62vh] w-auto object-contain rounded-lg transition-transform duration-100"
+                  className="max-h-[58vh] w-auto object-contain rounded-lg transition-transform duration-100"
                 />
               </div>
 
-              {/* Rodapé do Modal da Tatuagem */}
-              <div className="p-4 sm:px-6 bg-black border-t border-stone-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+              {/* Rodapé do Modal da Tatuagem com botão Fechar */}
+              <div className="p-4 sm:px-6 bg-black border-t border-stone-800 flex flex-col sm:flex-row items-center justify-between gap-3 relative z-30">
                 <p className="text-stone-300 text-xs sm:text-sm font-light text-center sm:text-left">
                   {selectedTattoo.descricao}{' '}
                   <span className="text-amber-400">
-                    (Podes fazer zoom com dois dedos ou duplo toque)
+                    (Pinça com 2 dedos ou duplo toque para zoom)
                   </span>
                 </p>
-                <a
-                  href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=Olá Art Oliveira! Vi a tatuagem "${encodeURIComponent(selectedTattoo.titulo)}" no teu site e gostaria de pedir um orçamento semelhante.`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-6 py-2.5 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-xs sm:text-sm transition-all flex items-center gap-2 whitespace-nowrap"
-                >
-                  <MessageCircle size={16} /> Pedir Orçamento Semelhante
-                </a>
+                <div className="flex items-center gap-2.5 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedTattoo(null)}
+                    className="px-5 py-2.5 rounded-full bg-stone-800 hover:bg-stone-700 text-white font-bold text-xs sm:text-sm transition-colors border border-stone-600"
+                  >
+                    Fechar
+                  </button>
+                  <a
+                    href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=Olá Art Oliveira! Vi a tatuagem "${encodeURIComponent(selectedTattoo.titulo)}" no teu site e gostaria de pedir um orçamento semelhante.`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-6 py-2.5 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-xs sm:text-sm transition-all flex items-center gap-2 whitespace-nowrap"
+                  >
+                    <MessageCircle size={16} /> Pedir Orçamento
+                  </a>
+                </div>
               </div>
             </div>
           </div>
         )}
 
-        {/* MODAL DE DETALHES E ZOOM COM OS DEDOS PARA DESENHOS / OBRAS */}
+        {/* MODAL DE DETALHES E ZOOM COM OS DEDOS PARA DESENHOS / OBRAS (SAÍDA FÁCIL) */}
         {selectedObra && (
           <div
             onClick={() => setSelectedObra(null)}
@@ -1408,8 +1307,9 @@ export default function App() {
             >
               {/* Botão de saída fácil no canto superior direito */}
               <button
+                type="button"
                 onClick={() => setSelectedObra(null)}
-                className="absolute top-4 right-4 z-20 bg-amber-400 hover:bg-amber-300 text-black px-3.5 py-2 rounded-full font-bold text-xs inline-flex items-center gap-1 transition-colors shadow-lg"
+                className="absolute top-4 right-4 z-40 bg-amber-400 hover:bg-amber-300 text-black px-4 py-2 rounded-full font-extrabold text-xs inline-flex items-center gap-1.5 transition-colors shadow-xl"
                 aria-label="Sair"
               >
                 <X size={16} /> Sair
@@ -1417,8 +1317,9 @@ export default function App() {
 
               {/* Área da Imagem com Pinça (2 dedos) / Duplo Toque / Controlos */}
               <div className="bg-black flex flex-col justify-between p-4 sm:p-5 border-b md:border-b-0 md:border-r border-stone-800">
-                <div className="flex items-center gap-2 mb-2">
+                <div className="flex items-center gap-2 mb-2 pr-20">
                   <button
+                    type="button"
                     onClick={() => {
                       setObraZoom((z) => {
                         const next = Math.max(1, Number((z - 0.5).toFixed(1)));
@@ -1436,6 +1337,7 @@ export default function App() {
                     {Math.round(obraZoom * 100)}%
                   </span>
                   <button
+                    type="button"
                     onClick={() => setObraZoom((z) => Math.min(4, Number((z + 0.5).toFixed(1))))}
                     disabled={obraZoom >= 4}
                     className="p-2 rounded-full bg-stone-900 hover:bg-stone-800 disabled:opacity-40 text-amber-400 border border-amber-500/30"
@@ -1445,6 +1347,7 @@ export default function App() {
                   </button>
                   {obraZoom > 1 && (
                     <button
+                      type="button"
                       onClick={() => {
                         setObraZoom(1);
                         setObraPan({ x: 0, y: 0 });
@@ -1460,7 +1363,7 @@ export default function App() {
                 <div
                   {...obraTouchHandlers}
                   style={{ touchAction: 'none' }}
-                  className="flex-1 min-h-[340px] max-h-[62vh] overflow-hidden flex items-center justify-center select-none"
+                  className="flex-1 min-h-[320px] max-h-[58vh] overflow-hidden flex items-center justify-center select-none"
                 >
                   <img
                     src={selectedObra.imagem}
@@ -1469,18 +1372,18 @@ export default function App() {
                       transform: `translate3d(${obraPan.x}px, ${obraPan.y}px, 0) scale(${obraZoom})`,
                       transformOrigin: 'center center'
                     }}
-                    className="max-h-[58vh] w-auto object-contain rounded-xl shadow-2xl transition-transform duration-100"
+                    className="max-h-[54vh] w-auto object-contain rounded-xl shadow-2xl transition-transform duration-100"
                   />
                 </div>
 
                 <p className="text-[11px] text-amber-300/90 text-center mt-2">
-                  Usa dois dedos (pinça) ou duplo toque na foto para ampliar
+                  Pinça com 2 dedos ou duplo toque para ampliar • Clica em Sair para fechar
                 </p>
               </div>
 
               <div className="p-6 sm:p-8 flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center gap-2 flex-wrap pr-16">
+                  <div className="flex items-center gap-2 flex-wrap pr-20">
                     <span className="bg-amber-400 text-black text-xs font-bold px-3 py-1 rounded-full shadow-md">
                       {selectedObra.categoria}
                     </span>
@@ -1544,10 +1447,11 @@ export default function App() {
                     <MessageCircle size={18} /> Consultar ou Adquirir
                   </a>
                   <button
+                    type="button"
                     onClick={() => setSelectedObra(null)}
-                    className="py-3.5 px-5 rounded-full bg-stone-900 hover:bg-stone-800 text-stone-200 border border-stone-700 font-semibold text-sm transition-colors"
+                    className="py-3.5 px-5 rounded-full bg-stone-800 hover:bg-stone-700 text-white border border-stone-600 font-bold text-sm transition-colors"
                   >
-                    Fechar
+                    Sair
                   </button>
                 </div>
               </div>
