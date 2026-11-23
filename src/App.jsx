@@ -50,8 +50,14 @@ export default function App() {
     document.head.appendChild(link);
   }, []);
 
-  // LINK DA ARTE DE FUNDO
+  // LINKS DE IMAGENS PRINCIPAIS
   const imagemFundoSite = 'https://i.postimg.cc/XNKJRMq8/IMG-5861.jpg';
+  const imagemSobreArtista = 'https://i.postimg.cc/8PbbnpFF/IMG-4746.jpg';
+
+  // REDES SOCIAIS E CONTACTOS
+  const whatsappNumber = '+2385844254';
+  const instagramArteHandle = 'artoliveira_oficial';
+  const instagramTattooHandle = 'olv_tattooart';
 
   // Galeria de Obras (Desenhos & Pinturas)
   const obras = [
@@ -70,7 +76,7 @@ export default function App() {
     }
   ];
 
-  // PORTFÓLIO DE TATUAGENS REALIZADAS
+  // PORTFÓLIO DE TATUAGENS REALIZADAS (Aparece logo no topo ao clicar em Tatuagens)
   const tatuagensRealizadas = [
     {
       id: 1,
@@ -182,8 +188,6 @@ export default function App() {
     }
   ];
 
-  const whatsappNumber = '+2385844254';
-
   const abrirModalTatuagem = (tattoo) => {
     setSelectedTattoo(tattoo);
     setTattooZoom(1);
@@ -270,18 +274,29 @@ export default function App() {
         }
       `}</style>
 
-      {/* IMAGEM DE FUNDO VISÍVEL E EQUILIBRADA */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <img
-          src={imagemFundoSite}
-          alt="Arte de Fundo Art Oliveira"
-          className="w-full h-full object-cover opacity-50 scale-100"
-        />
-        <div className="absolute inset-0 bg-black/55 backdrop-blur-[2px]" />
-      </div>
+      {/* IMAGEM DE FUNDO (Muda para a foto em tela inteira do artista quando abre a aba "Sobre") */}
+      {activeTab === 'sobre' ? (
+        <div className="fixed inset-0 z-0 pointer-events-none">
+          <img
+            src={imagemSobreArtista}
+            alt="Art Oliveira"
+            className="w-full h-full object-cover object-top opacity-95 transition-all duration-700"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/55 to-black/25" />
+        </div>
+      ) : (
+        <div className="fixed inset-0 z-0 pointer-events-none">
+          <img
+            src={imagemFundoSite}
+            alt="Arte de Fundo Art Oliveira"
+            className="w-full h-full object-cover opacity-50 scale-100"
+          />
+          <div className="absolute inset-0 bg-black/55 backdrop-blur-[2px]" />
+        </div>
+      )}
 
       {/* CONTEÚDO PRINCIPAL SOBRE O FUNDO */}
-      <div className="relative z-10">
+      <div className="relative z-10 flex flex-col min-h-screen">
         {/* Navegação Superior */}
         <header className="border-b border-amber-500/30 bg-black/85 backdrop-blur-md sticky top-0 z-40 shadow-2xl">
           <div className="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
@@ -343,42 +358,44 @@ export default function App() {
         </header>
 
         {/* Banner / Hero Section */}
-        <section className="relative overflow-hidden border-b border-amber-500/20">
-          <div className="max-w-6xl mx-auto px-4 py-14 md:py-20 text-center relative z-10">
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-black/80 text-amber-400 border border-amber-500/50 mb-6 backdrop-blur-md tracking-wider uppercase shadow-md">
-              <Sparkles size={14} /> Artista Visual &amp; Tatuador • Cabo Verde
-            </span>
-            <h2
-              style={{ fontFamily: "'Cinzel', serif" }}
-              className="text-3xl sm:text-5xl md:text-6xl font-bold text-white max-w-4xl mx-auto leading-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]"
-            >
-              Uma visão artística entre{' '}
-              <span className="text-amber-400 drop-shadow-[0_0_25px_rgba(251,191,36,0.6)]">
-                o papel e a pele
+        {activeTab !== 'tatuagem' && activeTab !== 'sobre' && (
+          <section className="relative overflow-hidden border-b border-amber-500/20">
+            <div className="max-w-6xl mx-auto px-4 py-14 md:py-20 text-center relative z-10">
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-black/80 text-amber-400 border border-amber-500/50 mb-6 backdrop-blur-md tracking-wider uppercase shadow-md">
+                <Sparkles size={14} /> Artista Visual &amp; Tatuador • Cabo Verde
               </span>
-            </h2>
-            <p className="text-stone-100 max-w-2xl mx-auto mt-5 text-sm sm:text-base leading-relaxed font-medium drop-shadow">
-              Desenhos realistas, pintura acrílica sobre diferentes superfícies e tatuagens realistas blackwork.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4 mt-8">
-              <button
-                onClick={() => setActiveTab('vendas')}
-                className="px-7 py-3 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-bold text-sm transition-all shadow-xl shadow-amber-500/30 hover:scale-105"
+              <h2
+                style={{ fontFamily: "'Cinzel', serif" }}
+                className="text-3xl sm:text-5xl md:text-6xl font-bold text-white max-w-4xl mx-auto leading-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]"
               >
-                Encomendas &amp; Preçário
-              </button>
-              <button
-                onClick={() => setActiveTab('tatuagem')}
-                className="px-7 py-3 rounded-full bg-black/90 hover:bg-stone-900 text-amber-400 border border-amber-500/50 font-semibold text-sm transition-all shadow-lg hover:border-amber-400 backdrop-blur-md"
-              >
-                Tatuagens &amp; Agendamento
-              </button>
+                Uma visão artística entre{' '}
+                <span className="text-amber-400 drop-shadow-[0_0_25px_rgba(251,191,36,0.6)]">
+                  o papel e a pele
+                </span>
+              </h2>
+              <p className="text-stone-100 max-w-2xl mx-auto mt-5 text-sm sm:text-base leading-relaxed font-medium drop-shadow">
+                Desenhos realistas, pintura acrílica sobre diferentes superfícies e tatuagens realistas blackwork.
+              </p>
+              <div className="flex flex-wrap justify-center gap-4 mt-8">
+                <button
+                  onClick={() => setActiveTab('vendas')}
+                  className="px-7 py-3 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-bold text-sm transition-all shadow-xl shadow-amber-500/30 hover:scale-105"
+                >
+                  Encomendas &amp; Preçário
+                </button>
+                <button
+                  onClick={() => setActiveTab('tatuagem')}
+                  className="px-7 py-3 rounded-full bg-black/90 hover:bg-stone-900 text-amber-400 border border-amber-500/50 font-semibold text-sm transition-all shadow-lg hover:border-amber-400 backdrop-blur-md"
+                >
+                  Tatuagens &amp; Agendamento
+                </button>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* Conteúdo Principal */}
-        <main className="max-w-6xl mx-auto px-4 py-12">
+        <main className="max-w-6xl w-full mx-auto px-4 py-10 flex-1">
           {/* SECÇÃO: GALERIA DE OBRAS COM ANIMAÇÃO DE ENTRADA */}
           {activeTab === 'galeria' && (
             <div key="galeria-animada">
@@ -411,7 +428,6 @@ export default function App() {
                           alt={obra.title}
                           className="animate-art-image w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                         />
-                        {/* Reflexo dourado animado na revelação */}
                         <div className="animate-gold-sweep pointer-events-none absolute inset-y-0 w-1/2 bg-gradient-to-r from-transparent via-amber-300/30 to-transparent" />
 
                         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
@@ -581,24 +597,35 @@ export default function App() {
             </div>
           )}
 
-          {/* SECÇÃO: TATUAGENS REALISTAS BLACKWORK + ANIMAÇÃO + ZOOM + AGENDAMENTO */}
+          {/* SECÇÃO: TATUAGENS REALISTAS BLACKWORK (LOGO NO TOPO AO ENTRAR!) */}
           {activeTab === 'tatuagem' && (
             <div key="tatuagens-animada" className="max-w-5xl mx-auto space-y-14">
-              {/* GALERIA DE TATUAGENS REALIZADAS */}
+              {/* GALERIA DE TATUAGENS REALIZADAS LOGO NA ENTRADA */}
               <div>
-                <div className="text-center max-w-2xl mx-auto mb-10">
-                  <span className="text-xs font-bold uppercase tracking-[0.25em] text-amber-400">
-                    Portfólio na Pele
-                  </span>
-                  <h3
-                    style={{ fontFamily: "'Cinzel', serif" }}
-                    className="text-3xl sm:text-4xl font-extrabold text-white mt-2 drop-shadow"
+                <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8 border-b border-amber-500/20 pb-5">
+                  <div className="text-center sm:text-left">
+                    <span className="text-xs font-bold uppercase tracking-[0.25em] text-amber-400">
+                      Portfólio na Pele
+                    </span>
+                    <h3
+                      style={{ fontFamily: "'Cinzel', serif" }}
+                      className="text-2xl sm:text-4xl font-extrabold text-white mt-1 drop-shadow"
+                    >
+                      Tatuagens Realistas Blackwork
+                    </h3>
+                    <p className="text-stone-200 text-xs sm:text-sm mt-1.5 font-medium">
+                      Clica em qualquer tatuagem para ampliar em alta definição e fazer zoom nos detalhes
+                    </p>
+                  </div>
+
+                  <a
+                    href={`https://instagram.com/${instagramTattooHandle}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-black/90 hover:bg-stone-900 text-amber-400 border border-amber-500/40 text-xs sm:text-sm font-bold transition-all shadow-lg shrink-0"
                   >
-                    Tatuagens Realistas Blackwork
-                  </h3>
-                  <p className="text-stone-200 text-sm sm:text-base mt-3 leading-relaxed font-medium">
-                    Explora alguns dos trabalhos realizados. Clica em qualquer tatuagem para abrir em alta definição e fazer zoom nos detalhes.
-                  </p>
+                    <Instagram size={16} /> @{instagramTattooHandle}
+                  </a>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
@@ -615,7 +642,6 @@ export default function App() {
                           alt={tattoo.titulo}
                           className="animate-art-image w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                         />
-                        {/* Reflexo dourado animado na revelação */}
                         <div className="animate-gold-sweep pointer-events-none absolute inset-y-0 w-1/2 bg-gradient-to-r from-transparent via-amber-300/30 to-transparent" />
 
                         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/15 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
@@ -876,67 +902,67 @@ export default function App() {
             </div>
           )}
 
-          {/* SECÇÃO: SOBRE O ARTISTA */}
+          {/* SECÇÃO: SOBRE O ARTISTA (IMAGEM EM TELA INTEIRA NO FUNDO + INFORMAÇÕES APARENTES) */}
           {activeTab === 'sobre' && (
-            <div className="max-w-4xl mx-auto space-y-8">
-              <div className="bg-black/85 backdrop-blur-md border border-amber-500/40 rounded-3xl p-6 sm:p-10 shadow-2xl flex flex-col md:flex-row items-center md:items-start gap-8 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-
-                <div className="relative shrink-0">
-                  <img
-                    src="https://i.postimg.cc/8PbbnpFF/IMG-4746.jpg"
-                    alt="Art Oliveira"
-                    className="w-40 h-40 sm:w-48 sm:h-48 rounded-2xl object-cover border-2 border-amber-400 shadow-2xl"
-                  />
-                  <span className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-amber-400 text-black text-[11px] font-extrabold px-3 py-1 rounded-full whitespace-nowrap shadow-md">
-                    Artista Visual &amp; Tatuador
+            <div className="min-h-[75vh] flex flex-col justify-end max-w-4xl mx-auto pt-32 sm:pt-48 pb-6">
+              <div className="bg-black/70 backdrop-blur-md border border-amber-500/40 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-5">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <span className="text-xs uppercase tracking-[0.25em] text-amber-400 font-bold">
+                    Biografia &amp; Percurso
+                  </span>
+                  <span className="bg-amber-400 text-black text-[11px] font-extrabold px-3.5 py-1 rounded-full shadow-md">
+                    Artista Visual &amp; Tatuador • Cabo Verde
                   </span>
                 </div>
 
-                <div className="text-center md:text-left relative z-10">
-                  <p className="text-xs uppercase tracking-[0.25em] text-amber-400 font-bold">
-                    Biografia &amp; Percurso
+                <h3
+                  style={{ fontFamily: "'Cinzel', serif" }}
+                  className="text-3xl sm:text-5xl font-extrabold text-white drop-shadow"
+                >
+                  Art Oliveira
+                </h3>
+                <p className="text-amber-400 text-sm sm:text-base font-medium">
+                  Uma visão artística entre o papel e a pele
+                </p>
+
+                <div className="space-y-3 text-stone-100 leading-relaxed text-sm sm:text-base font-light">
+                  <p>
+                    <strong className="text-white font-semibold">Art Oliveira</strong> trabalha com{' '}
+                    <strong className="text-amber-400 font-medium">desenhos realistas</strong>,{' '}
+                    <strong className="text-amber-400 font-medium">pintura acrílica sobre diferentes superfícies</strong> e{' '}
+                    <strong className="text-amber-400 font-medium">tatuagens realistas blackwork</strong>.
                   </p>
-                  <h3
-                    style={{ fontFamily: "'Cinzel', serif" }}
-                    className="text-3xl sm:text-4xl font-extrabold text-white mt-1 drop-shadow"
+                  <p>
+                    A proposta é explorar trabalhos realistas e diferentes estilos para expressar a arte tanto no papel e nas superfícies físicas como na pele.
+                  </p>
+                </div>
+
+                {/* BOTÕES DOS DOIS INSTAGRAMS + WHATSAPP */}
+                <div className="flex flex-wrap gap-3 pt-3">
+                  <a
+                    href={`https://instagram.com/${instagramArteHandle}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-black/90 hover:bg-stone-900 text-amber-400 border border-amber-500/40 text-xs sm:text-sm font-bold transition-all shadow-md"
                   >
-                    Art Oliveira
-                  </h3>
-                  <p className="text-amber-400 text-sm mt-1 font-medium">
-                    Uma visão artística entre o papel e a pele • Cabo Verde
-                  </p>
-
-                  <div className="space-y-4 text-stone-200 leading-relaxed text-sm sm:text-base mt-5 font-light">
-                    <p>
-                      <strong className="text-white font-semibold">Art Oliveira</strong> trabalha com{' '}
-                      <strong className="text-amber-400 font-medium">desenhos realistas</strong>,{' '}
-                      <strong className="text-amber-400 font-medium">pintura acrílica sobre diferentes superfícies</strong> e{' '}
-                      <strong className="text-amber-400 font-medium">tatuagens realistas blackwork</strong>.
-                    </p>
-                    <p>
-                      A proposta é explorar trabalhos realistas e diferentes estilos para expressar a arte tanto no papel e nas superfícies físicas como na pele.
-                    </p>
-                  </div>
-
-                  <div className="flex flex-wrap gap-3 mt-7 justify-center md:justify-start">
-                    <a
-                      href="https://instagram.com/artoliveira_oficial"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-black hover:bg-stone-900 text-amber-400 border border-amber-500/40 text-sm font-bold transition-all shadow-md"
-                    >
-                      <Instagram size={17} /> @artoliveira_oficial
-                    </a>
-                    <a
-                      href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=Olá Art Oliveira! Visitei o teu portfólio e gostaria de falar contigo.`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-amber-400 hover:bg-amber-300 text-black text-sm font-bold transition-all shadow-lg shadow-amber-500/20"
-                    >
-                      <MessageCircle size={17} /> Falar no WhatsApp
-                    </a>
-                  </div>
+                    <Instagram size={17} /> Arte: @{instagramArteHandle}
+                  </a>
+                  <a
+                    href={`https://instagram.com/${instagramTattooHandle}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-black/90 hover:bg-stone-900 text-amber-400 border border-amber-500/40 text-xs sm:text-sm font-bold transition-all shadow-md"
+                  >
+                    <Instagram size={17} /> Tatuagens: @{instagramTattooHandle}
+                  </a>
+                  <a
+                    href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=Olá Art Oliveira! Visitei o teu portfólio e gostaria de falar contigo.`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-amber-400 hover:bg-amber-300 text-black text-xs sm:text-sm font-bold transition-all shadow-lg shadow-amber-500/20"
+                  >
+                    <MessageCircle size={17} /> Falar no WhatsApp
+                  </a>
                 </div>
               </div>
             </div>
@@ -1127,7 +1153,7 @@ export default function App() {
         )}
 
         {/* Rodapé */}
-        <footer className="border-t border-amber-500/30 mt-20 py-10 text-center text-stone-400 text-sm bg-black/90 backdrop-blur-md">
+        <footer className="border-t border-amber-500/30 mt-16 py-10 text-center text-stone-400 text-sm bg-black/90 backdrop-blur-md">
           <p
             style={{ fontFamily: "'Cinzel', serif" }}
             className="text-amber-400 font-bold tracking-[0.2em] text-base drop-shadow"
