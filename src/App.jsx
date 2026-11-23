@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   MessageCircle,
   Instagram,
@@ -27,7 +27,21 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('galeria');
   const [selectedObra, setSelectedObra] = useState(null);
   const [selectedTattoo, setSelectedTattoo] = useState(null);
+
+  // Estado de zoom e deslocamento por toque / pinça nos modais
+  const [obraZoom, setObraZoom] = useState(1);
+  const [obraPan, setObraPan] = useState({ x: 0, y: 0 });
   const [tattooZoom, setTattooZoom] = useState(1);
+  const [tattooPan, setTattooPan] = useState({ x: 0, y: 0 });
+
+  const pinchStartRef = useRef({
+    distance: 0,
+    zoom: 1,
+    lastX: 0,
+    lastY: 0,
+    isPanning: false,
+    lastTap: 0
+  });
 
   // Assistente de respostas rápidas (FAQ interativo)
   const [selectedFaqId, setSelectedFaqId] = useState('blackwork');
@@ -48,6 +62,18 @@ export default function App() {
       'https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Montserrat:wght@300;400;500;600;700&display=swap';
     link.rel = 'stylesheet';
     document.head.appendChild(link);
+  }, []);
+
+  // Fechar modais com tecla ESC
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setSelectedObra(null);
+        setSelectedTattoo(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   // LINKS DE IMAGENS DE FUNDO POR SECÇÃO
@@ -90,7 +116,7 @@ export default function App() {
     }
   ];
 
-  // PORTFÓLIO DE TATUAGENS REALIZADAS (Aparece logo no topo ao clicar em Tatuagens)
+  // PORTFÓLIO DE TATUAGENS REALIZADAS
   const tatuagensRealizadas = [
     {
       id: 1,
@@ -202,9 +228,82 @@ export default function App() {
     }
   ];
 
+  // Funções auxiliares de toque (pinça com dois dedos + arrastar + duplo toque)
+  const getTouchDistance = (touches) => {
+    const dx = touches[0].clientX - touches[1].clientX;
+    const dy = touches[0].clientY - touches[1].clientY;
+    return Math.hypot(dx, dy);
+  };
+
+  const criarGestosZoom = (zoom, setZoom, pan, setPan) => ({
+    onTouchStart: (e) => {
+      if (e.touches.length === 2) {
+        pinchStartRef.current.distance = getTouchDistance(e.touches);
+        pinchStartRef.current.zoom = zoom;
+        pinchStartRef.current.isPanning = false;
+      } else if (e.touches.length === 1) {
+        const now = Date.now();
+        if (now - pinchStartRef.current.lastTap < 280) {
+          if (zoom > 1) {
+            setZoom(1);
+            setPan({ x: 0, y: 0 });
+          } else {
+            setZoom(2);
+          }
+        }
+        pinchStartRef.current.lastTap = now;
+        if (zoom > 1) {
+          pinchStartRef.current.isPanning = true;
+          pinchStartRef.current.lastX = e.touches[0].clientX - pan.x;
+          pinchStartRef.current.lastY = e.touches[0].clientY - pan.y;
+        }
+      }
+    },
+    onTouchMove: (e) => {
+      if (e.touches.length === 2 && pinchStartRef.current.distance > 0) {
+        e.preventDefault();
+        const dist = getTouchDistance(e.touches);
+        const scale = (dist / pinchStartRef.current.distance) * pinchStartRef.current.zoom;
+        const clamped = Math.min(4, Math.max(1, Number(scale.toFixed(2))));
+        setZoom(clamped);
+        if (clamped === 1) {
+          setPan({ x: 0, y: 0 });
+        }
+      } else if (e.touches.length === 1 && pinchStartRef.current.isPanning && zoom > 1) {
+        e.preventDefault();
+        setPan({
+          x: e.touches[0].clientX - pinchStartRef.current.lastX,
+          y: e.touches[0].clientY - pinchStartRef.current.lastY
+        });
+      }
+    },
+    onTouchEnd: () => {
+      pinchStartRef.current.distance = 0;
+      pinchStartRef.current.isPanning = false;
+    },
+    onDoubleClick: () => {
+      if (zoom > 1) {
+        setZoom(1);
+        setPan({ x: 0, y: 0 });
+      } else {
+        setZoom(2);
+      }
+    }
+  });
+
+  const obraTouchHandlers = criarGestosZoom(obraZoom, setObraZoom, obraPan, setObraPan);
+  const tattooTouchHandlers = criarGestosZoom(tattooZoom, setTattooZoom, tattooPan, setTattooPan);
+
+  const abrirModalObra = (obra) => {
+    setSelectedObra(obra);
+    setObraZoom(1);
+    setObraPan({ x: 0, y: 0 });
+  };
+
   const abrirModalTatuagem = (tattoo) => {
     setSelectedTattoo(tattoo);
     setTattooZoom(1);
+    setTattooPan({ x: 0, y: 0 });
   };
 
   const handleBookingChange = (e) => {
@@ -249,49 +348,45 @@ export default function App() {
       style={{ fontFamily: "'Montserrat', sans-serif" }}
       className="min-h-screen bg-black text-stone-100 selection:bg-amber-500/40 relative"
     >
-      {/* ESTILOS DE ANIMAÇÃO SOFISTICADA PARA TODAS AS SECÇÕES E ELEMENTOS */}
+      {/* ANIMAÇÕES NÍTIDAS (SEM DESFOQUE / SEM EFEITO TURVO) */}
       <style>{`
-        @keyframes pagePresentation {
+        @keyframes sectionSpotlight {
           0% {
             opacity: 0;
-            transform: translateY(28px) scale(0.97);
-            filter: blur(8px);
+            transform: translateY(24px) scale(0.98);
           }
           100% {
             opacity: 1;
             transform: translateY(0) scale(1);
-            filter: blur(0);
           }
         }
 
-        @keyframes artCardReveal {
+        @keyframes cardEntranceSharp {
           0% {
             opacity: 0;
-            transform: translateY(40px) scale(0.93);
-            filter: blur(6px);
+            transform: translateY(32px) scale(0.96);
           }
           100% {
             opacity: 1;
             transform: translateY(0) scale(1);
-            filter: blur(0);
           }
         }
 
-        @keyframes artImageEntrance {
-          0% {
-            transform: scale(1.18);
-            filter: brightness(0.6) contrast(1.15);
-          }
-          100% {
-            transform: scale(1);
-            filter: brightness(1) contrast(1);
-          }
-        }
-
-        @keyframes portraitBackdropEntrance {
+        @keyframes featureBannerPop {
           0% {
             opacity: 0;
-            transform: scale(1.06);
+            transform: translateY(18px) scale(0.97);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+
+        @keyframes bgCrispEntrance {
+          0% {
+            opacity: 0.35;
+            transform: scale(1.04);
           }
           100% {
             opacity: 1;
@@ -304,8 +399,8 @@ export default function App() {
             transform: translateX(-120%) skewX(-20deg);
             opacity: 0;
           }
-          40% {
-            opacity: 0.55;
+          45% {
+            opacity: 0.45;
           }
           100% {
             transform: translateX(220%) skewX(-20deg);
@@ -324,85 +419,80 @@ export default function App() {
           }
         }
 
-        .animate-page-stage {
-          animation: pagePresentation 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        .animate-section-stage {
+          animation: sectionSpotlight 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .animate-feature-banner {
+          opacity: 0;
+          animation: featureBannerPop 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.06s forwards;
         }
 
         .animate-stagger-1 {
           opacity: 0;
-          animation: pagePresentation 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.08s forwards;
+          animation: sectionSpotlight 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
         }
 
         .animate-stagger-2 {
           opacity: 0;
-          animation: pagePresentation 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.18s forwards;
+          animation: sectionSpotlight 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.18s forwards;
         }
 
         .animate-stagger-3 {
           opacity: 0;
-          animation: pagePresentation 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.28s forwards;
+          animation: sectionSpotlight 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.26s forwards;
         }
 
         .animate-stagger-4 {
           opacity: 0;
-          animation: pagePresentation 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.38s forwards;
+          animation: sectionSpotlight 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.34s forwards;
         }
 
         .animate-art-card {
           opacity: 0;
-          animation: artCardReveal 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+          animation: cardEntranceSharp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
 
-        .animate-art-image {
-          animation: artImageEntrance 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-        }
-
-        .animate-portrait-bg {
-          animation: portraitBackdropEntrance 1.1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        .animate-bg-crisp {
+          animation: bgCrispEntrance 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
 
         .animate-gold-sweep {
-          animation: goldSweep 1.3s ease-out 0.25s forwards;
+          animation: goldSweep 1.25s ease-out 0.2s forwards;
         }
 
         .animate-gold-line {
           transform-origin: left center;
-          animation: goldLineExpand 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.15s forwards;
+          animation: goldLineExpand 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.12s forwards;
         }
       `}</style>
 
-      {/* IMAGEM DE FUNDO DINÂMICA POR SECÇÃO */}
+      {/* IMAGEM DE FUNDO TOTALMENTE VISÍVEL E NÍTIDA EM TODAS AS SECÇÕES */}
       {activeTab === 'sobre' ? (
         <div key="bg-sobre" className="fixed inset-0 z-0 pointer-events-none">
           <img
             src={imagemSobreArtista}
             alt="Art Oliveira"
             style={{ objectPosition: '50% 8%' }}
-            className="animate-portrait-bg w-full h-full object-cover"
+            className="animate-bg-crisp w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-black/90" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/85" />
         </div>
       ) : (
         <div key={`bg-${activeTab}`} className="fixed inset-0 z-0 pointer-events-none">
           <img
             src={fundoAtual}
             alt={`Fundo ${activeTab} Art Oliveira`}
-            className="animate-portrait-bg w-full h-full object-cover opacity-55 scale-100"
+            className="animate-bg-crisp w-full h-full object-cover opacity-90"
           />
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-[1.5px]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/15 to-black/75" />
         </div>
       )}
 
       {/* CONTEÚDO PRINCIPAL SOBRE O FUNDO */}
       <div className="relative z-10 flex flex-col min-h-screen">
-        {/* Navegação Superior */}
-        <header
-          className={`border-b transition-colors duration-300 sticky top-0 z-40 shadow-xl ${
-            activeTab === 'sobre'
-              ? 'border-amber-500/20 bg-black/30 backdrop-blur-[3px]'
-              : 'border-amber-500/30 bg-black/80 backdrop-blur-md shadow-2xl'
-          }`}
-        >
+        {/* Navegação Superior (Transparente em cima para deixar o fundo aparecer) */}
+        <header className="border-b border-amber-500/20 bg-black/30 backdrop-blur-[2px] sticky top-0 z-40">
           <div className="max-w-6xl mx-auto px-4 py-3 sm:py-4 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4">
             <div
               onClick={() => handleTabChange('galeria')}
@@ -414,22 +504,18 @@ export default function App() {
               >
                 ART OLIVEIRA
               </h1>
-              <p className="text-[10px] text-amber-300/95 tracking-[0.28em] uppercase mt-0.5 font-medium drop-shadow-[0_1px_6px_rgba(0,0,0,0.95)]">
+              <p className="text-[10px] text-amber-200 tracking-[0.28em] uppercase mt-0.5 font-medium drop-shadow-[0_1px_6px_rgba(0,0,0,0.95)]">
                 Uma visão artística entre o papel e a pele
               </p>
             </div>
 
-            <nav
-              className={`flex flex-wrap justify-center gap-1.5 sm:gap-2 p-1.5 rounded-full border border-amber-500/40 shadow-lg ${
-                activeTab === 'sobre' ? 'bg-black/45 backdrop-blur-sm' : 'bg-black/80'
-              }`}
-            >
+            <nav className="flex flex-wrap justify-center gap-1.5 sm:gap-2 p-1.5 rounded-full border border-amber-500/35 bg-black/45 backdrop-blur-[2px] shadow-lg">
               <button
                 onClick={() => handleTabChange('galeria')}
                 className={`px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 ${
                   activeTab === 'galeria'
                     ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-lg shadow-amber-500/30 font-bold scale-105'
-                    : 'text-stone-100 hover:text-amber-400 hover:bg-white/5'
+                    : 'text-stone-100 hover:text-amber-400 hover:bg-black/30'
                 }`}
               >
                 Galeria
@@ -439,7 +525,7 @@ export default function App() {
                 className={`px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 ${
                   activeTab === 'vendas'
                     ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-lg shadow-amber-500/30 font-bold scale-105'
-                    : 'text-stone-100 hover:text-amber-400 hover:bg-white/5'
+                    : 'text-stone-100 hover:text-amber-400 hover:bg-black/30'
                 }`}
               >
                 Encomendas &amp; Vendas
@@ -449,7 +535,7 @@ export default function App() {
                 className={`px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 ${
                   activeTab === 'tatuagem'
                     ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-lg shadow-amber-500/30 font-bold scale-105'
-                    : 'text-stone-100 hover:text-amber-400 hover:bg-white/5'
+                    : 'text-stone-100 hover:text-amber-400 hover:bg-black/30'
                 }`}
               >
                 Tatuagens
@@ -459,7 +545,7 @@ export default function App() {
                 className={`px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 ${
                   activeTab === 'sobre'
                     ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-lg shadow-amber-500/30 font-bold scale-105'
-                    : 'text-stone-100 hover:text-amber-400 hover:bg-white/5'
+                    : 'text-stone-100 hover:text-amber-400 hover:bg-black/30'
                 }`}
               >
                 Sobre
@@ -472,25 +558,25 @@ export default function App() {
         {activeTab !== 'tatuagem' && activeTab !== 'sobre' && (
           <section
             key={`hero-${activeTab}`}
-            className="animate-page-stage relative overflow-hidden border-b border-amber-500/20"
+            className="animate-section-stage relative overflow-hidden border-b border-amber-500/20"
           >
-            <div className="max-w-6xl mx-auto px-4 py-14 md:py-20 text-center relative z-10">
-              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-black/80 text-amber-400 border border-amber-500/50 mb-6 backdrop-blur-md tracking-wider uppercase shadow-md">
+            <div className="max-w-6xl mx-auto px-4 py-12 md:py-16 text-center relative z-10">
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-black/65 text-amber-400 border border-amber-500/50 mb-5 tracking-wider uppercase shadow-md">
                 <Sparkles size={14} /> Artista Visual &amp; Tatuador • Cabo Verde
               </span>
               <h2
                 style={{ fontFamily: "'Cinzel', serif" }}
-                className="text-3xl sm:text-5xl md:text-6xl font-bold text-white max-w-4xl mx-auto leading-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]"
+                className="text-3xl sm:text-5xl md:text-6xl font-bold text-white max-w-4xl mx-auto leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.95)]"
               >
                 Uma visão artística entre{' '}
-                <span className="text-amber-400 drop-shadow-[0_0_25px_rgba(251,191,36,0.6)]">
+                <span className="text-amber-400 drop-shadow-[0_0_20px_rgba(251,191,36,0.6)]">
                   o papel e a pele
                 </span>
               </h2>
-              <p className="text-stone-100 max-w-2xl mx-auto mt-5 text-sm sm:text-base leading-relaxed font-medium drop-shadow">
+              <p className="text-stone-100 max-w-2xl mx-auto mt-4 text-sm sm:text-base leading-relaxed font-medium drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
                 Desenhos realistas, pintura acrílica sobre diferentes superfícies e tatuagens realistas blackwork.
               </p>
-              <div className="flex flex-wrap justify-center gap-4 mt-8">
+              <div className="flex flex-wrap justify-center gap-4 mt-7">
                 <button
                   onClick={() => handleTabChange('vendas')}
                   className="px-7 py-3 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-bold text-sm transition-all shadow-xl shadow-amber-500/30 hover:scale-105"
@@ -499,7 +585,7 @@ export default function App() {
                 </button>
                 <button
                   onClick={() => handleTabChange('tatuagem')}
-                  className="px-7 py-3 rounded-full bg-black/90 hover:bg-stone-900 text-amber-400 border border-amber-500/50 font-semibold text-sm transition-all shadow-lg hover:border-amber-400 backdrop-blur-md"
+                  className="px-7 py-3 rounded-full bg-black/75 hover:bg-stone-900 text-amber-400 border border-amber-500/50 font-semibold text-sm transition-all shadow-lg hover:border-amber-400"
                 >
                   Tatuagens &amp; Agendamento
                 </button>
@@ -510,22 +596,52 @@ export default function App() {
 
         {/* Conteúdo Principal */}
         <main className="max-w-6xl w-full mx-auto px-4 py-8 sm:py-10 flex-1 flex flex-col">
-          {/* SECÇÃO: GALERIA DE OBRAS COM APRESENTAÇÃO */}
+          {/* SECÇÃO: GALERIA DE OBRAS COM APRESENTAÇÃO DE OBRA */}
           {activeTab === 'galeria' && (
-            <div key="sec-galeria" className="animate-page-stage">
-              <div className="animate-stagger-1 flex flex-col sm:flex-row justify-between items-center gap-4 mb-10 pb-6 relative">
+            <div key="sec-galeria" className="animate-section-stage space-y-8">
+              {/* Apresentação em destaque ao entrar na Galeria */}
+              <div
+                onClick={() => abrirModalObra(obras[0])}
+                className="animate-feature-banner bg-black/65 hover:bg-black/75 border border-amber-500/40 hover:border-amber-400 rounded-3xl p-4 sm:p-5 flex flex-col sm:flex-row items-center gap-4 sm:gap-6 cursor-pointer transition-all shadow-2xl relative overflow-hidden"
+              >
+                <div className="animate-gold-sweep pointer-events-none absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-amber-300/25 to-transparent" />
+                <img
+                  src={obras[0].imagem}
+                  alt={obras[0].title}
+                  className="w-24 h-28 sm:w-28 sm:h-32 object-cover rounded-2xl border border-amber-400/50 shrink-0 shadow-lg"
+                />
+                <div className="flex-1 text-center sm:text-left space-y-1">
+                  <span className="text-[11px] font-bold uppercase tracking-[0.22em] text-amber-400">
+                    Apresentação • Desenhos Realistas
+                  </span>
+                  <h3
+                    style={{ fontFamily: "'Cinzel', serif" }}
+                    className="text-xl sm:text-2xl font-bold text-white"
+                  >
+                    {obras[0].title} — {obras[0].dimensoes}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-stone-200 font-light line-clamp-2">
+                    {obras[0].descricao}
+                  </p>
+                </div>
+                <span className="text-xs font-bold text-amber-400 inline-flex items-center gap-1 shrink-0">
+                  Abrir &amp; Zoom <ArrowUpRight size={15} />
+                </span>
+              </div>
+
+              <div className="animate-stagger-1 flex flex-col sm:flex-row justify-between items-center gap-4 pb-5 relative">
                 <div>
-                  <span className="text-[11px] font-bold uppercase tracking-[0.25em] text-amber-400">
+                  <span className="text-[11px] font-bold uppercase tracking-[0.25em] text-amber-400 drop-shadow">
                     Exposição Digital
                   </span>
                   <h3
                     style={{ fontFamily: "'Cinzel', serif" }}
-                    className="text-2xl sm:text-3xl font-bold text-white tracking-wide drop-shadow mt-1"
+                    className="text-2xl sm:text-3xl font-bold text-white tracking-wide drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] mt-1"
                   >
                     Obras em Destaque
                   </h3>
-                  <p className="text-xs text-amber-300 mt-1 font-medium">
-                    Clica na obra para ampliar e consultar a ficha técnica completa
+                  <p className="text-xs text-amber-200 mt-1 font-medium drop-shadow">
+                    Clica num desenho para abrir, fazer zoom com os dedos e sair facilmente
                   </p>
                 </div>
                 <div className="animate-gold-line absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-amber-400/70 via-amber-500/20 to-transparent" />
@@ -535,26 +651,26 @@ export default function App() {
                 {obras.map((obra, index) => (
                   <div
                     key={obra.id}
-                    onClick={() => setSelectedObra(obra)}
-                    style={{ animationDelay: `${index * 160 + 120}ms` }}
-                    className="animate-art-card bg-black/85 backdrop-blur-md border border-amber-500/30 rounded-2xl overflow-hidden group hover:border-amber-400 transition-all duration-300 cursor-pointer flex flex-col justify-between shadow-2xl"
+                    onClick={() => abrirModalObra(obra)}
+                    style={{ animationDelay: `${index * 150 + 120}ms` }}
+                    className="animate-art-card bg-black/75 border border-amber-500/35 rounded-2xl overflow-hidden group hover:border-amber-400 transition-all duration-300 cursor-pointer flex flex-col justify-between shadow-2xl"
                   >
                     <div>
                       <div className="aspect-[4/5] overflow-hidden bg-stone-950 relative">
                         <img
                           src={obra.imagem}
                           alt={obra.title || 'Desenho Realista'}
-                          className="animate-art-image w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
-                        <div className="animate-gold-sweep pointer-events-none absolute inset-y-0 w-1/2 bg-gradient-to-r from-transparent via-amber-300/30 to-transparent" />
+                        <div className="animate-gold-sweep pointer-events-none absolute inset-y-0 w-1/2 bg-gradient-to-r from-transparent via-amber-300/25 to-transparent" />
 
-                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/15 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
 
-                        <span className="absolute top-3 left-3 bg-black/90 backdrop-blur-md text-amber-400 text-xs font-bold px-3 py-1 rounded-full border border-amber-500/30 shadow-lg">
+                        <span className="absolute top-3 left-3 bg-black/85 text-amber-400 text-xs font-bold px-3 py-1 rounded-full border border-amber-500/30 shadow-lg">
                           {obra.categoria}
                         </span>
 
-                        <span className="absolute top-3 right-3 bg-black/90 backdrop-blur-md text-amber-400 p-2 rounded-full border border-amber-500/30 opacity-90 group-hover:opacity-100 transition-all">
+                        <span className="absolute top-3 right-3 bg-black/85 text-amber-400 p-2 rounded-full border border-amber-500/30">
                           <Maximize2 size={15} />
                         </span>
 
@@ -595,7 +711,7 @@ export default function App() {
                         )}
                       </span>
                       <span className="text-xs font-bold text-amber-400 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
-                        Ver detalhes <ArrowUpRight size={14} />
+                        Ver &amp; Zoom <ArrowUpRight size={14} />
                       </span>
                     </div>
                   </div>
@@ -606,18 +722,48 @@ export default function App() {
 
           {/* SECÇÃO: ENCOMENDAS & VENDAS DE ARTE COM APRESENTAÇÃO */}
           {activeTab === 'vendas' && (
-            <div key="sec-vendas" className="animate-page-stage max-w-4xl mx-auto space-y-10">
+            <div key="sec-vendas" className="animate-section-stage max-w-4xl mx-auto space-y-10">
+              {/* Apresentação em destaque ao entrar em Encomendas & Vendas */}
+              <div
+                onClick={() => abrirModalObra(obras[0])}
+                className="animate-feature-banner bg-black/70 hover:bg-black/80 border border-amber-500/45 hover:border-amber-400 rounded-3xl p-4 sm:p-5 flex flex-col sm:flex-row items-center gap-4 sm:gap-6 cursor-pointer transition-all shadow-2xl relative overflow-hidden"
+              >
+                <div className="animate-gold-sweep pointer-events-none absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-amber-300/25 to-transparent" />
+                <img
+                  src={obras[0].imagem}
+                  alt="Apresentação Encomendas"
+                  className="w-24 h-28 sm:w-28 sm:h-32 object-cover rounded-2xl border border-amber-400/50 shrink-0 shadow-lg"
+                />
+                <div className="flex-1 text-center sm:text-left space-y-1">
+                  <span className="text-[11px] font-bold uppercase tracking-[0.22em] text-amber-400">
+                    Apresentação • Pintura &amp; Encomendas
+                  </span>
+                  <h4
+                    style={{ fontFamily: "'Cinzel', serif" }}
+                    className="text-xl sm:text-2xl font-bold text-white"
+                  >
+                    Pintura Acrílica &amp; Desenhos Realistas
+                  </h4>
+                  <p className="text-xs sm:text-sm text-stone-200 font-light">
+                    Quadros em tela (até 90 cm e acima de 90 cm) e desenhos realistas feitos sob encomenda.
+                  </p>
+                </div>
+                <span className="text-xs font-bold text-amber-400 inline-flex items-center gap-1 shrink-0">
+                  Ver obra <ArrowUpRight size={15} />
+                </span>
+              </div>
+
               <div className="animate-stagger-1 text-center max-w-2xl mx-auto">
-                <span className="text-xs font-bold uppercase tracking-[0.25em] text-amber-400">
+                <span className="text-xs font-bold uppercase tracking-[0.25em] text-amber-400 drop-shadow">
                   Encomendas &amp; Vendas
                 </span>
                 <h3
                   style={{ fontFamily: "'Cinzel', serif" }}
-                  className="text-3xl sm:text-4xl font-extrabold text-white mt-2 drop-shadow"
+                  className="text-3xl sm:text-4xl font-extrabold text-white mt-2 drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)]"
                 >
                   Trabalhos Realistas &amp; Diferentes Estilos
                 </h3>
-                <p className="text-stone-200 text-sm sm:text-base mt-3 leading-relaxed font-medium">
+                <p className="text-stone-100 text-sm sm:text-base mt-3 leading-relaxed font-medium drop-shadow">
                   Trabalhos realistas e em diferentes estilos para explorar a arte, incluindo pintura acrílica sobre diferentes superfícies e encomendas personalizadas.
                 </p>
               </div>
@@ -628,12 +774,12 @@ export default function App() {
                   <div
                     key={opcao.id}
                     style={{ animationDelay: `${idx * 150 + 140}ms` }}
-                    className="animate-art-card bg-black/90 backdrop-blur-md border border-amber-500/40 hover:border-amber-400 transition-all rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden"
+                    className="animate-art-card bg-black/80 border border-amber-500/40 hover:border-amber-400 transition-all rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden"
                   >
-                    <div className="animate-gold-sweep pointer-events-none absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-amber-400/15 to-transparent" />
+                    <div className="animate-gold-sweep pointer-events-none absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-amber-400/20 to-transparent" />
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative z-10">
                       <div className="space-y-3 flex-1">
-                        <span className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
+                        <span className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-amber-400 bg-amber-500/15 px-3 py-1 rounded-full border border-amber-500/30">
                           <ShoppingBag size={13} /> {opcao.sub}
                         </span>
                         <h4
@@ -642,7 +788,7 @@ export default function App() {
                         >
                           {opcao.titulo}
                         </h4>
-                        <p className="text-stone-300 text-sm leading-relaxed font-light">
+                        <p className="text-stone-200 text-sm leading-relaxed font-light">
                           {opcao.descricao}
                         </p>
 
@@ -672,7 +818,7 @@ export default function App() {
               </div>
 
               {/* PREÇÁRIO DE REFERÊNCIA PARA QUADROS (PRICE LIST) */}
-              <div className="animate-stagger-3 bg-black/90 backdrop-blur-md border border-amber-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
+              <div className="animate-stagger-3 bg-black/80 border border-amber-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
                 <div className="border-b border-amber-500/20 pb-4">
                   <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.2em] text-amber-400">
                     <Tag size={14} /> Price List • Avaliação de Quadros
@@ -690,7 +836,7 @@ export default function App() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Até 90cm */}
-                  <div className="bg-stone-950/80 border border-amber-500/25 rounded-2xl p-5 space-y-3">
+                  <div className="bg-black/75 border border-amber-500/25 rounded-2xl p-5 space-y-3">
                     <h5
                       style={{ fontFamily: "'Cinzel', serif" }}
                       className="text-base font-bold text-amber-400 tracking-wide border-b border-stone-800 pb-2"
@@ -708,7 +854,7 @@ export default function App() {
                   </div>
 
                   {/* Acima de 90cm */}
-                  <div className="bg-stone-950/80 border border-amber-500/25 rounded-2xl p-5 space-y-3">
+                  <div className="bg-black/75 border border-amber-500/25 rounded-2xl p-5 space-y-3">
                     <h5
                       style={{ fontFamily: "'Cinzel', serif" }}
                       className="text-base font-bold text-amber-400 tracking-wide border-b border-stone-800 pb-2"
@@ -731,22 +877,52 @@ export default function App() {
 
           {/* SECÇÃO: TATUAGENS REALISTAS BLACKWORK COM APRESENTAÇÃO */}
           {activeTab === 'tatuagem' && (
-            <div key="sec-tatuagens" className="animate-page-stage max-w-5xl mx-auto space-y-14">
-              {/* GALERIA DE TATUAGENS REALIZADAS LOGO NA ENTRADA */}
+            <div key="sec-tatuagens" className="animate-section-stage max-w-5xl mx-auto space-y-12">
+              {/* Apresentação em destaque ao entrar em Tatuagens */}
+              <div
+                onClick={() => abrirModalTatuagem(tatuagensRealizadas[0])}
+                className="animate-feature-banner bg-black/70 hover:bg-black/80 border border-amber-500/45 hover:border-amber-400 rounded-3xl p-4 sm:p-5 flex flex-col sm:flex-row items-center gap-4 sm:gap-6 cursor-pointer transition-all shadow-2xl relative overflow-hidden"
+              >
+                <div className="animate-gold-sweep pointer-events-none absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-amber-300/25 to-transparent" />
+                <img
+                  src={tatuagensRealizadas[0].imagem}
+                  alt={tatuagensRealizadas[0].titulo}
+                  className="w-24 h-28 sm:w-28 sm:h-32 object-cover rounded-2xl border border-amber-400/50 shrink-0 shadow-lg"
+                />
+                <div className="flex-1 text-center sm:text-left space-y-1">
+                  <span className="text-[11px] font-bold uppercase tracking-[0.22em] text-amber-400">
+                    Apresentação • Realismo Blackwork
+                  </span>
+                  <h4
+                    style={{ fontFamily: "'Cinzel', serif" }}
+                    className="text-xl sm:text-2xl font-bold text-white"
+                  >
+                    {tatuagensRealizadas[0].titulo}
+                  </h4>
+                  <p className="text-xs sm:text-sm text-stone-200 font-light">
+                    {tatuagensRealizadas[0].descricao}
+                  </p>
+                </div>
+                <span className="text-xs font-bold text-amber-400 inline-flex items-center gap-1 shrink-0">
+                  Abrir &amp; Zoom <ArrowUpRight size={15} />
+                </span>
+              </div>
+
+              {/* GALERIA DE TATUAGENS REALIZADAS */}
               <div>
                 <div className="animate-stagger-1 flex flex-col sm:flex-row justify-between items-center gap-4 mb-8 pb-5 relative">
                   <div className="text-center sm:text-left">
-                    <span className="text-xs font-bold uppercase tracking-[0.25em] text-amber-400">
+                    <span className="text-xs font-bold uppercase tracking-[0.25em] text-amber-400 drop-shadow">
                       Portfólio na Pele
                     </span>
                     <h3
                       style={{ fontFamily: "'Cinzel', serif" }}
-                      className="text-2xl sm:text-4xl font-extrabold text-white mt-1 drop-shadow"
+                      className="text-2xl sm:text-4xl font-extrabold text-white mt-1 drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)]"
                     >
                       Tatuagens Realistas Blackwork
                     </h3>
-                    <p className="text-stone-200 text-xs sm:text-sm mt-1.5 font-medium">
-                      Clica em qualquer tatuagem para ampliar em alta definição e fazer zoom nos detalhes
+                    <p className="text-stone-100 text-xs sm:text-sm mt-1.5 font-medium drop-shadow">
+                      Clica na tatuagem para fazer zoom com os dedos e fechar facilmente
                     </p>
                   </div>
 
@@ -754,7 +930,7 @@ export default function App() {
                     href={`https://instagram.com/${instagramTattooHandle}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-black/90 hover:bg-stone-900 text-amber-400 border border-amber-500/40 text-xs sm:text-sm font-bold transition-all shadow-lg shrink-0"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-black/75 hover:bg-stone-900 text-amber-400 border border-amber-500/40 text-xs sm:text-sm font-bold transition-all shadow-lg shrink-0"
                   >
                     <Instagram size={16} /> @{instagramTattooHandle}
                   </a>
@@ -767,24 +943,24 @@ export default function App() {
                     <div
                       key={tattoo.id}
                       onClick={() => abrirModalTatuagem(tattoo)}
-                      style={{ animationDelay: `${index * 160 + 120}ms` }}
-                      className="animate-art-card bg-black/85 backdrop-blur-md border border-amber-500/30 rounded-2xl overflow-hidden group hover:border-amber-400 transition-all duration-300 cursor-pointer shadow-2xl flex flex-col justify-between"
+                      style={{ animationDelay: `${index * 150 + 120}ms` }}
+                      className="animate-art-card bg-black/80 border border-amber-500/35 rounded-2xl overflow-hidden group hover:border-amber-400 transition-all duration-300 cursor-pointer shadow-2xl flex flex-col justify-between"
                     >
                       <div className="aspect-[4/5] overflow-hidden bg-stone-950 relative">
                         <img
                           src={tattoo.imagem}
                           alt={tattoo.titulo}
-                          className="animate-art-image w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
-                        <div className="animate-gold-sweep pointer-events-none absolute inset-y-0 w-1/2 bg-gradient-to-r from-transparent via-amber-300/30 to-transparent" />
+                        <div className="animate-gold-sweep pointer-events-none absolute inset-y-0 w-1/2 bg-gradient-to-r from-transparent via-amber-300/25 to-transparent" />
 
                         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/15 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
 
-                        <span className="absolute top-3 left-3 bg-black/90 backdrop-blur-md text-amber-400 text-xs font-bold px-3 py-1 rounded-full border border-amber-500/30">
+                        <span className="absolute top-3 left-3 bg-black/85 text-amber-400 text-xs font-bold px-3 py-1 rounded-full border border-amber-500/30">
                           {tattoo.estilo}
                         </span>
 
-                        <span className="absolute top-3 right-3 bg-black/90 backdrop-blur-md text-amber-400 p-2 rounded-full border border-amber-500/30 flex items-center gap-1 text-xs font-bold">
+                        <span className="absolute top-3 right-3 bg-black/85 text-amber-400 p-2 rounded-full border border-amber-500/30 flex items-center gap-1 text-xs font-bold">
                           <ZoomIn size={15} />
                         </span>
 
@@ -813,7 +989,7 @@ export default function App() {
               </div>
 
               {/* RESPOSTAS RÁPIDAS (INFORMAÇÕES AUTOMÁTICAS) */}
-              <div className="animate-stagger-2 bg-black/90 backdrop-blur-md border border-amber-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-5">
+              <div className="animate-stagger-2 bg-black/80 border border-amber-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-5">
                 <div className="flex items-center gap-2 text-amber-400">
                   <HelpCircle size={20} />
                   <h4
@@ -832,7 +1008,7 @@ export default function App() {
                       className={`px-3.5 py-2 rounded-full text-xs font-semibold transition-all border ${
                         selectedFaqId === item.id
                           ? 'bg-amber-400 text-black border-amber-400'
-                          : 'bg-stone-950 text-stone-200 border-amber-500/30 hover:border-amber-400'
+                          : 'bg-black/75 text-stone-200 border-amber-500/30 hover:border-amber-400'
                       }`}
                     >
                       {item.pergunta}
@@ -840,14 +1016,14 @@ export default function App() {
                   ))}
                 </div>
 
-                <div className="bg-stone-950/90 border border-amber-500/25 rounded-2xl p-4 sm:p-5 text-sm text-stone-200 leading-relaxed">
+                <div className="bg-black/75 border border-amber-500/25 rounded-2xl p-4 sm:p-5 text-sm text-stone-200 leading-relaxed">
                   <p className="font-semibold text-amber-400 mb-1">{faqAtiva.pergunta}</p>
                   <p className="font-light">{faqAtiva.resposta}</p>
                 </div>
               </div>
 
               {/* FORMULÁRIO DE AGENDAMENTO DE TATTOO */}
-              <div className="animate-stagger-3 bg-black/90 backdrop-blur-md border border-amber-500/50 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
+              <div className="animate-stagger-3 bg-black/80 border border-amber-500/50 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
                 <div>
                   <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.2em] text-amber-400">
                     <Calendar size={14} /> Agendamento de Sessão
@@ -874,7 +1050,7 @@ export default function App() {
                       value={bookingForm.nome}
                       onChange={handleBookingChange}
                       placeholder="Ex: João Silva"
-                      className="w-full rounded-xl bg-stone-950 border border-amber-500/30 px-4 py-3 text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-amber-400"
+                      className="w-full rounded-xl bg-black/75 border border-amber-500/30 px-4 py-3 text-sm text-white placeholder:text-stone-400 focus:outline-none focus:border-amber-400"
                     />
                   </div>
 
@@ -888,7 +1064,7 @@ export default function App() {
                       value={bookingForm.dataPreferida}
                       onChange={handleBookingChange}
                       placeholder="Ex: Próxima sexta ou 15/12"
-                      className="w-full rounded-xl bg-stone-950 border border-amber-500/30 px-4 py-3 text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-amber-400"
+                      className="w-full rounded-xl bg-black/75 border border-amber-500/30 px-4 py-3 text-sm text-white placeholder:text-stone-400 focus:outline-none focus:border-amber-400"
                     />
                   </div>
 
@@ -902,7 +1078,7 @@ export default function App() {
                       value={bookingForm.tamanho}
                       onChange={handleBookingChange}
                       placeholder="Ex: 15 cm"
-                      className="w-full rounded-xl bg-stone-950 border border-amber-500/30 px-4 py-3 text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-amber-400"
+                      className="w-full rounded-xl bg-black/75 border border-amber-500/30 px-4 py-3 text-sm text-white placeholder:text-stone-400 focus:outline-none focus:border-amber-400"
                     />
                   </div>
 
@@ -916,7 +1092,7 @@ export default function App() {
                       value={bookingForm.zona}
                       onChange={handleBookingChange}
                       placeholder="Ex: Antebraço, peito, costas"
-                      className="w-full rounded-xl bg-stone-950 border border-amber-500/30 px-4 py-3 text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-amber-400"
+                      className="w-full rounded-xl bg-black/75 border border-amber-500/30 px-4 py-3 text-sm text-white placeholder:text-stone-400 focus:outline-none focus:border-amber-400"
                     />
                   </div>
 
@@ -930,7 +1106,7 @@ export default function App() {
                       value={bookingForm.ideia}
                       onChange={handleBookingChange}
                       placeholder="Descreve a tua ideia de tatuagem realista blackwork..."
-                      className="w-full rounded-xl bg-stone-950 border border-amber-500/30 px-4 py-3 text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-amber-400"
+                      className="w-full rounded-xl bg-black/75 border border-amber-500/30 px-4 py-3 text-sm text-white placeholder:text-stone-400 focus:outline-none focus:border-amber-400"
                     />
                   </div>
 
@@ -948,16 +1124,16 @@ export default function App() {
               {/* COMO É ELABORADO O ORÇAMENTO */}
               <div className="animate-stagger-4 space-y-8 pt-6 border-t border-amber-500/20">
                 <div className="text-center max-w-2xl mx-auto">
-                  <span className="text-xs font-bold uppercase tracking-[0.25em] text-amber-400">
+                  <span className="text-xs font-bold uppercase tracking-[0.25em] text-amber-400 drop-shadow">
                     Orçamentos Personalizados
                   </span>
                   <h3
                     style={{ fontFamily: "'Cinzel', serif" }}
-                    className="text-2xl sm:text-3xl font-extrabold text-white mt-2 drop-shadow"
+                    className="text-2xl sm:text-3xl font-extrabold text-white mt-2 drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)]"
                   >
                     Como é Elaborado o Teu Orçamento
                   </h3>
-                  <p className="text-stone-200 text-sm mt-2 leading-relaxed font-light">
+                  <p className="text-stone-100 text-sm mt-2 leading-relaxed font-light drop-shadow">
                     Cada orçamento é calculado de acordo com a tua ideia, tamanho e zona do corpo.
                   </p>
                 </div>
@@ -967,7 +1143,7 @@ export default function App() {
                   {etapasOrcamento.map((etapa) => (
                     <div
                       key={etapa.passo}
-                      className="bg-black/85 backdrop-blur-md border border-amber-500/30 hover:border-amber-400 transition-all rounded-3xl p-6 sm:p-7 shadow-xl relative overflow-hidden"
+                      className="bg-black/80 border border-amber-500/30 hover:border-amber-400 transition-all rounded-3xl p-6 sm:p-7 shadow-xl relative overflow-hidden"
                     >
                       <span
                         style={{ fontFamily: "'Cinzel', serif" }}
@@ -993,7 +1169,7 @@ export default function App() {
 
                 {/* Garantias */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-                  <div className="bg-black/85 backdrop-blur-md border border-amber-500/30 rounded-2xl p-5">
+                  <div className="bg-black/80 border border-amber-500/30 rounded-2xl p-5">
                     <PenTool className="text-amber-400 mb-3" size={22} />
                     <h4
                       style={{ fontFamily: "'Cinzel', serif" }}
@@ -1006,7 +1182,7 @@ export default function App() {
                     </p>
                   </div>
 
-                  <div className="bg-black/85 backdrop-blur-md border border-amber-500/30 rounded-2xl p-5">
+                  <div className="bg-black/80 border border-amber-500/30 rounded-2xl p-5">
                     <Layers className="text-amber-400 mb-3" size={22} />
                     <h4
                       style={{ fontFamily: "'Cinzel', serif" }}
@@ -1019,7 +1195,7 @@ export default function App() {
                     </p>
                   </div>
 
-                  <div className="bg-black/85 backdrop-blur-md border border-amber-500/30 rounded-2xl p-5">
+                  <div className="bg-black/80 border border-amber-500/30 rounded-2xl p-5">
                     <ShieldCheck className="text-amber-400 mb-3" size={22} />
                     <h4
                       style={{ fontFamily: "'Cinzel', serif" }}
@@ -1040,9 +1216,9 @@ export default function App() {
           {activeTab === 'sobre' && (
             <div
               key="sec-sobre"
-              className="animate-page-stage flex-1 flex flex-col justify-end max-w-3xl w-full mx-auto pt-20 sm:pt-36 pb-2"
+              className="animate-section-stage flex-1 flex flex-col justify-end max-w-3xl w-full mx-auto pt-24 sm:pt-40 pb-2"
             >
-              <div className="animate-stagger-2 bg-black/55 backdrop-blur-[4px] border border-amber-500/35 rounded-3xl p-4 sm:p-6 shadow-2xl space-y-3 relative overflow-hidden">
+              <div className="animate-stagger-2 bg-black/55 border border-amber-500/35 rounded-3xl p-4 sm:p-6 shadow-2xl space-y-3 relative overflow-hidden">
                 <div className="animate-gold-sweep pointer-events-none absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-amber-400/20 to-transparent" />
 
                 <div className="flex flex-wrap items-center justify-between gap-2 relative z-10">
@@ -1110,17 +1286,17 @@ export default function App() {
           )}
         </main>
 
-        {/* MODAL DE ZOOM ALTA DEFINIÇÃO PARA TATUAGENS */}
+        {/* MODAL DE ZOOM COM OS DEDOS PARA TATUAGENS */}
         {selectedTattoo && (
           <div
             onClick={() => setSelectedTattoo(null)}
-            className="fixed inset-0 z-50 bg-black/95 backdrop-blur-lg flex items-center justify-center p-3 sm:p-6 overflow-y-auto"
+            className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-3 sm:p-6 overflow-y-auto"
           >
             <div
               onClick={(e) => e.stopPropagation()}
-              className="animate-page-stage bg-stone-950 border border-amber-500/50 rounded-3xl max-w-5xl w-full overflow-hidden shadow-2xl flex flex-col relative my-4"
+              className="animate-section-stage bg-stone-950 border border-amber-500/50 rounded-3xl max-w-5xl w-full overflow-hidden shadow-2xl flex flex-col relative my-4"
             >
-              {/* Barra Superior de Controlo de Zoom */}
+              {/* Barra Superior */}
               <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 bg-black border-b border-stone-800">
                 <div>
                   <span className="text-[11px] uppercase tracking-wider text-amber-400 font-bold">
@@ -1136,7 +1312,13 @@ export default function App() {
 
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() => setTattooZoom((z) => Math.max(1, Number((z - 0.5).toFixed(1))))}
+                    onClick={() => {
+                      setTattooZoom((z) => {
+                        const next = Math.max(1, Number((z - 0.5).toFixed(1)));
+                        if (next === 1) setTattooPan({ x: 0, y: 0 });
+                        return next;
+                      });
+                    }}
                     disabled={tattooZoom <= 1}
                     className="p-2 rounded-full bg-stone-900 hover:bg-stone-800 disabled:opacity-40 text-amber-400 border border-amber-500/30 transition-colors"
                     title="Reduzir Zoom"
@@ -1147,8 +1329,8 @@ export default function App() {
                     {Math.round(tattooZoom * 100)}%
                   </span>
                   <button
-                    onClick={() => setTattooZoom((z) => Math.min(3, Number((z + 0.5).toFixed(1))))}
-                    disabled={tattooZoom >= 3}
+                    onClick={() => setTattooZoom((z) => Math.min(4, Number((z + 0.5).toFixed(1))))}
+                    disabled={tattooZoom >= 4}
                     className="p-2 rounded-full bg-stone-900 hover:bg-stone-800 disabled:opacity-40 text-amber-400 border border-amber-500/30 transition-colors"
                     title="Aumentar Zoom"
                   >
@@ -1156,7 +1338,10 @@ export default function App() {
                   </button>
                   {tattooZoom > 1 && (
                     <button
-                      onClick={() => setTattooZoom(1)}
+                      onClick={() => {
+                        setTattooZoom(1);
+                        setTattooPan({ x: 0, y: 0 });
+                      }}
                       className="p-2 rounded-full bg-stone-900 hover:bg-stone-800 text-stone-300 border border-stone-700 transition-colors"
                       title="Repor Tamanho Original"
                     >
@@ -1165,25 +1350,28 @@ export default function App() {
                   )}
                   <button
                     onClick={() => setSelectedTattoo(null)}
-                    className="ml-2 p-2 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-bold transition-colors"
-                    aria-label="Fechar"
+                    className="ml-2 px-3.5 py-2 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-bold text-xs inline-flex items-center gap-1 transition-colors"
+                    aria-label="Sair"
                   >
-                    <X size={18} />
+                    <X size={16} /> Sair
                   </button>
                 </div>
               </div>
 
-              {/* Área da Imagem com Scroll e Zoom */}
-              <div className="bg-black overflow-auto max-h-[72vh] flex items-center justify-center p-4">
+              {/* Área com Zoom por Pinça (2 dedos) / Duplo Toque */}
+              <div
+                {...tattooTouchHandlers}
+                style={{ touchAction: 'none' }}
+                className="bg-black overflow-hidden h-[66vh] flex items-center justify-center p-4 select-none"
+              >
                 <img
                   src={selectedTattoo.imagem}
                   alt={selectedTattoo.titulo}
                   style={{
-                    transform: `scale(${tattooZoom})`,
+                    transform: `translate3d(${tattooPan.x}px, ${tattooPan.y}px, 0) scale(${tattooZoom})`,
                     transformOrigin: 'center center'
                   }}
-                  onClick={() => setTattooZoom((z) => (z === 1 ? 2 : 1))}
-                  className="max-h-[68vh] w-auto object-contain rounded-lg transition-transform duration-200 cursor-zoom-in select-none"
+                  className="max-h-[62vh] w-auto object-contain rounded-lg transition-transform duration-100"
                 />
               </div>
 
@@ -1191,7 +1379,9 @@ export default function App() {
               <div className="p-4 sm:px-6 bg-black border-t border-stone-800 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <p className="text-stone-300 text-xs sm:text-sm font-light text-center sm:text-left">
                   {selectedTattoo.descricao}{' '}
-                  <span className="text-amber-400/80">(Clica na foto ou nos botões + / - para fazer zoom)</span>
+                  <span className="text-amber-400">
+                    (Podes fazer zoom com dois dedos ou duplo toque)
+                  </span>
                 </p>
                 <a
                   href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=Olá Art Oliveira! Vi a tatuagem "${encodeURIComponent(selectedTattoo.titulo)}" no teu site e gostaria de pedir um orçamento semelhante.`}
@@ -1206,35 +1396,91 @@ export default function App() {
           </div>
         )}
 
-        {/* JANELA MODAL DE DETALHES DA OBRA */}
+        {/* MODAL DE DETALHES E ZOOM COM OS DEDOS PARA DESENHOS / OBRAS */}
         {selectedObra && (
           <div
             onClick={() => setSelectedObra(null)}
-            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto"
+            className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-3 sm:p-5 overflow-y-auto"
           >
             <div
               onClick={(e) => e.stopPropagation()}
-              className="animate-page-stage bg-stone-900 border border-amber-500/50 rounded-3xl max-w-4xl w-full overflow-hidden shadow-2xl grid grid-cols-1 md:grid-cols-2 relative my-8"
+              className="animate-section-stage bg-stone-950 border border-amber-500/50 rounded-3xl max-w-5xl w-full overflow-hidden shadow-2xl grid grid-cols-1 md:grid-cols-2 relative my-4"
             >
+              {/* Botão de saída fácil no canto superior direito */}
               <button
                 onClick={() => setSelectedObra(null)}
-                className="absolute top-4 right-4 z-10 bg-black hover:bg-amber-400 text-amber-400 hover:text-black p-2.5 rounded-full border border-amber-500/40 transition-colors shadow-lg"
-                aria-label="Fechar"
+                className="absolute top-4 right-4 z-20 bg-amber-400 hover:bg-amber-300 text-black px-3.5 py-2 rounded-full font-bold text-xs inline-flex items-center gap-1 transition-colors shadow-lg"
+                aria-label="Sair"
               >
-                <X size={20} />
+                <X size={16} /> Sair
               </button>
 
-              <div className="bg-black flex items-center justify-center p-4 sm:p-6 border-b md:border-b-0 md:border-r border-stone-800">
-                <img
-                  src={selectedObra.imagem}
-                  alt={selectedObra.title || 'Desenho Realista'}
-                  className="max-h-[70vh] w-auto object-contain rounded-xl shadow-2xl"
-                />
+              {/* Área da Imagem com Pinça (2 dedos) / Duplo Toque / Controlos */}
+              <div className="bg-black flex flex-col justify-between p-4 sm:p-5 border-b md:border-b-0 md:border-r border-stone-800">
+                <div className="flex items-center gap-2 mb-2">
+                  <button
+                    onClick={() => {
+                      setObraZoom((z) => {
+                        const next = Math.max(1, Number((z - 0.5).toFixed(1)));
+                        if (next === 1) setObraPan({ x: 0, y: 0 });
+                        return next;
+                      });
+                    }}
+                    disabled={obraZoom <= 1}
+                    className="p-2 rounded-full bg-stone-900 hover:bg-stone-800 disabled:opacity-40 text-amber-400 border border-amber-500/30"
+                    title="Reduzir Zoom"
+                  >
+                    <ZoomOut size={16} />
+                  </button>
+                  <span className="text-xs font-bold text-amber-400 min-w-[44px] text-center">
+                    {Math.round(obraZoom * 100)}%
+                  </span>
+                  <button
+                    onClick={() => setObraZoom((z) => Math.min(4, Number((z + 0.5).toFixed(1))))}
+                    disabled={obraZoom >= 4}
+                    className="p-2 rounded-full bg-stone-900 hover:bg-stone-800 disabled:opacity-40 text-amber-400 border border-amber-500/30"
+                    title="Aumentar Zoom"
+                  >
+                    <ZoomIn size={16} />
+                  </button>
+                  {obraZoom > 1 && (
+                    <button
+                      onClick={() => {
+                        setObraZoom(1);
+                        setObraPan({ x: 0, y: 0 });
+                      }}
+                      className="p-2 rounded-full bg-stone-900 hover:bg-stone-800 text-stone-300 border border-stone-700"
+                      title="Repor"
+                    >
+                      <RotateCcw size={15} />
+                    </button>
+                  )}
+                </div>
+
+                <div
+                  {...obraTouchHandlers}
+                  style={{ touchAction: 'none' }}
+                  className="flex-1 min-h-[340px] max-h-[62vh] overflow-hidden flex items-center justify-center select-none"
+                >
+                  <img
+                    src={selectedObra.imagem}
+                    alt={selectedObra.title || 'Desenho Realista'}
+                    style={{
+                      transform: `translate3d(${obraPan.x}px, ${obraPan.y}px, 0) scale(${obraZoom})`,
+                      transformOrigin: 'center center'
+                    }}
+                    className="max-h-[58vh] w-auto object-contain rounded-xl shadow-2xl transition-transform duration-100"
+                  />
+                </div>
+
+                <p className="text-[11px] text-amber-300/90 text-center mt-2">
+                  Usa dois dedos (pinça) ou duplo toque na foto para ampliar
+                </p>
               </div>
 
               <div className="p-6 sm:p-8 flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center gap-2 flex-wrap">
+                  <div className="flex items-center gap-2 flex-wrap pr-16">
                     <span className="bg-amber-400 text-black text-xs font-bold px-3 py-1 rounded-full shadow-md">
                       {selectedObra.categoria}
                     </span>
@@ -1284,7 +1530,7 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="mt-8 pt-4 border-t border-stone-800">
+                <div className="mt-8 pt-4 border-t border-stone-800 flex flex-col sm:flex-row gap-3">
                   <a
                     href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=Olá Art Oliveira! Gostaria de saber mais detalhes ou adquirir ${
                       selectedObra.title
@@ -1293,10 +1539,16 @@ export default function App() {
                     } (${encodeURIComponent(selectedObra.tecnica)}).`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full py-3.5 px-5 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-sm transition-all flex items-center justify-center gap-2 shadow-xl shadow-amber-500/20 hover:scale-[1.02]"
+                    className="flex-1 py-3.5 px-5 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-sm transition-all flex items-center justify-center gap-2 shadow-xl shadow-amber-500/20 hover:scale-[1.02]"
                   >
-                    <MessageCircle size={18} /> Consultar ou Adquirir Obra
+                    <MessageCircle size={18} /> Consultar ou Adquirir
                   </a>
+                  <button
+                    onClick={() => setSelectedObra(null)}
+                    className="py-3.5 px-5 rounded-full bg-stone-900 hover:bg-stone-800 text-stone-200 border border-stone-700 font-semibold text-sm transition-colors"
+                  >
+                    Fechar
+                  </button>
                 </div>
               </div>
             </div>
@@ -1304,7 +1556,7 @@ export default function App() {
         )}
 
         {/* Rodapé */}
-        <footer className="border-t border-amber-500/30 mt-16 py-10 text-center text-stone-400 text-sm bg-black/90 backdrop-blur-md">
+        <footer className="border-t border-amber-500/30 mt-16 py-10 text-center text-stone-400 text-sm bg-black/80">
           <p
             style={{ fontFamily: "'Cinzel', serif" }}
             className="text-amber-400 font-bold tracking-[0.2em] text-base drop-shadow"
