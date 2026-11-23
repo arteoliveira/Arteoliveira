@@ -267,10 +267,10 @@ export default function App() {
         @keyframes portraitBackdropEntrance {
           0% {
             opacity: 0;
-            transform: scale(1.08);
+            transform: scale(1.06);
           }
           100% {
-            opacity: 0.95;
+            opacity: 1;
             transform: scale(1);
           }
         }
@@ -347,16 +347,16 @@ export default function App() {
         }
       `}</style>
 
-      {/* IMAGEM DE FUNDO (Rosto completo bem enquadrado na aba "Sobre") */}
+      {/* IMAGEM DE FUNDO (Rosto completo visível, com topo mais transparente) */}
       {activeTab === 'sobre' ? (
         <div key="bg-sobre" className="fixed inset-0 z-0 pointer-events-none">
           <img
             src={imagemSobreArtista}
             alt="Art Oliveira"
-            style={{ objectPosition: '50% 22%' }}
+            style={{ objectPosition: '50% 8%' }}
             className="animate-portrait-bg w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-black/35" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-black/90" />
         </div>
       ) : (
         <div className="fixed inset-0 z-0 pointer-events-none">
@@ -371,61 +371,71 @@ export default function App() {
 
       {/* CONTEÚDO PRINCIPAL SOBRE O FUNDO */}
       <div className="relative z-10 flex flex-col min-h-screen">
-        {/* Navegação Superior */}
-        <header className="border-b border-amber-500/30 bg-black/85 backdrop-blur-md sticky top-0 z-40 shadow-2xl">
-          <div className="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+        {/* Navegação Superior (Mais transparente na aba Sobre para não esconder o rosto) */}
+        <header
+          className={`border-b transition-colors duration-300 sticky top-0 z-40 shadow-xl ${
+            activeTab === 'sobre'
+              ? 'border-amber-500/20 bg-black/30 backdrop-blur-[3px]'
+              : 'border-amber-500/30 bg-black/85 backdrop-blur-md shadow-2xl'
+          }`}
+        >
+          <div className="max-w-6xl mx-auto px-4 py-3 sm:py-4 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4">
             <div
               onClick={() => handleTabChange('galeria')}
               className="text-center sm:text-left cursor-pointer group"
             >
               <h1
                 style={{ fontFamily: "'Cinzel', serif" }}
-                className="text-2xl sm:text-3xl font-extrabold tracking-[0.2em] text-amber-400 drop-shadow-[0_0_15px_rgba(251,191,36,0.35)] group-hover:text-amber-300 transition-colors"
+                className="text-xl sm:text-3xl font-extrabold tracking-[0.2em] text-amber-400 drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)] group-hover:text-amber-300 transition-colors"
               >
                 ART OLIVEIRA
               </h1>
-              <p className="text-[10px] text-amber-400/90 tracking-[0.3em] uppercase mt-0.5 font-medium">
+              <p className="text-[10px] text-amber-300/95 tracking-[0.28em] uppercase mt-0.5 font-medium drop-shadow-[0_1px_6px_rgba(0,0,0,0.95)]">
                 Uma visão artística entre o papel e a pele
               </p>
             </div>
 
-            <nav className="flex flex-wrap justify-center gap-2 bg-black/80 p-1.5 rounded-full border border-amber-500/40 shadow-lg">
+            <nav
+              className={`flex flex-wrap justify-center gap-1.5 sm:gap-2 p-1.5 rounded-full border border-amber-500/40 shadow-lg ${
+                activeTab === 'sobre' ? 'bg-black/45 backdrop-blur-sm' : 'bg-black/80'
+              }`}
+            >
               <button
                 onClick={() => handleTabChange('galeria')}
-                className={`px-3.5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 ${
+                className={`px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 ${
                   activeTab === 'galeria'
                     ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-lg shadow-amber-500/30 font-bold scale-105'
-                    : 'text-stone-200 hover:text-amber-400 hover:bg-white/5'
+                    : 'text-stone-100 hover:text-amber-400 hover:bg-white/5'
                 }`}
               >
                 Galeria
               </button>
               <button
                 onClick={() => handleTabChange('vendas')}
-                className={`px-3.5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 ${
+                className={`px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 ${
                   activeTab === 'vendas'
                     ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-lg shadow-amber-500/30 font-bold scale-105'
-                    : 'text-stone-200 hover:text-amber-400 hover:bg-white/5'
+                    : 'text-stone-100 hover:text-amber-400 hover:bg-white/5'
                 }`}
               >
                 Encomendas &amp; Vendas
               </button>
               <button
                 onClick={() => handleTabChange('tatuagem')}
-                className={`px-3.5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 ${
+                className={`px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 ${
                   activeTab === 'tatuagem'
                     ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-lg shadow-amber-500/30 font-bold scale-105'
-                    : 'text-stone-200 hover:text-amber-400 hover:bg-white/5'
+                    : 'text-stone-100 hover:text-amber-400 hover:bg-white/5'
                 }`}
               >
                 Tatuagens
               </button>
               <button
                 onClick={() => handleTabChange('sobre')}
-                className={`px-3.5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 ${
+                className={`px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 ${
                   activeTab === 'sobre'
                     ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-lg shadow-amber-500/30 font-bold scale-105'
-                    : 'text-stone-200 hover:text-amber-400 hover:bg-white/5'
+                    : 'text-stone-100 hover:text-amber-400 hover:bg-white/5'
                 }`}
               >
                 Sobre
@@ -472,7 +482,7 @@ export default function App() {
         )}
 
         {/* Conteúdo Principal */}
-        <main className="max-w-6xl w-full mx-auto px-4 py-10 flex-1 flex flex-col">
+        <main className="max-w-6xl w-full mx-auto px-4 py-8 sm:py-10 flex-1 flex flex-col">
           {/* SECÇÃO: GALERIA DE OBRAS COM APRESENTAÇÃO */}
           {activeTab === 'galeria' && (
             <div key="sec-galeria" className="animate-page-stage">
@@ -987,14 +997,14 @@ export default function App() {
             </div>
           )}
 
-          {/* SECÇÃO: SOBRE O ARTISTA COM APRESENTAÇÃO CINEMATOGRÁFICA */}
+          {/* SECÇÃO: SOBRE O ARTISTA COM ROSTO LIVRE NO CENTRO/TOPO */}
           {activeTab === 'sobre' && (
-            <div key="sec-sobre" className="animate-page-stage flex-1 flex flex-col justify-end max-w-3xl w-full mx-auto pt-56 sm:pt-72 pb-4">
-              <div className="animate-stagger-2 bg-black/75 backdrop-blur-md border border-amber-500/40 rounded-3xl p-5 sm:p-7 shadow-2xl space-y-4 relative overflow-hidden">
+            <div key="sec-sobre" className="animate-page-stage flex-1 flex flex-col justify-end max-w-3xl w-full mx-auto pt-20 sm:pt-36 pb-2">
+              <div className="animate-stagger-2 bg-black/55 backdrop-blur-[4px] border border-amber-500/35 rounded-3xl p-4 sm:p-6 shadow-2xl space-y-3 relative overflow-hidden">
                 <div className="animate-gold-sweep pointer-events-none absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-amber-400/20 to-transparent" />
 
                 <div className="flex flex-wrap items-center justify-between gap-2 relative z-10">
-                  <span className="text-[11px] uppercase tracking-[0.25em] text-amber-400 font-bold">
+                  <span className="text-[11px] uppercase tracking-[0.25em] text-amber-400 font-bold drop-shadow">
                     Biografia &amp; Percurso
                   </span>
                   <span className="bg-amber-400 text-black text-[11px] font-extrabold px-3 py-0.5 rounded-full shadow-md">
@@ -1005,21 +1015,21 @@ export default function App() {
                 <div className="relative z-10">
                   <h3
                     style={{ fontFamily: "'Cinzel', serif" }}
-                    className="text-2xl sm:text-4xl font-extrabold text-white drop-shadow"
+                    className="text-2xl sm:text-4xl font-extrabold text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]"
                   >
                     Art Oliveira
                   </h3>
-                  <p className="text-amber-400 text-xs sm:text-sm font-medium mt-0.5">
+                  <p className="text-amber-300 text-xs sm:text-sm font-medium mt-0.5 drop-shadow">
                     Uma visão artística entre o papel e a pele
                   </p>
                 </div>
 
-                <div className="space-y-2 text-stone-100 leading-relaxed text-xs sm:text-sm font-light relative z-10">
+                <div className="space-y-1.5 text-stone-100 leading-relaxed text-xs sm:text-sm font-light relative z-10 drop-shadow">
                   <p>
                     <strong className="text-white font-semibold">Art Oliveira</strong> trabalha com{' '}
-                    <strong className="text-amber-400 font-medium">desenhos realistas</strong>,{' '}
-                    <strong className="text-amber-400 font-medium">pintura acrílica sobre diferentes superfícies</strong> e{' '}
-                    <strong className="text-amber-400 font-medium">tatuagens realistas blackwork</strong>.
+                    <strong className="text-amber-300 font-medium">desenhos realistas</strong>,{' '}
+                    <strong className="text-amber-300 font-medium">pintura acrílica sobre diferentes superfícies</strong> e{' '}
+                    <strong className="text-amber-300 font-medium">tatuagens realistas blackwork</strong>.
                   </p>
                   <p>
                     Trabalhos realistas e em diferentes estilos para explorar a arte tanto no papel e nas superfícies físicas como na pele.
@@ -1027,12 +1037,12 @@ export default function App() {
                 </div>
 
                 {/* BOTÕES DOS DOIS INSTAGRAMS + WHATSAPP */}
-                <div className="flex flex-wrap gap-2.5 pt-2 relative z-10">
+                <div className="flex flex-wrap gap-2 pt-1.5 relative z-10">
                   <a
                     href={`https://instagram.com/${instagramArteHandle}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-black/90 hover:bg-stone-900 text-amber-400 border border-amber-500/40 text-xs font-bold transition-all shadow-md"
+                    className="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-black/75 hover:bg-stone-900 text-amber-400 border border-amber-500/40 text-xs font-bold transition-all shadow-md"
                   >
                     <Instagram size={15} /> Arte: @{instagramArteHandle}
                   </a>
@@ -1040,7 +1050,7 @@ export default function App() {
                     href={`https://instagram.com/${instagramTattooHandle}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-black/90 hover:bg-stone-900 text-amber-400 border border-amber-500/40 text-xs font-bold transition-all shadow-md"
+                    className="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-black/75 hover:bg-stone-900 text-amber-400 border border-amber-500/40 text-xs font-bold transition-all shadow-md"
                   >
                     <Instagram size={15} /> Tatuagens: @{instagramTattooHandle}
                   </a>
@@ -1048,7 +1058,7 @@ export default function App() {
                     href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=Olá Art Oliveira! Visitei o teu portfólio e gostaria de falar contigo.`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-amber-400 hover:bg-amber-300 text-black text-xs font-bold transition-all shadow-lg shadow-amber-500/20"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-400 hover:bg-amber-300 text-black text-xs font-bold transition-all shadow-lg shadow-amber-500/20"
                   >
                     <MessageCircle size={15} /> Falar no WhatsApp
                   </a>
